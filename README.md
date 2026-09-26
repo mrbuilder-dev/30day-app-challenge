@@ -5,6 +5,7 @@
 [![Build in Public](https://img.shields.io/badge/Build_in_Public-30_Days-blue.svg)](https://x.com/MrBuildersai)
 [![Telegram Community](https://img.shields.io/badge/Telegram-@MrbuildersAI-2BA2DE.svg)](https://t.me/MrbuildersAI)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Persian Docs](https://img.shields.io/badge/🇮🇷_مطالعه_به_زبان_فارسی-README.fa-orange.svg)](README.fa.md)
 
 ---
 
