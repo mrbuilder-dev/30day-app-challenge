@@ -1,18 +1,32 @@
 {
-  "name": "LOCALBEAM",
+  "name": "LOCALBEAM • Offline P2P Transfer",
   "short_name": "LocalBeam",
-  "description": "انتقال آفلاین و مستقیم فایل و کلیپ‌بورد بین دیوایس‌ها با WebRTC",
+  "id": "/30day-app-challenge/",
   "start_url": "./",
+  "scope": "./",
   "display": "standalone",
-  "orientation": "portrait-primary",
+  "orientation": "any",
   "background_color": "#FFF9E6",
   "theme_color": "#FFE600",
+  "description": "انتقال آفلاین و پرسرعت فایل و کلیپ‌بورد در شبکه محلی بدون اینترنت",
   "icons": [
+    {
+      "src": "./pwa-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./pwa-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
     {
       "src": "./favicon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ]
 }
