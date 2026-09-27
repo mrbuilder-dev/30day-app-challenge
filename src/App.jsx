@@ -147,6 +147,43 @@ const translations = {
   }
 };
 
+function playTransferSuccessSound() {
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    const now = ctx.currentTime;
+
+    const osc1 = ctx.createOscillator();
+    const gain1 = ctx.createGain();
+    osc1.type = 'sine';
+    osc1.frequency.setValueAtTime(587.33, now); // D5
+    gain1.gain.setValueAtTime(0.12, now);
+    gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+    osc1.connect(gain1);
+    gain1.connect(ctx.destination);
+    osc1.start(now);
+    osc1.stop(now + 0.3);
+
+    const osc2 = ctx.createOscillator();
+    const gain2 = ctx.createGain();
+    osc2.type = 'sine';
+    osc2.frequency.setValueAtTime(880, now + 0.1); // A5
+    gain2.gain.setValueAtTime(0.15, now + 0.1);
+    gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+    osc2.connect(gain2);
+    gain2.connect(ctx.destination);
+    osc2.start(now + 0.1);
+    osc2.stop(now + 0.5);
+
+    if (navigator.vibrate) {
+      navigator.vibrate([40, 50, 40]);
+    }
+  } catch (e) {
+    // Audio unsupported or blocked
+  }
+}
+
 export default function App() {
   const [lang, setLang] = useState(() => localStorage.getItem('localbeam_lang') || 'fa');
   
@@ -175,7 +212,8 @@ export default function App() {
   const [transferSpeed, setTransferSpeed] = useState('0.0');
   const [transferFileName, setTransferFileName] = useState('');
   const [transferFileSize, setTransferFileSize] = useState('');
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const selectedFile = selectedFiles[0] || null;
 
   // Simulated Fluctuating Speed in Guide (from Stitch spec)
   const [fluctuatingSpeed, setFluctuatingSpeed] = useState('58.4');
@@ -288,11 +326,13 @@ export default function App() {
         setTransferSpeed(speedMBs);
       },
       onFileReceived: (fileObj) => {
+        playTransferSuccessSound();
         confetti({ particleCount: 80, spread: 70, origin: { y: 0.5 } });
         const receivedEntry = {
           id: fileObj.id,
           name: fileObj.name,
           size: `${(fileObj.size / (1024 * 1024)).toFixed(2)} MB`,
+          mime: fileObj.mime,
           from: connectedDevice ? connectedDevice.name : (lang === 'fa' ? 'دستگاه مقابل' : 'Remote Peer'),
           to: `${localDevice.name}`,
           time: lang === 'fa' ? 'همین الان' : 'Just now',
@@ -355,8 +395,8 @@ export default function App() {
   };
 
   const handleSendFileReal = async () => {
-    if (!selectedFile) {
-      alert(lang === 'fa' ? 'لطفاً ابتدا یک فایل را انتخاب یا رها کنید.' : 'Please select or drop a file first.');
+    if (!selectedFiles || selectedFiles.length === 0) {
+      alert(lang === 'fa' ? 'لطفاً ابتدا حداقل یک فایل را انتخاب یا رها کنید.' : 'Please select or drop at least one file first.');
       return;
     }
     if (p2pStatus !== 'connected' || !p2pManagerRef.current) {
@@ -369,28 +409,36 @@ export default function App() {
       setIsTransferring(true);
       setTransferDirection('sending');
       setShowTransferModal(true);
-      setTransferProgress(0);
-      setTransferFileName(selectedFile.name);
-      setTransferFileSize(`${(selectedFile.size / (1024 * 1024)).toFixed(2)} MB`);
 
-      await p2pManagerRef.current.sendFile(selectedFile);
+      const files = [...selectedFiles];
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        setTransferProgress(0);
+        setTransferFileName(files.length > 1 ? `(${i + 1}/${files.length}) ${file.name}` : file.name);
+        setTransferFileSize(`${(file.size / (1024 * 1024)).toFixed(2)} MB`);
 
-      confetti({ particleCount: 60, spread: 60, origin: { y: 0.6 } });
-      const newEntry = {
-        id: Date.now(),
-        name: selectedFile.name,
-        size: `${(selectedFile.size / (1024 * 1024)).toFixed(2)} MB`,
-        from: `${localDevice.name}`,
-        to: connectedDevice ? connectedDevice.name : (lang === 'fa' ? 'دستگاه مقصد' : 'Target Peer'),
-        time: lang === 'fa' ? 'همین الان' : 'Just now',
-        isDownloadable: false
-      };
-      setTransfers((prev) => [newEntry, ...prev]);
-      setSelectedFile(null);
+        await p2pManagerRef.current.sendFile(file);
+
+        playTransferSuccessSound();
+        const newEntry = {
+          id: Date.now() + i,
+          name: file.name,
+          size: `${(file.size / (1024 * 1024)).toFixed(2)} MB`,
+          mime: file.type,
+          from: `${localDevice.name}`,
+          to: connectedDevice ? connectedDevice.name : (lang === 'fa' ? 'دستگاه مقصد' : 'Target Peer'),
+          time: lang === 'fa' ? 'همین الان' : 'Just now',
+          isDownloadable: false
+        };
+        setTransfers((prev) => [newEntry, ...prev]);
+      }
+
+      confetti({ particleCount: 70, spread: 65, origin: { y: 0.6 } });
+      setSelectedFiles([]);
       setIsTransferring(false);
       setTransferDirection(null);
       setTimeout(() => setShowTransferModal(false), 2000);
-      showToast(lang === 'fa' ? '🚀 فایل با موفقیت به دستگاه مقصد رسید!' : '🚀 File sent successfully!');
+      showToast(lang === 'fa' ? (files.length > 1 ? `🚀 تمام ${files.length} فایل با موفقیت منتقل شدند!` : '🚀 فایل با موفقیت به دستگاه مقصد رسید!') : '🚀 File(s) beamed successfully!');
     } catch (err) {
       console.error('Send error:', err);
       alert((lang === 'fa' ? 'خطا در ارسال فایل: ' : 'Error beaming file: ') + (err.message || 'DataChannel issue'));
@@ -421,8 +469,8 @@ export default function App() {
   };
 
   const handleFileChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      setSelectedFile(e.target.files[0]);
+    if (e.target.files && e.target.files.length > 0) {
+      setSelectedFiles(Array.from(e.target.files));
     }
   };
 
@@ -1403,15 +1451,47 @@ export default function App() {
                         borderRadius: '12px',
                         display: 'flex',
                         justifyContent: 'space-between',
-                        alignItems: 'center'
+                        alignItems: 'center',
+                        gap: '10px'
                       }}
                     >
-                      <div>
-                        <div style={{ fontWeight: 800, fontSize: '0.85rem', marginBottom: '2px' }}>
-                          📄 {item.name}
-                        </div>
-                        <div style={{ fontSize: '0.72rem', color: '#666', fontFamily: 'var(--font-mono)' }}>
-                          {item.size} • {item.from} ➔ {item.to}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
+                        {item.downloadUrl && (item.mime?.startsWith('image/') || /\.(jpg|jpeg|png|webp|gif|svg)$/i.test(item.name)) ? (
+                          <img
+                            src={item.downloadUrl}
+                            alt={item.name}
+                            style={{
+                              width: '42px',
+                              height: '42px',
+                              objectFit: 'cover',
+                              borderRadius: '8px',
+                              border: '2px solid #000',
+                              flexShrink: 0
+                            }}
+                          />
+                        ) : (
+                          <div style={{
+                            width: '40px',
+                            height: '40px',
+                            borderRadius: '8px',
+                            background: '#e2e8f0',
+                            border: '1.5px solid #000',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '1.2rem',
+                            flexShrink: 0
+                          }}>
+                            {/\.(mp4|mov|webm|mkv)$/i.test(item.name) ? '🎬' : /\.(mp3|wav|m4a|ogg)$/i.test(item.name) ? '🎵' : /\.(pdf)$/i.test(item.name) ? '📕' : '📄'}
+                          </div>
+                        )}
+                        <div style={{ minWidth: 0 }}>
+                          <div style={{ fontWeight: 800, fontSize: '0.85rem', marginBottom: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            {item.name}
+                          </div>
+                          <div style={{ fontSize: '0.72rem', color: '#666', fontFamily: 'var(--font-mono)' }}>
+                            {item.size} • {item.from} ➔ {item.to}
+                          </div>
                         </div>
                       </div>
 
@@ -1420,12 +1500,12 @@ export default function App() {
                           href={item.downloadUrl}
                           download={item.name}
                           className="nb-btn nb-btn-green"
-                          style={{ padding: '6px 12px', fontSize: '0.78rem', textDecoration: 'none' }}
+                          style={{ padding: '6px 12px', fontSize: '0.78rem', textDecoration: 'none', flexShrink: 0 }}
                         >
                           {text.downloadBtn}
                         </a>
                       ) : (
-                        <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 700 }}>
+                        <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 700, flexShrink: 0 }}>
                           {item.time}
                         </span>
                       )}
@@ -1480,15 +1560,19 @@ export default function App() {
                 {text.sendCardDesc} {connectedDevice ? connectedDevice.name : text.remotePeerPlaceholder}:
               </p>
 
-              <label className="nb-dropzone" style={{ display: 'block', marginBottom: '16px' }}>
-                <input type="file" onChange={handleFileChange} style={{ display: 'none' }} />
+              <label className="nb-dropzone" style={{ display: 'block', marginBottom: '16px', cursor: 'pointer' }}>
+                <input type="file" multiple onChange={handleFileChange} style={{ display: 'none' }} />
                 <div style={{ fontSize: '2rem', marginBottom: '6px' }}>📁</div>
                 <div style={{ fontWeight: 800, fontSize: '0.95rem', marginBottom: '4px' }}>
-                  {selectedFile ? selectedFile.name : text.dropzoneText}
+                  {selectedFiles.length > 1
+                    ? `📦 ${selectedFiles.length} فایل انتخاب شده`
+                    : selectedFiles.length === 1
+                    ? selectedFiles[0].name
+                    : text.dropzoneText}
                 </div>
                 <div style={{ fontSize: '0.75rem', color: '#555', fontWeight: 600 }}>
-                  {selectedFile 
-                    ? `${(selectedFile.size / (1024 * 1024)).toFixed(2)} MB • ${text.readyToSend}`
+                  {selectedFiles.length > 0 
+                    ? `${(selectedFiles.reduce((acc, f) => acc + f.size, 0) / (1024 * 1024)).toFixed(2)} MB • ${text.readyToSend}`
                     : text.dropzoneHint}
                 </div>
               </label>
@@ -1750,17 +1834,21 @@ export default function App() {
 
             {/* 2. Mobile Dropzone & Send Button */}
             <div className="nb-card nb-card-pink" style={{ padding: '16px', marginBottom: '16px' }}>
-              <label className="nb-dropzone" style={{ padding: '16px 10px', background: '#fff', marginBottom: '12px' }}>
-                <input type="file" onChange={handleFileChange} style={{ display: 'none' }} />
+              <label className="nb-dropzone" style={{ padding: '16px 10px', background: '#fff', marginBottom: '12px', cursor: 'pointer' }}>
+                <input type="file" multiple onChange={handleFileChange} style={{ display: 'none' }} />
                 <div style={{ fontSize: '1.6rem' }}>📸 📁</div>
                 <div style={{ fontWeight: 800, fontSize: '0.85rem', marginTop: '4px' }}>
-                  {selectedFile ? selectedFile.name : text.dropzoneText}
+                  {selectedFiles.length > 1
+                    ? `📦 ${selectedFiles.length} فایل انتخاب شده`
+                    : selectedFiles.length === 1
+                    ? selectedFiles[0].name
+                    : text.dropzoneText}
                 </div>
-                {selectedFile && (
-                  <div style={{ fontSize: '0.75rem', color: '#666' }}>
-                    {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB • {text.readyToSend}
-                  </div>
-                )}
+                <div style={{ fontSize: '0.75rem', color: '#666', marginTop: '2px' }}>
+                  {selectedFiles.length > 0 
+                    ? `${(selectedFiles.reduce((acc, f) => acc + f.size, 0) / (1024 * 1024)).toFixed(2)} MB • ${text.readyToSend}`
+                    : text.dropzoneHint}
+                </div>
               </label>
 
               <button
@@ -1808,10 +1896,62 @@ export default function App() {
             <button
               onClick={() => setShowQRModal(true)}
               className="nb-btn nb-btn-white"
-              style={{ width: '100%', padding: '10px', fontSize: '0.8rem' }}
+              style={{ width: '100%', padding: '10px', fontSize: '0.8rem', marginBottom: '16px' }}
             >
               {text.scanQrBtn}
             </button>
+
+            {/* Mobile Received Transfers List */}
+            {transfers.length > 0 && (
+              <div className="nb-card nb-card-white" style={{ padding: '14px', marginBottom: '16px' }}>
+                <div style={{ fontSize: '0.8rem', fontWeight: 800, marginBottom: '8px' }}>
+                  📥 {lang === 'fa' ? 'فایل‌های اخیر' : 'Recent Transfers'} ({transfers.length})
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {transfers.slice(0, 5).map((item, idx) => (
+                    <div key={idx} style={{
+                      padding: '8px 10px',
+                      background: '#f8fafc',
+                      border: 'var(--border-medium)',
+                      borderRadius: '10px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: '8px'
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
+                        {item.downloadUrl && (item.mime?.startsWith('image/') || /\.(jpg|jpeg|png|webp|gif|svg)$/i.test(item.name)) ? (
+                          <img src={item.downloadUrl} alt={item.name} style={{ width: '32px', height: '32px', objectFit: 'cover', borderRadius: '6px', border: '1.5px solid #000', flexShrink: 0 }} />
+                        ) : (
+                          <span style={{ fontSize: '1.1rem', flexShrink: 0 }}>
+                            {/\.(mp4|mov|webm)$/i.test(item.name) ? '🎬' : /\.(mp3|wav)$/i.test(item.name) ? '🎵' : '📄'}
+                          </span>
+                        )}
+                        <div style={{ minWidth: 0 }}>
+                          <div style={{ fontSize: '0.78rem', fontWeight: 800, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            {item.name}
+                          </div>
+                          <div style={{ fontSize: '0.65rem', color: '#666', fontFamily: 'var(--font-mono)' }}>
+                            {item.size}
+                          </div>
+                        </div>
+                      </div>
+
+                      {item.isDownloadable && item.downloadUrl && (
+                        <a
+                          href={item.downloadUrl}
+                          download={item.name}
+                          className="nb-btn nb-btn-green"
+                          style={{ padding: '4px 10px', fontSize: '0.72rem', textDecoration: 'none', flexShrink: 0 }}
+                        >
+                          {text.downloadBtn}
+                        </a>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
           </div>
 
