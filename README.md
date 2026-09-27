@@ -44,7 +44,6 @@ This project aims to solve that by:
 
 - **𝕏 (Twitter):** [@MrBuildersai](https://x.com/MrBuildersai) — Daily thoughts, micro-polls, and progress clips.
 - **Telegram Channel:** [t.me/MrbuildersAI](https://t.me/MrbuildersAI) — Test builds, APK/web previews, and community discussions.
-- **LinkedIn:** [linkedin.com/in/mrbuilder-dev](https://linkedin.com/in/mrbuilder-dev) — Weekly milestone recaps & architecture deep-dives.
 
 ---
 

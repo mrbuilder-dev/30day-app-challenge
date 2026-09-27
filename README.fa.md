@@ -43,6 +43,5 @@
 
 - **توییتر (X):** [@MrBuildersai](https://x.com/MrBuildersai) — اشتراک‌گذاری یادداشت‌های کوتاه روزانه، ویدیوها و نظرسنجی‌ها.
 - **کانال تلگرام:** [t.me/MrbuildersAI](https://t.me/MrbuildersAI) — انتشار نسخه‌های تستی و فایل‌های اولیه و گفتگو در کامنت‌ها.
-- **لینکدین:** [linkedin.com/in/mrbuilder-dev](https://linkedin.com/in/mrbuilder-dev) — گزارش‌های هفتگی و بررسی‌های معماری پروژه.
 
 </div>

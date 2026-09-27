@@ -62,15 +62,8 @@
 
 ---
 
-### ج) پلتفرم LinkedIn — اعتبار حرفه‌ای و شبکه ارتباطی
-* **آدرس پروفایل:** `linkedin.com/in/mrbuilder-dev`
-* **پروفایل و بنر:** یکپارچه‌سازی با تصاویر استتیک پروژه.
-* **عنوان شغلی (Experience):** ثبت پوزیشن `Software Developer at Self-Employed` برای جایگزینی تگ دانشجویی با هویت یک مهندس نرم‌افزار فعال.
-* **بخش About (بدون کلیشه‌های ChatGPT):**
-  > Software developer. I like building simple, fast tools that just work.  
-  > Currently building an offline-first app from scratch (30-day sprint) and documenting the entire process—from design to bugs and architecture.  
-  > Daily logs & early builds: https://t.me/MrbuildersAI
-* **پست افتتاحیه:** انتشار پست آغاز چالش ۳۰ روزه با هدف اعتبارسنجی ایده.
+### ج) پلتفرم LinkedIn (وضعیت: متوقف‌شده)
+* به دلیل سیاست‌های سخت‌گیرانه احراز هویت پلتفرم لینکدین (Identity Verification / Persona) که برای کاربران داخل ایران محدودیت ایجاد می‌کند، تمرکز پروژه ۱۰۰٪ روی **مثلث طلایی سازندگان: توییتر (X) + تلگرام + گیت‌هاب** قرار گرفت.
 
 ---
 
