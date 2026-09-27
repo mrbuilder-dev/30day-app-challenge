@@ -10,7 +10,7 @@ const translations = {
     desktopTab: '💻 وب دسکتاپ (P2P Hub)',
     mobileTab: '📱 اپ موبایل (Stitch)',
     brandSubtitle: 'انتقال پرسرعت فایل و کلیپ‌بورد در شبکه محلی بدون نیاز به ۱ بایت اینترنت',
-    guideBtn: '💡 راهنمای ۳ مرحله‌ای',
+    guideBtn: 'بازگشت به صفحه اول',
     copyLink: '🔗 کپی لینک اتصال',
     copied: '✓ کپی شد!',
     scanQR: '📷 اسکن QR کد',
@@ -28,7 +28,7 @@ const translations = {
     scanQrBtn: '📷 اتصال با اسکن QR Code (آفلاین)',
     historyTitle: 'تاریخچه و دریافت‌ها',
     historyDesc: 'فایل‌های دریافتی مستقیماً در مرورگر ذخیره و قابل دانلود می‌شوند:',
-    noTransfers: 'هنوز فایلی منتقل نشده است.',
+    noTransfers: 'هنوز فایلی منتقل نشده است. با ارسال یا دریافت، فایل‌ها در اینجا قرار می‌گیرند.',
     downloadBtn: '💾 دانلود فایل',
     currentSpeed: 'سرعت لحظه‌ای',
     encryptionType: 'نوع رمزنگاری',
@@ -78,7 +78,7 @@ const translations = {
     desktopTab: '💻 Desktop Web (P2P Hub)',
     mobileTab: '📱 Mobile App (Stitch)',
     brandSubtitle: 'High-speed local peer-to-peer file & clipboard beam. 0 bytes internet used.',
-    guideBtn: '💡 3-Step Guide',
+    guideBtn: 'Back to Home',
     copyLink: '🔗 Copy Pairing Link',
     copied: '✓ Copied!',
     scanQR: '📷 Scan QR Code',
@@ -96,7 +96,7 @@ const translations = {
     scanQrBtn: '📷 Pair via QR Code (Offline)',
     historyTitle: 'History & Received Files',
     historyDesc: 'Received files are reassembled in-memory and ready to download:',
-    noTransfers: 'No files transferred yet.',
+    noTransfers: 'No files transferred yet. Sent and received files will appear here.',
     downloadBtn: '💾 Download File',
     currentSpeed: 'Current Speed',
     encryptionType: 'Encryption',
@@ -203,18 +203,35 @@ export default function App() {
     return () => clearInterval(interval);
   }, []);
 
-  // Transfers History
-  const [transfers, setTransfers] = useState([
-    {
-      id: 'sample-1',
-      name: 'stitch_design_spec.fig',
-      size: '24.5 MB',
-      from: 'MacBook Pro',
-      to: 'iPhone 15 Pro',
-      time: 'همین الان',
-      isDownloadable: false
+  // Navigation between Stitch Guide and Live P2P Hub with URL hash
+  const navigateToView = (mode) => {
+    setViewMode(mode);
+    if (mode === 'desktop') {
+      window.location.hash = 'hub';
+    } else {
+      window.location.hash = '';
     }
-  ]);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    const handleHash = () => {
+      const hash = window.location.hash;
+      const params = new URLSearchParams(window.location.search);
+      if (hash === '#hub' || params.get('connect') || params.get('peer')) {
+        setViewMode('desktop');
+      } else {
+        setViewMode('guide');
+      }
+    };
+
+    handleHash();
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
+  }, []);
+
+  // Live Transfers History
+  const [transfers, setTransfers] = useState([]);
 
   // --- Initialize WebRTC P2P ---
   useEffect(() => {
@@ -568,7 +585,7 @@ export default function App() {
               flexWrap: 'wrap'
             }}>
               <button
-                onClick={() => setViewMode('desktop')}
+                onClick={() => navigateToView('desktop')}
                 className="nb-btn nb-btn-dark"
                 style={{
                   padding: '14px 30px',
@@ -1089,7 +1106,11 @@ export default function App() {
             flexWrap: 'wrap',
             gap: '16px'
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+            <div 
+              onClick={() => navigateToView('guide')}
+              style={{ display: 'flex', alignItems: 'center', gap: '14px', cursor: 'pointer' }}
+              title={lang === 'fa' ? 'بازگشت به صفحه اول' : 'Back to Home'}
+            >
               <div style={{
                 background: 'var(--nb-yellow)',
                 border: 'var(--border-thick)',
@@ -1129,11 +1150,13 @@ export default function App() {
             {/* Quick Action Buttons Group */}
             <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
               <button
-                onClick={() => setViewMode('guide')}
+                onClick={() => navigateToView('guide')}
                 className="nb-btn nb-btn-yellow"
-                style={{ fontSize: '0.85rem', padding: '8px 14px' }}
+                style={{ fontSize: '0.85rem', padding: '8px 16px', display: 'flex', alignItems: 'center', gap: '6px' }}
+                title={lang === 'fa' ? 'بازگشت به صفحه اول' : 'Back to Home'}
               >
-                {text.guideBtn}
+                <span>🏠</span>
+                <span>{text.guideBtn}</span>
               </button>
 
               <button
