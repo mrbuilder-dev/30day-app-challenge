@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+
+<html dir="ltr" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LOCALBEAM - Offline WebRTC P2P Transfer</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&amp;family=Plus+Jakarta+Sans:wght@700;800;900&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS via CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface-variant": "#e2e2e2",
+            "on-background": "#1b1b1b",
+            "on-primary-container": "#330e87",
+            "tertiary-fixed-dim": "#a8d560",
+            "primary": "#644bb9",
+            "secondary-fixed-dim": "#eec148",
+            "on-error": "#ffffff",
+            "background": "#f9f9f9",
+            "tertiary": "#466800",
+            "on-tertiary": "#ffffff",
+            "secondary": "#765a00",
+            "inverse-surface": "#303030",
+            "error": "#ba1a1a",
+            "inverse-primary": "#ccbdff",
+            "surface-container-lowest": "#ffffff",
+            "on-error-container": "#93000a",
+            "inverse-on-surface": "#f1f1f1",
+            "primary-fixed-dim": "#ccbdff",
+            "on-secondary": "#ffffff",
+            "on-tertiary-fixed": "#121f00",
+            "on-tertiary-container": "#213300",
+            "surface-container-low": "#f3f3f3",
+            "primary-container": "#9d84f6",
+            "tertiary-fixed": "#c4f279",
+            "tertiary-container": "#79a233",
+            "on-primary-fixed": "#1f005f",
+            "on-secondary-container": "#735800",
+            "primary-fixed": "#e7deff",
+            "on-surface": "#1b1b1b",
+            "surface-container-highest": "#e2e2e2",
+            "surface-container-high": "#e8e8e8",
+            "outline-variant": "#cac4d4",
+            "surface-tint": "#644bb9",
+            "surface-dim": "#dadada",
+            "on-secondary-fixed-variant": "#5a4400",
+            "on-surface-variant": "#484552",
+            "secondary-container": "#fdcf55",
+            "error-container": "#ffdad6",
+            "on-primary-fixed-variant": "#4c31a0",
+            "on-primary": "#ffffff",
+            "secondary-fixed": "#ffdf96",
+            "surface-bright": "#f9f9f9",
+            "surface": "#f9f9f9",
+            "outline": "#797584",
+            "on-tertiary-fixed-variant": "#344e00",
+            "on-secondary-fixed": "#251a00",
+            "surface-container": "#eeeeee"
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          spacing: {
+            "space-sm": "0.5rem",
+            "space-xl": "2.5rem",
+            "gutter-mobile": "1rem",
+            "margin-mobile": "1rem",
+            "space-xs": "0.25rem",
+            "gutter": "1.5rem",
+            "space-lg": "1.5rem",
+            "margin": "1.5rem",
+            "space-md": "1rem"
+          },
+          fontFamily: {
+            "display-hero": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"],
+            "badge-meta": ["JetBrains Mono"],
+            "body-md": ["JetBrains Mono"],
+            "headline-md": ["Plus Jakarta Sans"],
+            "label-code": ["JetBrains Mono"],
+            "body-lg": ["JetBrains Mono"],
+            "display-hero-mobile": ["Plus Jakarta Sans"],
+            "headline-lg-mobile": ["Plus Jakarta Sans"],
+            "body-sm": ["JetBrains Mono"]
+          },
+          fontSize: {
+            "display-hero": ["48px", { lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "800" }],
+            "headline-lg": ["28px", { lineHeight: "36px", fontWeight: "700" }],
+            "badge-meta": ["11px", { lineHeight: "14px", fontWeight: "700" }],
+            "body-md": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+            "headline-md": ["20px", { lineHeight: "28px", fontWeight: "700" }],
+            "label-code": ["13px", { lineHeight: "16px", letterSpacing: "0.02em", fontWeight: "600" }],
+            "body-lg": ["16px", { lineHeight: "24px", fontWeight: "500" }],
+            "display-hero-mobile": ["32px", { lineHeight: "40px", letterSpacing: "-0.01em", fontWeight: "800" }],
+            "headline-lg-mobile": ["22px", { lineHeight: "30px", fontWeight: "700" }],
+            "body-sm": ["12px", { lineHeight: "18px", fontWeight: "400" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 600, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .neo-shadow-sm {
+      box-shadow: 2px 2px 0px #000000;
+    }
+    .neo-shadow-md {
+      box-shadow: 4px 4px 0px #000000;
+    }
+    .neo-shadow-lg {
+      box-shadow: 6px 6px 0px #000000;
+    }
+    .neo-shadow-xl {
+      box-shadow: 8px 8px 0px #000000;
+    }
+    .neo-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 0px 0px 0px #000000;
+    }
+    .neo-card {
+      border: 2.5px solid #000000;
+      box-shadow: 6px 6px 0px #000000;
+    }
+    .neo-pill {
+      border: 2.5px solid #000000;
+      box-shadow: 2px 2px 0px #000000;
+    }
+    /* Liquid capsule progress animation */
+    @keyframes pulse-liquid {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-2px); }
+    }
+    .liquid-wave {
+      animation: pulse-liquid 3s ease-in-out infinite;
+    }
+    /* Striped progress bar animation */
+    .striped-progress {
+      background-image: repeating-linear-gradient(
+        -45deg,
+        #a8d560,
+        #a8d560 14px,
+        #c4f279 14px,
+        #c4f279 28px
+      );
+      background-size: 40px 40px;
+      animation: move-stripes 1.2s linear infinite;
+    }
+    @keyframes move-stripes {
+      0% { background-position: 0 0; }
+      100% { background-position: 40px 0; }
+    }
+    /* Packet flow animation */
+    @keyframes packet-dash {
+      0% { stroke-dashoffset: 48; }
+      100% { stroke-dashoffset: 0; }
+    }
+    .beam-pipeline {
+      stroke-dasharray: 6 6;
+      animation: packet-dash 0.8s linear infinite;
+    }
+    @keyframes bounce-subtle {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-4px) rotate(2deg); }
+    }
+    .bounce-payload {
+      animation: bounce-subtle 1.8s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="bg-primary-container min-h-screen text-on-background selection:bg-secondary-container selection:text-on-background font-body-md antialiased flex flex-col justify-between relative">
+<!-- TOP APP BAR -->
+<header class="w-full bg-primary-container">
+<div class="flex justify-between items-center w-full px-6 py-4 max-w-7xl mx-auto">
+<!-- Leading Identity: Flare Icon + Brand Name -->
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-secondary-container border-[2.5px] border-on-background flex items-center justify-center neo-shadow-sm">
+<span class="material-symbols-outlined text-on-background" data-icon="flare">flare</span>
+</div>
+<div class="flex flex-col">
+<span class="text-headline-lg font-headline-lg font-black tracking-tight text-on-background uppercase leading-none">
+            LOCALBEAM
+          </span>
+<span class="text-badge-meta font-badge-meta font-bold text-on-primary-container tracking-wider mt-0.5">
+            PEER-TO-PEER AIRDROP
+          </span>
+</div>
+</div>
+<!-- Center Status: Protocol Headline -->
+<div class="hidden md:flex items-center gap-2">
+<div class="bg-surface-container-lowest text-on-background border-[2.5px] border-on-background rounded-full px-4 py-1 neo-shadow-sm flex items-center gap-2 font-label-code text-label-code">
+<span class="w-2.5 h-2.5 rounded-full bg-tertiary-fixed border border-on-background animate-ping"></span>
+<span>⚡ بدون نیاز به ۱ بایت اینترنت جهانی • 0 Byte Internet Used</span>
+</div>
+</div>
+<!-- Trailing Actions: Network State Badge + Active Transfer Trigger -->
+<div class="flex items-center gap-2">
+<button class="bg-[#FFAEC8] hover:bg-[#ff94b4] text-on-background border-[2.5px] border-on-background font-label-code text-label-code font-bold rounded-full px-3.5 py-1.5 neo-shadow-sm neo-btn flex items-center gap-1.5 transition-all" id="openModalBtnHeader">
+<span class="material-symbols-outlined text-base animate-pulse text-error" data-icon="sync">sync</span>
+<span class="hidden sm:inline">⚡ انتقال فعال (Active)</span>
+<span class="sm:hidden">⚡ فعال</span>
+</button>
+<div class="bg-tertiary-fixed text-on-tertiary-fixed border-[2.5px] border-on-background font-label-code text-label-code font-bold rounded-full px-4 py-1.5 [box-shadow:2px_2px_0px_#000000] flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-on-tertiary-fixed"></span>
+<span>Wi-Fi Direct LAN</span>
+</div>
+</div>
+</div>
+</header>
+<!-- MAIN CANVAS -->
+<main class="flex-grow max-w-7xl w-full mx-auto px-4 md:px-6 py-4 flex flex-col gap-6">
+<!-- SUBHEADER / TELEMETRY BADGES ROW -->
+<section class="flex flex-wrap items-center justify-center gap-3 w-full">
+<!-- Badge: Challenge context -->
+<div class="bg-secondary-container border-[2.5px] border-on-background rounded-full px-4 py-1 text-label-code font-label-code font-bold neo-shadow-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="handyman">handyman</span>
+<span>Mr. Builder • روز ۱ از ۳۰</span>
+</div>
+<!-- Badge: WebRTC Protocol -->
+<div class="bg-surface-container-lowest border-[2.5px] border-on-background rounded-full px-4 py-1 text-label-code font-label-code font-bold neo-shadow-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="cable">cable</span>
+<span>WebRTC Direct P2P</span>
+</div>
+<!-- Badge: Connected IP LAN -->
+<div class="bg-surface-container-lowest border-[2.5px] border-on-background rounded-full px-4 py-1 text-label-code font-label-code font-bold neo-shadow-sm flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-tertiary-container border border-on-background"></span>
+<span class="font-mono">شبکه محلی: متصل (Wi-Fi LAN 192.168.1.34)</span>
+</div>
+<!-- Badge: Language Switcher pill -->
+<button class="bg-surface-container-lowest hover:bg-secondary-fixed text-on-background border-[2.5px] border-on-background rounded-full px-3 py-1 text-badge-meta font-badge-meta font-bold neo-shadow-sm neo-btn flex items-center gap-1" id="langToggle">
+<span class="material-symbols-outlined text-sm" data-icon="language">language</span>
+<span>FA / EN</span>
+</button>
+</section>
+<!-- 3-COLUMN NEO-BRUTALIST BENTO DECK -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch my-auto">
+<!-- ================= CARD 1: PAYLOAD / SEND (Bubblegum Pink) ================= -->
+<div class="bg-[#FFAEC8] rounded-2xl neo-card p-6 flex flex-col justify-between relative overflow-hidden transition-all hover:-translate-y-1 hover:neo-shadow-lg">
+<!-- Header & Mock Phone Title -->
+<div>
+<div class="flex items-center justify-between mb-4">
+<span class="material-symbols-outlined text-3xl text-on-background" data-icon="inventory_2">inventory_2</span>
+<div class="bg-surface-container-lowest border-[2.5px] border-on-background rounded-full px-3 py-0.5 text-badge-meta font-badge-meta font-bold flex items-center gap-1 neo-shadow-sm">
+<span class="material-symbols-outlined text-xs" data-icon="bolt">bolt</span>
+<span>ارسال آنی / Instant P2P</span>
+</div>
+<span class="text-label-code font-label-code font-bold">9:41</span>
+</div>
+<div class="text-center mb-6">
+<h2 class="text-headline-lg font-headline-lg font-black text-on-background leading-tight">
+              ارسال فایل یا متن
+            </h2>
+<p class="text-body-sm font-body-sm text-on-surface-variant font-medium mt-1">
+              مستقیماً به آیفون ۱۵ (iPhone 15 Pro)
+            </p>
+</div>
+<!-- Tactile Drag & Drop Box -->
+<div class="bg-surface-container-lowest border-[2.5px] border-dashed border-on-background rounded-2xl p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-all hover:bg-surface-container-low group" id="dropzone">
+<div class="w-16 h-16 rounded-xl bg-[#eec148] border-[2.5px] border-on-background flex items-center justify-center mb-3 neo-shadow-sm group-hover:rotate-6 transition-transform">
+<span class="material-symbols-outlined text-3xl text-on-background" data-icon="folder_zip">folder_zip</span>
+</div>
+<h3 class="text-body-lg font-body-lg font-bold text-on-background">
+              انتخاب یا رها کردن فایل
+            </h3>
+<p class="text-badge-meta font-badge-meta text-outline mt-1">
+              عکس، ویدیو 4K، PDF، موزیک یا فایل فشرده تا 10GB
+            </p>
+<input class="hidden" id="fileInput" multiple="" type="file"/>
+</div>
+</div>
+<!-- Action Button & Clipboard Box -->
+<div class="mt-6 flex flex-col gap-4">
+<button class="w-full bg-on-background text-surface-container-lowest hover:bg-inverse-surface border-[2.5px] border-on-background rounded-full py-3.5 px-6 font-label-code text-label-code font-bold neo-shadow-sm neo-btn flex items-center justify-center gap-2 tracking-wide transition-all" id="sendBtnTrigger">
+<span>ارسال فایل با حداکثر سرعت</span>
+<span class="material-symbols-outlined text-lg" data-icon="rocket_launch">rocket_launch</span>
+</button>
+<!-- Text / Link Clipboard Box -->
+<div class="bg-surface-container-lowest border-[2.5px] border-on-background rounded-xl p-3 neo-shadow-sm">
+<div class="flex items-center justify-between mb-2">
+<span class="text-badge-meta font-badge-meta font-bold text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="content_paste">content_paste</span>
+                تخته‌شستی اشتراکی (متن / لینک)
+              </span>
+</div>
+<div class="flex gap-2">
+<input class="flex-grow bg-surface-container-low border-[2px] border-on-background rounded-lg px-3 py-1.5 text-body-sm font-body-sm placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest" placeholder="لینک، شماره یا متن برای کپی در مقصد..." type="text"/>
+<button class="bg-secondary-container hover:bg-secondary-fixed text-on-background border-[2px] border-on-background rounded-lg px-4 py-1.5 font-label-code text-label-code font-bold neo-shadow-sm neo-btn transition-all">
+                کپی
+              </button>
+</div>
+</div>
+</div>
+</div>
+<!-- ================= CARD 2: PERFORMANCE / TELEMETRY (Fresh Lime) ================= -->
+<div class="bg-tertiary-fixed rounded-2xl neo-card p-6 flex flex-col justify-between relative overflow-hidden transition-all hover:-translate-y-1 hover:neo-shadow-lg cursor-pointer group/stat" id="telemetryCardTrigger">
+<div>
+<!-- Header Bar -->
+<div class="flex items-center justify-between mb-4">
+<span class="material-symbols-outlined text-3xl text-on-background" data-icon="bolt">bolt</span>
+<div class="bg-surface-container-lowest border-[2.5px] border-on-background rounded-full px-3 py-0.5 text-badge-meta font-badge-meta font-bold flex items-center gap-1 neo-shadow-sm">
+<span class="material-symbols-outlined text-xs text-secondary" data-icon="speed">speed</span>
+<span>سرعت انتقال / Real-time</span>
+</div>
+<span class="text-label-code font-label-code font-bold">9:41</span>
+</div>
+<!-- Title -->
+<div class="text-center mb-6">
+<h2 class="text-headline-lg font-headline-lg font-black text-on-background leading-tight">
+              عملکرد شبکه Wi-Fi
+            </h2>
+<p class="text-body-sm font-body-sm text-on-surface-variant font-medium mt-1">
+              پایش مستقیم کانال‌های داده P2P
+            </p>
+</div>
+<!-- Speed Meter Main Display -->
+<div class="bg-surface-container-lowest border-[2.5px] border-on-background rounded-2xl p-5 neo-shadow-sm mb-6 text-center group-hover/stat:border-primary transition-colors">
+<p class="text-body-sm font-body-sm text-outline font-semibold">
+              حداکثر سرعت انتقال مستقیم (P2P):
+            </p>
+<div class="flex items-baseline justify-center gap-2 my-2">
+<span class="text-display-hero font-display-hero font-black text-on-background tracking-tighter" id="homeSpeedDisplay">
+                74.8
+              </span>
+<span class="text-headline-md font-headline-md font-bold text-on-surface-variant">
+                MB/s
+              </span>
+</div>
+<div class="flex items-center justify-center gap-2 mt-3">
+<span class="bg-secondary-container border-[2px] border-on-background rounded-full px-3 py-0.5 text-badge-meta font-badge-meta font-bold">
+                بدون مصرف حجم اینترنت
+              </span>
+<span class="bg-surface-container-low border-[2px] border-on-background rounded-full px-3 py-0.5 text-badge-meta font-badge-meta font-bold">
+                پینگ: ۱ میلی‌ثانیه
+              </span>
+</div>
+</div>
+<!-- Liquid Capsule Meters Group -->
+<div class="bg-surface-container-lowest border-[2.5px] border-on-background rounded-2xl p-4 neo-shadow-sm">
+<p class="text-badge-meta font-badge-meta font-bold text-on-surface-variant mb-3 text-center">
+              شاخص‌های کانال داده (Data Channel Meters):
+            </p>
+<div class="grid grid-cols-5 gap-2 items-end justify-items-center h-28 pt-2">
+<!-- Tube 1: Signal -->
+<div class="flex flex-col items-center h-full justify-between">
+<div class="w-6 h-20 bg-surface-container-high border-[2px] border-on-background rounded-full overflow-hidden p-0.5 flex flex-col justify-end">
+<div class="w-full bg-[#38bdf8] border-t-[1.5px] border-on-background rounded-b-full h-[90%] transition-all duration-500"></div>
+</div>
+<span class="text-badge-meta font-badge-meta text-[10px] mt-1 font-bold">سیگنال</span>
+</div>
+<!-- Tube 2: Bandwidth -->
+<div class="flex flex-col items-center h-full justify-between">
+<div class="w-6 h-20 bg-surface-container-high border-[2px] border-on-background rounded-full overflow-hidden p-0.5 flex flex-col justify-end">
+<div class="w-full bg-[#f43f5e] border-t-[1.5px] border-on-background rounded-b-full h-[65%] transition-all duration-500"></div>
+</div>
+<span class="text-badge-meta font-badge-meta text-[10px] mt-1 font-bold">پهنای‌باند</span>
+</div>
+<!-- Tube 3: Buffer -->
+<div class="flex flex-col items-center h-full justify-between">
+<div class="w-6 h-20 bg-surface-container-high border-[2px] border-on-background rounded-full overflow-hidden p-0.5 flex flex-col justify-end">
+<div class="w-full bg-[#fbcfe8] border-t-[1.5px] border-on-background rounded-b-full h-[80%] transition-all duration-500"></div>
+</div>
+<span class="text-badge-meta font-badge-meta text-[10px] mt-1 font-bold">بافر</span>
+</div>
+<!-- Tube 4: Stability -->
+<div class="flex flex-col items-center h-full justify-between">
+<div class="w-6 h-20 bg-surface-container-high border-[2px] border-on-background rounded-full overflow-hidden p-0.5 flex flex-col justify-end">
+<div class="w-full bg-tertiary-fixed border-t-[1.5px] border-on-background rounded-b-full h-[98%] transition-all duration-500"></div>
+</div>
+<span class="text-badge-meta font-badge-meta text-[10px] mt-1 font-bold">پایداری</span>
+</div>
+<!-- Tube 5: Security -->
+<div class="flex flex-col items-center h-full justify-between">
+<div class="w-6 h-20 bg-surface-container-high border-[2px] border-on-background rounded-full overflow-hidden p-0.5 flex flex-col justify-end">
+<div class="w-full bg-[#38bdf8] border-t-[1.5px] border-on-background rounded-b-full h-[100%] transition-all duration-500"></div>
+</div>
+<span class="text-badge-meta font-badge-meta text-[10px] mt-1 font-bold">امنیت</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Transfer Status Mini Pills -->
+<div class="mt-6 grid grid-cols-2 gap-3">
+<div class="bg-surface-container-lowest border-[2.5px] border-on-background rounded-xl p-2.5 text-center neo-shadow-sm">
+<span class="text-badge-meta font-badge-meta text-outline block">نوع رمزنگاری</span>
+<span class="text-body-md font-body-md font-bold text-on-background">TLS / E2EE</span>
+</div>
+<div class="bg-surface-container-lowest border-[2.5px] border-on-background rounded-xl p-2.5 text-center neo-shadow-sm flex flex-col justify-center items-center">
+<span class="text-badge-meta font-badge-meta text-outline block">کل انتقالات</span>
+<span class="text-body-md font-body-md font-bold text-on-background flex items-center gap-1">
+<span>۲ فایل</span>
+<span class="inline-block w-2 h-2 rounded-full bg-tertiary-fixed animate-ping"></span>
+</span>
+</div>
+</div>
+</div>
+<!-- ================= CARD 3: TARGET RADAR (Cheddar Yellow) ================= -->
+<div class="bg-secondary-container rounded-2xl neo-card p-6 flex flex-col justify-between relative overflow-hidden transition-all hover:-translate-y-1 hover:neo-shadow-lg">
+<div>
+<!-- Header Bar -->
+<div class="flex items-center justify-between mb-4">
+<span class="material-symbols-outlined text-3xl text-on-background" data-icon="sensors">sensors</span>
+<div class="bg-surface-container-lowest border-[2.5px] border-on-background rounded-full px-3 py-0.5 text-badge-meta font-badge-meta font-bold flex items-center gap-1 neo-shadow-sm">
+<span class="material-symbols-outlined text-xs" data-icon="radar">radar</span>
+<span>دستگاه‌های اطراف / Radar</span>
+</div>
+<span class="text-label-code font-label-code font-bold">9:41</span>
+</div>
+<!-- Title -->
+<div class="text-center mb-6">
+<h2 class="text-headline-lg font-headline-lg font-black text-on-background leading-tight">
+              رادار محلی
+            </h2>
+<p class="text-body-sm font-body-sm text-on-surface-variant font-medium mt-1">
+              دستگاه مقصد را برای ارسال انتخاب کنید:
+            </p>
+</div>
+<!-- Filter Segmented Tabs -->
+<div class="flex items-center justify-center gap-1.5 mb-5">
+<button class="bg-surface-container-lowest border-[2px] border-on-background rounded-full px-3.5 py-1 text-badge-meta font-badge-meta font-bold neo-shadow-sm neo-btn">
+              همه (۳)
+            </button>
+<button class="bg-surface-container-lowest/80 border-[2px] border-on-background rounded-full px-3.5 py-1 text-badge-meta font-badge-meta font-medium neo-shadow-sm neo-btn flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="smartphone">smartphone</span>
+<span>موبایل (۲)</span>
+</button>
+<button class="bg-surface-container-lowest/80 border-[2px] border-on-background rounded-full px-3.5 py-1 text-badge-meta font-badge-meta font-medium neo-shadow-sm neo-btn flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="laptop">laptop</span>
+<span>سیستم (۱)</span>
+</button>
+</div>
+<!-- Peer List -->
+<div class="flex flex-col gap-3">
+<!-- Peer Item 1: Active Target (Black Inset Card) -->
+<div class="bg-on-background text-surface-container-lowest border-[2.5px] border-on-background rounded-xl p-3.5 neo-shadow-sm flex items-center justify-between transition-all cursor-pointer hover:border-tertiary-fixed" id="activePeerCard">
+<div class="flex items-center gap-2">
+<span class="bg-tertiary-fixed text-on-tertiary-fixed border border-on-background rounded-full px-2 py-0.5 text-badge-meta font-badge-meta font-black">
+                  انتخاب شد ✓
+                </span>
+<div class="flex flex-col text-right">
+<span class="font-bold text-body-md font-body-md text-surface-container-lowest">
+                    آیفون ۱۵ (iPhone 15 Pro)
+                  </span>
+<span class="text-badge-meta font-badge-meta text-surface-variant">
+                    📱 موبایل • IP: 192.168.1.34
+                  </span>
+</div>
+</div>
+<span class="material-symbols-outlined text-tertiary-fixed" data-icon="check_circle">check_circle</span>
+</div>
+<!-- Peer Item 2: Galaxy S24 -->
+<div class="bg-surface-container-lowest border-[2.5px] border-on-background rounded-xl p-3 neo-shadow-sm flex items-center justify-between hover:bg-surface-container-low transition-colors">
+<button class="bg-surface-container-lowest hover:bg-surface-container-highest border-[2px] border-on-background rounded-full px-3 py-1 text-badge-meta font-badge-meta font-bold neo-shadow-sm neo-btn">
+                اتصال
+              </button>
+<div class="flex flex-col text-right">
+<span class="font-bold text-body-md font-body-md text-on-background">
+                  گلکسی اس ۲۴ (Galaxy S24)
+                </span>
+<span class="text-badge-meta font-badge-meta text-outline">
+                  موبایل • 📱 IP: 192.168.1.45
+                </span>
+</div>
+</div>
+<!-- Peer Item 3: ThinkPad Laptop -->
+<div class="bg-surface-container-lowest border-[2.5px] border-on-background rounded-xl p-3 neo-shadow-sm flex items-center justify-between hover:bg-surface-container-low transition-colors">
+<button class="bg-surface-container-lowest hover:bg-surface-container-highest border-[2px] border-on-background rounded-full px-3 py-1 text-badge-meta font-badge-meta font-bold neo-shadow-sm neo-btn">
+                اتصال
+              </button>
+<div class="flex flex-col text-right">
+<span class="font-bold text-body-md font-body-md text-on-background">
+                  لپ‌تاپ همکار (ThinkPad)
+                </span>
+<span class="text-badge-meta font-badge-meta text-outline">
+                  لپ‌تاپ • 💻 IP: 192.168.1.12
+                </span>
+</div>
+</div>
+</div>
+</div>
+<!-- Offline QR Connect Action -->
+<div class="mt-6">
+<button class="w-full bg-on-background text-surface-container-lowest hover:bg-inverse-surface border-[2.5px] border-on-background rounded-full py-3.5 px-6 font-label-code text-label-code font-bold neo-shadow-sm neo-btn flex items-center justify-center gap-2 tracking-wide transition-all">
+<span class="material-symbols-outlined text-lg" data-icon="qr_code_scanner">qr_code_scanner</span>
+<span>اتصال با اسکن QR Code (آفلاین)</span>
+</button>
+</div>
+</div>
+</section>
+</main>
+<!-- DOCKED BOTTOM FOOTER -->
+<footer class="w-full bg-transparent border-t-[2.5px] border-on-background py-6 px-4">
+<div class="flex flex-wrap justify-center items-center gap-3 w-full max-w-7xl mx-auto">
+<!-- Active Transfer Trigger in footer -->
+<button class="bg-tertiary-fixed hover:bg-tertiary-fixed-dim text-on-tertiary-fixed border-[2.5px] border-on-background rounded-full px-4 py-1.5 text-badge-meta font-badge-meta font-bold [box-shadow:2px_2px_0px_#000000] flex items-center gap-1.5 neo-btn transition-all" id="openModalBtnFooter">
+<span class="material-symbols-outlined text-sm" data-icon="bolt">bolt</span>
+<span>نمایش انتقال فعال (Active Transfer)</span>
+</button>
+<!-- Challenge Stamp Badge -->
+<div class="bg-inverse-surface text-inverse-on-surface border-[2.5px] border-on-background rounded-full px-4 py-1.5 text-badge-meta font-badge-meta font-bold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-xs text-secondary-container" data-icon="flag">flag</span>
+<span>Mr. Builder • 30 Day App Challenge</span>
+</div>
+<!-- Links adhering to JSON definitions -->
+<a class="bg-surface-container-lowest text-on-background hover:bg-secondary-container border-[2.5px] border-on-background rounded-full px-4 py-1.5 text-badge-meta font-badge-meta font-bold [box-shadow:2px_2px_0px_#000000] flex items-center gap-1.5 transition-all" href="https://github.com" rel="noreferrer" target="_blank">
+<span>🐙</span>
+<span>Source on GitHub</span>
+</a>
+<a class="bg-surface-container-lowest text-on-background hover:bg-secondary-container border-[2.5px] border-on-background rounded-full px-4 py-1.5 text-badge-meta font-badge-meta font-bold [box-shadow:2px_2px_0px_#000000] flex items-center gap-1.5 transition-all" href="https://twitter.com" rel="noreferrer" target="_blank">
+<span>𝕏</span>
+<span>Developer Twitter</span>
+</a>
+<a class="bg-surface-container-lowest text-on-background hover:bg-secondary-container border-[2.5px] border-on-background rounded-full px-4 py-1.5 text-badge-meta font-badge-meta font-bold [box-shadow:2px_2px_0px_#000000] flex items-center gap-1.5 transition-all" href="https://telegram.org" rel="noreferrer" target="_blank">
+<span class="material-symbols-outlined text-xs text-[#38bdf8]" data-icon="send">send</span>
+<span>Telegram Channel</span>
+</a>
+</div>
+</footer>
+<!-- ================= NEO-BRUTALIST FILE TRANSFER PROGRESS MODAL ================= -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm transition-opacity duration-200" id="transferModal">
+<!-- Modal Card Window -->
+<div class="relative w-full max-w-2xl bg-surface-container-lowest border-[3px] border-on-background rounded-2xl neo-shadow-xl overflow-hidden flex flex-col transition-transform transform scale-100 max-h-[92vh] overflow-y-auto">
+<!-- Modal Top Header Strip -->
+<div class="bg-secondary-container border-b-[3px] border-on-background px-5 py-3.5 flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<span class="w-3 h-3 rounded-full bg-error border border-on-background animate-pulse"></span>
+<span class="font-headline-md text-headline-md font-black tracking-tight text-on-background flex items-center gap-1.5">
+<span>انتقال فعال فایل</span>
+<span class="text-xs font-mono font-bold bg-surface-container-lowest border-[1.5px] border-on-background px-2 py-0.5 rounded-full">BEAMING ⚡</span>
+</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="hidden sm:inline-flex bg-surface-container-lowest border-[2px] border-on-background rounded-full px-2.5 py-0.5 text-badge-meta font-badge-meta font-bold text-on-background">
+          To: iPhone 15 Pro (192.168.1.34)
+        </span>
+<!-- Chunky [X] Close Button -->
+<button class="w-8 h-8 rounded-lg bg-[#FFAEC8] hover:bg-error hover:text-white border-[2px] border-on-background flex items-center justify-center neo-shadow-sm neo-btn font-black transition-colors" id="closeModalBtn" title="بستن پنجره">
+<span class="material-symbols-outlined text-lg leading-none" data-icon="close">close</span>
+</button>
+</div>
+</div>
+<!-- Active In-Progress View -->
+<div class="p-5 sm:p-6 flex flex-col gap-5" id="transferActiveView">
+<!-- SENDER TO RECEIVER BEAM ANIMATION STAGE -->
+<div class="bg-surface-container-low border-[2.5px] border-on-background rounded-xl p-4 sm:p-5 relative overflow-hidden neo-shadow-sm">
+<div class="flex items-center justify-between relative z-10">
+<!-- Local Device Node -->
+<div class="flex flex-col items-center text-center gap-1.5">
+<div class="w-14 h-14 rounded-2xl bg-tertiary-fixed border-[2.5px] border-on-background flex items-center justify-center neo-shadow-sm relative">
+<span class="material-symbols-outlined text-2xl text-on-background" data-icon="laptop_mac">laptop_mac</span>
+<span class="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-[#38bdf8] border-[1.5px] border-on-background flex items-center justify-center text-[9px] font-black">✓</span>
+</div>
+<span class="font-headline-md text-xs font-bold text-on-background">این دستگاه (MacBook)</span>
+<span class="text-[10px] font-mono text-outline font-semibold">192.168.1.28</span>
+</div>
+<!-- Animated WebRTC Beam Pipeline -->
+<div class="flex-grow mx-3 sm:mx-6 flex flex-col items-center justify-center relative">
+<svg class="w-full h-8 overflow-visible" height="32" preserveaspectratio="none" viewbox="0 0 200 32">
+<line class="beam-pipeline" stroke="#1b1b1b" stroke-linecap="round" stroke-width="3" x1="10" x2="190" y1="16" y2="16"></line>
+</svg>
+<!-- Central Animated Payload Badge -->
+<div class="absolute -top-1 bg-surface-container-lowest border-[2px] border-on-background rounded-full px-3 py-1 flex items-center gap-1.5 neo-shadow-sm bounce-payload">
+<span class="material-symbols-outlined text-sm text-[#765a00] animate-spin" data-icon="sync">sync</span>
+<span class="text-badge-meta font-badge-meta font-black text-on-background whitespace-nowrap">P2P DATA BEAM</span>
+</div>
+<div class="mt-2 text-badge-meta font-mono font-bold text-[#ba1a1a] flex items-center gap-1 bg-[#ffdad6] border border-on-background px-2 py-0.5 rounded-full">
+<span>●</span>
+<span id="transferTypeBadge">0% اینترنت • مستقیم روتر LAN</span>
+</div>
+</div>
+<!-- Peer Device Node -->
+<div class="flex flex-col items-center text-center gap-1.5">
+<div class="w-14 h-14 rounded-2xl bg-secondary-container border-[2.5px] border-on-background flex items-center justify-center neo-shadow-sm relative">
+<span class="material-symbols-outlined text-2xl text-on-background" data-icon="smartphone">smartphone</span>
+<span class="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-tertiary-fixed border-[1.5px] border-on-background flex items-center justify-center text-[9px] font-black animate-ping"></span>
+</div>
+<span class="font-headline-md text-xs font-bold text-on-background">آیفون ۱۵ پرو</span>
+<span class="text-[10px] font-mono text-outline font-semibold">192.168.1.34</span>
+</div>
+</div>
+</div>
+<!-- FILE INFO & PERCENTAGE ROW -->
+<div class="flex items-center justify-between gap-3 bg-white border-[2px] border-on-background p-3.5 rounded-xl neo-shadow-sm">
+<div class="flex items-center gap-3 min-w-0">
+<div class="w-12 h-12 rounded-xl bg-[#FFAEC8] border-[2px] border-on-background flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-2xl text-on-background" data-icon="movie">movie</span>
+</div>
+<div class="min-w-0">
+<div class="font-headline-md text-sm sm:text-base font-black truncate text-on-background" id="modalFileName">
+              4K_Drone_Footage_RAW.mov
+            </div>
+<div class="text-badge-meta font-mono text-outline font-medium flex items-center gap-2 mt-0.5">
+<span id="modalFileSize">2.40 GB</span>
+<span>•</span>
+<span class="text-tertiary font-bold" id="modalStatusLabel">در حال ارسال مستقیم...</span>
+</div>
+</div>
+</div>
+<div class="text-right flex-shrink-0">
+<span class="text-display-hero-mobile sm:text-display-hero text-2xl sm:text-4xl font-display-hero font-black text-on-background leading-none" id="modalPercent">
+            68%
+          </span>
+</div>
+</div>
+<!-- CHUNKY NEO-BRUTALIST PROGRESS BAR -->
+<div class="flex flex-col gap-1.5">
+<div class="w-full h-7 bg-surface-container-high border-[2.5px] border-on-background rounded-full overflow-hidden p-0.5 neo-shadow-sm">
+<div class="h-full striped-progress rounded-full border-r-[2px] border-on-background transition-all duration-300 flex items-center justify-end pr-2" id="progressBarFill" style="width: 68%;">
+<span class="w-2.5 h-2.5 rounded-full bg-white border border-on-background animate-ping"></span>
+</div>
+</div>
+<div class="flex justify-between items-center text-badge-meta font-mono font-bold text-on-surface-variant px-1">
+<span id="transferredAmountText">1.63 GB از 2.40 GB منتقل شده</span>
+<span class="text-primary font-bold" id="sctpPacketsText">18,420 / 27,000 پکت</span>
+</div>
+</div>
+<!-- 4-GRID REAL-TIME TELEMETRY METRICS -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+<!-- Rate -->
+<div class="bg-surface-container-low border-[2px] border-on-background rounded-xl p-2.5 text-center neo-shadow-sm">
+<span class="text-[10px] font-mono font-bold text-outline block">سرعت انتقال (Rate)</span>
+<span class="font-headline-md text-base sm:text-lg font-black text-on-background" id="modalSpeedText">74.8 MB/s</span>
+<span class="text-[9px] font-mono text-tertiary font-bold block">▲ حداکثر LAN</span>
+</div>
+<!-- ETA -->
+<div class="bg-surface-container-low border-[2px] border-on-background rounded-xl p-2.5 text-center neo-shadow-sm">
+<span class="text-[10px] font-mono font-bold text-outline block">زمان تخمینی (ETA)</span>
+<span class="font-headline-md text-base sm:text-lg font-black text-on-background" id="modalEtaText">~11 ثانیه</span>
+<span class="text-[9px] font-mono text-outline font-semibold block">11s remaining</span>
+</div>
+<!-- SCTP Chunks -->
+<div class="bg-surface-container-low border-[2px] border-on-background rounded-xl p-2.5 text-center neo-shadow-sm">
+<span class="text-[10px] font-mono font-bold text-outline block">پکت‌های SCTP</span>
+<span class="font-headline-md text-base sm:text-lg font-black text-on-background" id="modalChunksText">18.4K</span>
+<span class="text-[9px] font-mono text-outline font-semibold block">64KB / قطعه</span>
+</div>
+<!-- Protocol -->
+<div class="bg-surface-container-low border-[2px] border-on-background rounded-xl p-2.5 text-center neo-shadow-sm">
+<span class="text-[10px] font-mono font-bold text-outline block">کانال داده P2P</span>
+<span class="font-headline-md text-base sm:text-lg font-black text-tertiary-container block">WebRTC</span>
+<span class="text-[9px] font-mono text-outline font-semibold block">E2EE رمزگذاری</span>
+</div>
+</div>
+<!-- MODAL ACTION BUTTONS -->
+<div class="flex flex-wrap items-center justify-between gap-2.5 pt-2 border-t-[2px] border-on-background">
+<div class="flex items-center gap-2">
+<!-- Pause / Resume Button -->
+<button class="bg-surface-container-lowest hover:bg-secondary-fixed text-on-background border-[2px] border-on-background rounded-xl px-4 py-2 text-label-code font-label-code font-bold neo-shadow-sm neo-btn flex items-center gap-1.5 transition-all" id="pauseBtn">
+<span class="material-symbols-outlined text-base" data-icon="pause">pause</span>
+<span id="pauseBtnText">مکث / Pause</span>
+</button>
+<!-- Cancel Transfer -->
+<button class="bg-[#ffdad6] hover:bg-error hover:text-white text-on-error-container border-[2px] border-on-background rounded-xl px-3.5 py-2 text-label-code font-label-code font-bold neo-shadow-sm neo-btn flex items-center gap-1 transition-all" id="cancelBtn">
+<span class="material-symbols-outlined text-base" data-icon="cancel">cancel</span>
+<span>لغو</span>
+</button>
+</div>
+<div class="flex items-center gap-2">
+<!-- Simulate Completion Trigger -->
+<button class="bg-tertiary-fixed hover:bg-tertiary-fixed-dim text-on-tertiary-fixed border-[2px] border-on-background rounded-xl px-3.5 py-2 text-badge-meta font-badge-meta font-bold neo-shadow-sm neo-btn flex items-center gap-1 transition-all" id="simulateDoneBtn">
+<span class="material-symbols-outlined text-sm" data-icon="verified">verified</span>
+<span>تکمیل آزمایشی / Done ⚡</span>
+</button>
+<!-- Send in Background -->
+<button class="bg-on-background hover:bg-inverse-surface text-surface-container-lowest border-[2px] border-on-background rounded-xl px-4 py-2 text-label-code font-label-code font-bold neo-shadow-sm neo-btn flex items-center gap-1.5 transition-all" id="backgroundBtn">
+<span class="material-symbols-outlined text-base" data-icon="arrow_downward">arrow_downward</span>
+<span>پس‌زمینه</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Triumphant Completion View (Hidden by default, triggered on completion) -->
+<div class="hidden p-6 sm:p-8 flex-col items-center text-center gap-5 bg-surface-container-lowest" id="transferCompletedView">
+<div class="w-20 h-20 rounded-full bg-tertiary-fixed border-[3px] border-on-background flex items-center justify-center neo-shadow-md">
+<span class="material-symbols-outlined text-4xl text-on-tertiary-fixed" data-icon="check">check</span>
+</div>
+<div class="space-y-1">
+<span class="bg-secondary-container border-[2px] border-on-background px-3 py-1 rounded-full text-badge-meta font-badge-meta font-black">
+          ۱۰۰٪ دریافت شد • 0 BYTES INTERNET
+        </span>
+<h3 class="text-headline-lg font-headline-lg font-black text-on-background pt-2">
+          انتقال با موفقیت انجام شد! 🎉
+        </h3>
+<p class="text-body-md font-body-md text-on-surface-variant max-w-md mx-auto">
+          فایل <span class="font-bold text-on-background font-mono">4K_Drone_Footage_RAW.mov</span> به حافظه داخلی آیفون ۱۵ منتقل و تاییدیه هش SHA-256 احراز گردید.
+        </p>
+</div>
+<!-- Metrics summary pill -->
+<div class="grid grid-cols-3 gap-3 w-full max-w-md bg-surface-container-low border-[2px] border-on-background rounded-xl p-3 neo-shadow-sm">
+<div>
+<span class="text-[10px] font-mono text-outline block">حجم کل</span>
+<span class="font-headline-md font-bold text-sm">2.40 GB</span>
+</div>
+<div>
+<span class="text-[10px] font-mono text-outline block">مدت زمان</span>
+<span class="font-headline-md font-bold text-sm">34.2 ثانیه</span>
+</div>
+<div>
+<span class="text-[10px] font-mono text-outline block">میانگین سرعت</span>
+<span class="font-headline-md font-bold text-sm text-tertiary">71.6 MB/s</span>
+</div>
+</div>
+<div class="flex items-center gap-3 pt-2">
+<button class="bg-on-background text-surface-container-lowest hover:bg-inverse-surface border-[2.5px] border-on-background rounded-full px-6 py-2.5 font-label-code text-label-code font-bold neo-shadow-sm neo-btn flex items-center gap-2" id="finishDoneBtn">
+<span class="material-symbols-outlined text-base" data-icon="task_alt">task_alt</span>
+<span>بستن و انتقال فایل جدید</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- MICRO-INTERACTIONS -->
+<script>
+    // File drag & drop feedback
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('fileInput');
+
+    if (dropzone && fileInput) {
+      dropzone.addEventListener('click', () => fileInput.click());
+
+      ['dragenter', 'dragover'].forEach(evt => {
+        dropzone.addEventListener(evt, (e) => {
+          e.preventDefault();
+          dropzone.classList.add('bg-secondary-fixed');
+        });
+      });
+
+      ['dragleave', 'drop'].forEach(evt => {
+        dropzone.addEventListener(evt, (e) => {
+          e.preventDefault();
+          dropzone.classList.remove('bg-secondary-fixed');
+          if (evt === 'drop' && e.dataTransfer.files.length > 0) {
+            openModal(e.dataTransfer.files[0].name, '3.2 GB');
+          }
+        });
+      });
+
+      fileInput.addEventListener('change', () => {
+        if (fileInput.files.length > 0) {
+          openModal(fileInput.files[0].name, (fileInput.files[0].size / (1024*1024)).toFixed(1) + ' MB');
+        }
+      });
+    }
+
+    // Language Direction Toggle (English LTR <-> Persian RTL)
+    const langBtn = document.getElementById('langToggle');
+    if (langBtn) {
+      langBtn.addEventListener('click', () => {
+        const currentDir = document.documentElement.getAttribute('dir');
+        const nextDir = currentDir === 'rtl' ? 'ltr' : 'rtl';
+        document.documentElement.setAttribute('dir', nextDir);
+      });
+    }
+
+    // ================= MODAL CONTROLLER & LIVE SIMULATION =================
+    const modal = document.getElementById('transferModal');
+    const sendBtnTrigger = document.getElementById('sendBtnTrigger');
+    const openModalBtnHeader = document.getElementById('openModalBtnHeader');
+    const openModalBtnFooter = document.getElementById('openModalBtnFooter');
+    const activePeerCard = document.getElementById('activePeerCard');
+    const telemetryCardTrigger = document.getElementById('telemetryCardTrigger');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const backgroundBtn = document.getElementById('backgroundBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
+    const pauseBtnText = document.getElementById('pauseBtnText');
+    const simulateDoneBtn = document.getElementById('simulateDoneBtn');
+    const finishDoneBtn = document.getElementById('finishDoneBtn');
+
+    const transferActiveView = document.getElementById('transferActiveView');
+    const transferCompletedView = document.getElementById('transferCompletedView');
+
+    const progressBarFill = document.getElementById('progressBarFill');
+    const modalPercent = document.getElementById('modalPercent');
+    const transferredAmountText = document.getElementById('transferredAmountText');
+    const modalSpeedText = document.getElementById('modalSpeedText');
+    const modalEtaText = document.getElementById('modalEtaText');
+    const modalChunksText = document.getElementById('modalChunksText');
+    const homeSpeedDisplay = document.getElementById('homeSpeedDisplay');
+
+    let currentPercent = 68;
+    let isPaused = false;
+    let transferInterval = null;
+    const totalGB = 2.40;
+    const totalChunks = 27000;
+
+    function startTransferSimulation() {
+      if (transferInterval) clearInterval(transferInterval);
+      
+      transferInterval = setInterval(() => {
+        if (isPaused) return;
+
+        if (currentPercent < 100) {
+          currentPercent += 0.8;
+          if (currentPercent > 100) currentPercent = 100;
+
+          // calculate stats
+          const roundedPercent = Math.min(100, Math.floor(currentPercent));
+          const currentGB = ((totalGB * currentPercent) / 100).toFixed(2);
+          const currentChunksCount = Math.floor((totalChunks * currentPercent) / 100);
+          
+          // live jitter speed
+          const jitterSpeed = (71.5 + (Math.sin(Date.now() / 400) * 4.8) + (Math.random() * 2)).toFixed(1);
+          const remainingSeconds = Math.max(0, Math.round(((100 - currentPercent) / 100) * 34));
+
+          progressBarFill.style.width = currentPercent + '%';
+          modalPercent.textContent = roundedPercent + '%';
+          transferredAmountText.textContent = `${currentGB} GB از ${totalGB.toFixed(2)} GB منتقل شده`;
+          modalSpeedText.textContent = `${jitterSpeed} MB/s`;
+          modalEtaText.textContent = `~${remainingSeconds} ثانیه`;
+          modalChunksText.textContent = `${(currentChunksCount / 1000).toFixed(1)}K`;
+          if (homeSpeedDisplay) homeSpeedDisplay.textContent = jitterSpeed;
+
+          if (currentPercent >= 100) {
+            clearInterval(transferInterval);
+            setTimeout(showCompletionState, 400);
+          }
+        }
+      }, 300);
+    }
+
+    function openModal(customName = null, customSize = null) {
+      if (customName) {
+        document.getElementById('modalFileName').textContent = customName;
+      }
+      if (customSize) {
+        document.getElementById('modalFileSize').textContent = customSize;
+      }
+      
+      transferCompletedView.classList.add('hidden');
+      transferCompletedView.classList.remove('flex');
+      transferActiveView.classList.remove('hidden');
+
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      
+      if (currentPercent >= 100) {
+        currentPercent = 15;
+      }
+      isPaused = false;
+      if (pauseBtnText) pauseBtnText.textContent = "مکث / Pause";
+      startTransferSimulation();
+    }
+
+    function closeModal() {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function showCompletionState() {
+      transferActiveView.classList.add('hidden');
+      transferCompletedView.classList.remove('hidden');
+      transferCompletedView.classList.add('flex');
+    }
+
+    // Event Listeners
+    if (sendBtnTrigger) sendBtnTrigger.addEventListener('click', () => openModal());
+    if (openModalBtnHeader) openModalBtnHeader.addEventListener('click', () => openModal());
+    if (openModalBtnFooter) openModalBtnFooter.addEventListener('click', () => openModal());
+    if (activePeerCard) activePeerCard.addEventListener('click', () => openModal());
+    if (telemetryCardTrigger) telemetryCardTrigger.addEventListener('click', () => openModal());
+
+    if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+    if (backgroundBtn) backgroundBtn.addEventListener('click', closeModal);
+    
+    if (cancelBtn) {
+      cancelBtn.addEventListener('click', () => {
+        if (confirm('آیا از لغو انتقال اطمینان دارید؟ (Cancel P2P Beam?)')) {
+          clearInterval(transferInterval);
+          currentPercent = 0;
+          progressBarFill.style.width = '0%';
+          modalPercent.textContent = '0%';
+          closeModal();
+        }
+      });
+    }
+
+    if (pauseBtn) {
+      pauseBtn.addEventListener('click', () => {
+        isPaused = !isPaused;
+        pauseBtnText.textContent = isPaused ? "ادامه / Resume" : "مکث / Pause";
+        document.getElementById('modalStatusLabel').textContent = isPaused ? "متوقف شده (Paused)" : "در حال ارسال مستقیم...";
+      });
+    }
+
+    if (simulateDoneBtn) {
+      simulateDoneBtn.addEventListener('click', () => {
+        currentPercent = 100;
+        progressBarFill.style.width = '100%';
+        modalPercent.textContent = '100%';
+        showCompletionState();
+      });
+    }
+
+    if (finishDoneBtn) {
+      finishDoneBtn.addEventListener('click', () => {
+        currentPercent = 10;
+        closeModal();
+      });
+    }
+
+    // Close when clicking modal backdrop overlay directly
+    if (modal) {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          closeModal();
+        }
+      });
+    }
+
+    // Initialize with modal visible for immediate preview & feedback
+    startTransferSimulation();
+  </script>
+</body></html>

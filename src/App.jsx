@@ -6,9 +6,10 @@ import { P2PManager, getDeviceInfo } from './services/webrtc';
 // Comprehensive Bilingual Dictionary (FA & EN)
 const translations = {
   fa: {
-    brandSubtitle: 'انتقال پرسرعت فایل و کلیپ‌بورد در شبکه محلی بدون نیاز به ۱ بایت اینترنت',
-    desktopTab: '💻 وب دسکتاپ',
+    guideTab: '🚀 راهنمای ۳ مرحله‌ای (Stitch)',
+    desktopTab: '💻 وب دسکتاپ (P2P Hub)',
     mobileTab: '📱 اپ موبایل (Stitch)',
+    brandSubtitle: 'انتقال پرسرعت فایل و کلیپ‌بورد در شبکه محلی بدون نیاز به ۱ بایت اینترنت',
     guideBtn: '💡 راهنمای ۳ مرحله‌ای',
     copyLink: '🔗 کپی لینک اتصال',
     copied: '✓ کپی شد!',
@@ -62,19 +63,21 @@ const translations = {
     radarAuto: '☻ رادار خودکار',
     radarConnected: '● متصل P2P',
     radarWaiting: 'در انتظار اتصال دیوایس مقابل...',
-    guideHeader: 'چگونه در ۳ مرحله بدون اینترنت فایل بفرستیم؟',
-    guideStep1Title: '۱. کپی لینک یا اسکن QR',
-    guideStep1Desc: 'دکمه زرد اسکن یا دکمه کپی لینک را بزنید و در گوشی یا تب دوم باز کنید.',
-    guideStep2Title: '۲. جفت‌سازی مستقیم (LAN)',
-    guideStep2Desc: 'هر دو دستگاه بدون نیاز به اینترنت و از طریق وای‌فای داخلی به هم متصل می‌شوند.',
-    guideStep3Title: '۳. انتقال فایل و کلیپ‌بورد',
-    guideStep3Desc: 'فایل را رها کنید یا متن را بفرستید؛ با نهایت سرعت وای‌فای منتقل می‌شود.',
+    guideHeader: 'چگونه LocalBeam کار می‌کند؟',
+    guideHeroSub: 'انتقال مستقیم فایل، ویدیو و پوشه بین لپ‌تاپ، آیفون و اندروید بدون نیاز به اینترنت، کابل یا ثبت‌نام',
+    guideStep1Title: 'اسکن یا اشتراک لینک',
+    guideStep1Desc: 'دستگاه‌های متصل به وای‌فای مشترک را رادار هوشمند به‌صورت خودکار شناسایی می‌کند، یا با اسکن یک کد QR سریع به یکدیگر متصل شوید.',
+    guideStep2Title: 'دست‌تکانی مستقیم LAN',
+    guideStep2Desc: 'اتصال امن و همتا-به-همتا (WebRTC Direct DataChannel) بدون آپلود به کلود و با رمزنگاری سرتاسری انجام می‌شود.',
+    guideStep3Title: 'انتقال موشکی ۶۰MB/s',
+    guideStep3Desc: 'عکس‌ها، ویدیوهای حجیم 4K یا پوشه‌های سنگین را بکشید و رها کنید؛ فایل‌ها با حداکثر ظرفیت پهنای‌باند جابجا می‌شوند.',
     connectedSubtitle: 'کانال مستقیم WebRTC فعال • بدون مصرف نت'
   },
   en: {
-    brandSubtitle: 'High-speed local peer-to-peer file & clipboard beam. 0 bytes internet used.',
-    desktopTab: '💻 Desktop Web',
+    guideTab: '🚀 3-Step Guide (Stitch)',
+    desktopTab: '💻 Desktop Web (P2P Hub)',
     mobileTab: '📱 Mobile App (Stitch)',
+    brandSubtitle: 'High-speed local peer-to-peer file & clipboard beam. 0 bytes internet used.',
     guideBtn: '💡 3-Step Guide',
     copyLink: '🔗 Copy Pairing Link',
     copied: '✓ Copied!',
@@ -128,21 +131,24 @@ const translations = {
     radarAuto: '☻ Auto Radar',
     radarConnected: '● P2P Linked',
     radarWaiting: 'Waiting for peer device to connect...',
-    guideHeader: 'How to beam files in 3 quick steps?',
-    guideStep1Title: '1. Copy Link or Scan QR',
-    guideStep1Desc: 'Click Copy Link or Scan QR, then open it on your phone or 2nd browser tab.',
-    guideStep2Title: '2. Direct LAN Handshake',
-    guideStep2Desc: 'Devices pair automatically over local Wi-Fi with zero internet dependency.',
-    guideStep3Title: '3. Instant Beam',
-    guideStep3Desc: 'Drop any file or copy text; streams at wire speed directly browser-to-browser.',
+    guideHeader: 'How LocalBeam Works?',
+    guideHeroSub: 'Direct file, video, and folder transfer between laptop, iPhone, and Android without internet, cables, or signup.',
+    guideStep1Title: 'Scan or Share Link',
+    guideStep1Desc: 'Smart radar detects devices on the same Wi-Fi, or scan a dynamic QR code to pair in a millisecond.',
+    guideStep2Title: 'Direct LAN Handshake',
+    guideStep2Desc: 'Secure peer-to-peer WebRTC DataChannel connects devices directly without cloud uploads and with E2EE.',
+    guideStep3Title: 'Instant 60MB/s Beam',
+    guideStep3Desc: 'Drop photos, 4K videos, or heavy archives; streams directly at full hardware Wi-Fi bandwidth.',
     connectedSubtitle: 'Direct WebRTC channel active • 0 byte internet used'
   }
 };
 
 export default function App() {
   const [lang, setLang] = useState(() => localStorage.getItem('localbeam_lang') || 'fa');
-  const [viewMode, setViewMode] = useState('desktop'); // 'desktop' | 'mobile'
-  const [showGuide, setShowGuide] = useState(false);
+  
+  // Default view is 'guide' (Exact Google Stitch 1:1 screen from Image 1!)
+  const [viewMode, setViewMode] = useState('guide'); // 'guide' | 'desktop' | 'mobile'
+  const [showTechModal, setShowTechModal] = useState(false);
 
   // Local Device Info
   const [localDevice] = useState(() => getDeviceInfo());
@@ -166,6 +172,9 @@ export default function App() {
   const [transferFileSize, setTransferFileSize] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
 
+  // Simulated Fluctuating Speed in Guide (from Stitch spec)
+  const [fluctuatingSpeed, setFluctuatingSpeed] = useState('58.4');
+
   // Clipboard States
   const [clipboardText, setClipboardText] = useState('');
   const [incomingClipboard, setIncomingClipboard] = useState('');
@@ -174,11 +183,25 @@ export default function App() {
   // Current translation object
   const text = translations[lang] || translations.fa;
 
-  // Persist language selection
+  // Persist language selection & sync document attributes
   const handleLanguageChange = (newLang) => {
     setLang(newLang);
     localStorage.setItem('localbeam_lang', newLang);
   };
+
+  useEffect(() => {
+    document.documentElement.dir = lang === 'fa' ? 'rtl' : 'ltr';
+    document.documentElement.lang = lang;
+  }, [lang]);
+
+  // Speedometer fluctuation interval for Stitch screen
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const speed = (54 + Math.random() * 12).toFixed(1);
+      setFluctuatingSpeed(speed);
+    }, 1800);
+    return () => clearInterval(interval);
+  }, []);
 
   // Transfers History
   const [transfers, setTransfers] = useState([
@@ -205,6 +228,7 @@ export default function App() {
 
         if (connectTarget && connectTarget !== id) {
           setP2pStatus('connecting');
+          setViewMode('desktop');
           setTimeout(() => {
             manager.connectToPeer(connectTarget);
           }, 600);
@@ -400,536 +424,657 @@ export default function App() {
         </div>
       )}
 
-      {/* --- TOP CONTROL BAR --- */}
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        flexWrap: 'wrap',
-        gap: '12px',
-        marginBottom: '28px',
-        background: 'rgba(255, 255, 255, 0.45)',
-        backdropFilter: 'blur(10px)',
-        border: 'var(--border-thick)',
-        borderRadius: 'var(--radius-pill)',
-        padding: '8px 18px',
-        boxShadow: 'var(--shadow-hard-sm)'
-      }}>
-        {/* Left: Viewport Switcher */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-          <span style={{ fontSize: '1.2rem' }}>⚡</span>
-          <div style={{ display: 'inline-flex', gap: '6px', flexWrap: 'wrap' }}>
-            <button
-              onClick={() => setViewMode('desktop')}
-              className={`nb-btn ${viewMode === 'desktop' ? 'nb-btn-dark' : ''}`}
-              style={{ padding: '6px 14px', fontSize: '0.8rem', borderRadius: '16px' }}
-            >
-              {text.desktopTab}
-            </button>
-            <button
-              onClick={() => setViewMode('mobile')}
-              className={`nb-btn ${viewMode === 'mobile' ? 'nb-btn-dark' : ''}`}
-              style={{ padding: '6px 14px', fontSize: '0.8rem', borderRadius: '16px' }}
-            >
-              {text.mobileTab}
-            </button>
-          </div>
-        </div>
-
-        {/* Right: P2P Badge & Visual Language Switcher */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-          {/* P2P Live Status Badge */}
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '6px',
-            padding: '4px 12px',
-            borderRadius: '20px',
-            border: 'var(--border-medium)',
-            background: p2pStatus === 'connected' ? '#dcfce7' : p2pStatus === 'connecting' ? '#fef3c7' : '#fff',
-            fontSize: '0.78rem',
-            fontWeight: 800,
-            color: p2pStatus === 'connected' ? '#15803d' : '#121316'
-          }}>
-            <span style={{
-              width: '8px',
-              height: '8px',
-              borderRadius: '50%',
-              background: p2pStatus === 'connected' ? '#22c55e' : p2pStatus === 'connecting' ? '#eab308' : '#9ca3af'
-            }}></span>
-            {p2pStatus === 'connected' 
-              ? `${text.statusConnected}: ${connectedDevice ? connectedDevice.name : text.remotePeerPlaceholder}`
-              : p2pStatus === 'connecting' 
-                ? text.statusConnecting 
-                : `${text.statusReady} (${myPeerId || '...'})`}
-          </div>
-
-          {/* Explicit Segmented Language Switcher (Zero Ambiguity) */}
-          <div style={{
-            display: 'inline-flex',
-            background: '#fff',
-            border: 'var(--border-medium)',
-            borderRadius: 'var(--radius-pill)',
-            padding: '2px',
-            boxShadow: 'var(--shadow-hard-sm)'
-          }}>
-            <button
-              onClick={() => handleLanguageChange('fa')}
-              style={{
-                padding: '4px 12px',
-                borderRadius: 'var(--radius-pill)',
-                border: 'none',
-                background: lang === 'fa' ? 'var(--nb-dark)' : 'transparent',
-                color: lang === 'fa' ? '#fff' : 'var(--nb-dark)',
-                fontWeight: 900,
-                fontSize: '0.75rem',
-                cursor: 'pointer',
-                transition: 'all 0.1s ease'
-              }}
-            >
-              🇮🇷 فارسی
-            </button>
-            <button
-              onClick={() => handleLanguageChange('en')}
-              style={{
-                padding: '4px 12px',
-                borderRadius: 'var(--radius-pill)',
-                border: 'none',
-                background: lang === 'en' ? 'var(--nb-dark)' : 'transparent',
-                color: lang === 'en' ? '#fff' : 'var(--nb-dark)',
-                fontWeight: 900,
-                fontSize: '0.75rem',
-                cursor: 'pointer',
-                transition: 'all 0.1s ease'
-              }}
-            >
-              🇬🇧 English
-            </button>
-          </div>
-        </div>
-      </div>
-
       {/* ========================================================
-          3-STEP QUICK GUIDE BANNER (EXPANDABLE FROM ACTION GROUP)
+          SCREEN 1: EXACT 1:1 GOOGLE STITCH ONBOARDING GUIDE (IMAGE 1)
       ======================================================== */}
-      {/* ========================================================
-          3-STEP BENTO GUIDE DECK (FROM GOOGLE STITCH)
-      ======================================================== */}
-      {showGuide && (
-        <div style={{ marginBottom: '28px' }}>
-          <div style={{
+      {viewMode === 'guide' && (
+        <div style={{ position: 'relative' }}>
+          
+          {/* Top Shared App Bar from Stitch */}
+          <header style={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            marginBottom: '16px',
-            background: 'rgba(255,255,255,0.7)',
-            padding: '12px 20px',
-            borderRadius: 'var(--radius-pill)',
-            border: 'var(--border-thick)',
-            boxShadow: 'var(--shadow-hard-sm)'
+            background: 'var(--nb-bg)',
+            borderBottom: 'var(--border-thick)',
+            padding: '14px 20px',
+            boxShadow: '0px 4px 0px #000',
+            marginBottom: '32px',
+            flexWrap: 'wrap',
+            gap: '12px'
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '1.4rem' }}>🚀</span>
-              <h3 style={{ fontSize: '1.15rem', fontWeight: 900, margin: 0 }}>
-                {text.guideHeader}
-              </h3>
-              <span className="nb-pill" style={{ background: 'var(--nb-yellow)', fontSize: '0.72rem', padding: '2px 8px' }}>
-                {lang === 'fa' ? '۳ مرحله فوق‌سریع • ۳ Easy Steps' : '3 Easy Steps • 0 Byte Net'}
-              </span>
+            {/* Brand Cluster */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{
+                width: '42px',
+                height: '42px',
+                borderRadius: '50%',
+                background: 'var(--nb-yellow)',
+                border: 'var(--border-thick)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: 'var(--shadow-hard-sm)'
+              }}>
+                <span className="material-symbols-outlined" style={{ fontSize: '24px', color: '#000' }}>flare</span>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <span style={{
+                  fontSize: '1.5rem',
+                  fontWeight: 900,
+                  letterSpacing: '1px',
+                  lineHeight: 1
+                }}>
+                  LOCALBEAM
+                </span>
+                <span style={{
+                  fontSize: '0.75rem',
+                  fontWeight: 800,
+                  color: 'var(--nb-dark)',
+                  marginTop: '3px'
+                }}>
+                  {lang === 'fa' ? 'AirDrop تحت وب • آفلاین ۱۰۰٪' : 'Web AirDrop • 100% Offline'}
+                </span>
+              </div>
             </div>
-            <button
-              onClick={() => setShowGuide(false)}
-              className="nb-btn nb-btn-white"
-              style={{ padding: '4px 12px', fontSize: '0.8rem' }}
-            >
-              ✕ {lang === 'fa' ? 'بستن راهنما' : 'Close Guide'}
-            </button>
+
+            {/* Trailing Telemetry Pills */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                background: 'var(--nb-green)',
+                border: 'var(--border-thick)',
+                borderRadius: 'var(--radius-pill)',
+                padding: '4px 14px',
+                fontSize: '0.8rem',
+                fontWeight: 800,
+                boxShadow: 'var(--shadow-hard-sm)'
+              }}>
+                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#000' }}></span>
+                <span>Wi-Fi Direct LAN</span>
+              </div>
+
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                background: '#fff',
+                border: 'var(--border-thick)',
+                borderRadius: 'var(--radius-pill)',
+                padding: '4px 14px',
+                fontSize: '0.8rem',
+                fontWeight: 800,
+                boxShadow: 'var(--shadow-hard-sm)'
+              }}>
+                <span style={{ color: '#ef4444' }}>☁️✕</span>
+                <span>{lang === 'fa' ? '۰ بایت اینترنت' : '0 Byte Internet'}</span>
+              </div>
+
+              <button
+                onClick={() => handleLanguageChange(lang === 'fa' ? 'en' : 'fa')}
+                className="nb-btn nb-btn-yellow"
+                style={{ padding: '5px 14px', fontSize: '0.8rem' }}
+              >
+                {lang === 'fa' ? 'EN / FA' : 'FA / EN'}
+              </button>
+            </div>
+          </header>
+
+          {/* Hero Section */}
+          <div style={{ textAlign: 'center', maxWidth: '800px', margin: '0 auto 36px' }}>
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              background: '#fff',
+              border: 'var(--border-thick)',
+              borderRadius: 'var(--radius-pill)',
+              padding: '6px 18px',
+              boxShadow: 'var(--shadow-hard-sm)',
+              marginBottom: '16px',
+              fontSize: '0.85rem',
+              fontWeight: 800
+            }}>
+              <span>✨</span>
+              <span>{lang === 'fa' ? '۳ مرحله فوق‌سریع و کاملاً آفلاین • 3 Easy Steps' : '3 Easy Steps • 100% Offline'}</span>
+            </div>
+
+            <h1 style={{
+              fontSize: '2.8rem',
+              fontWeight: 900,
+              letterSpacing: '-1px',
+              marginBottom: '12px',
+              color: 'var(--nb-dark)'
+            }}>
+              {lang === 'fa' ? (
+                <>چگونه <span style={{ color: 'var(--nb-purple)' }}>LocalBeam</span> کار می‌کند؟</>
+              ) : (
+                <>How <span style={{ color: 'var(--nb-purple)' }}>LocalBeam</span> Works?</>
+              )}
+            </h1>
+
+            <p style={{ fontSize: '1rem', color: '#242730', fontWeight: 600, lineHeight: 1.6 }}>
+              {text.guideHeroSub}
+            </p>
           </div>
 
-          {/* 3-Column Bento Deck (Yellow, Lime Green, Pink) */}
+          {/* 3-Column Bento Deck Cards (Yellow, Lime Green, Pastel Pink) */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: '20px'
+            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gap: '24px',
+            marginBottom: '32px'
           }}>
-            {/* STEP 1: Sunny Cheddar Yellow */}
-            <div className="nb-card nb-card-yellow" style={{ padding: '22px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            
+            {/* STEP 1: Sunny Cheddar Yellow (#fdcf55) */}
+            <div className="nb-card nb-card-yellow" style={{ padding: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-                  <span className="nb-pill" style={{ background: '#fff', fontSize: '0.75rem', fontWeight: 900 }}>
-                    STEP 01
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                  <span className="nb-pill" style={{ background: '#fff', fontSize: '0.8rem', fontWeight: 900 }}>
+                    {lang === 'fa' ? 'مرحله ۱ • STEP 01' : 'STEP 01'}
                   </span>
-                  <span style={{ fontSize: '1.5rem' }}>📷</span>
+                  <span style={{ fontSize: '1.6rem' }}>📷</span>
                 </div>
-                <h4 style={{ fontSize: '1.3rem', fontWeight: 900, marginBottom: '8px' }}>
+
+                <h2 style={{ fontSize: '1.5rem', fontWeight: 900, marginBottom: '8px' }}>
                   {text.guideStep1Title}
-                </h4>
-                <p style={{ fontSize: '0.82rem', color: '#222', lineHeight: 1.5, marginBottom: '16px' }}>
+                </h2>
+                <p style={{ fontSize: '0.85rem', color: 'rgba(0,0,0,0.85)', lineHeight: 1.6, marginBottom: '20px' }}>
                   {text.guideStep1Desc}
                 </p>
 
-                {/* Simulated Preview Box */}
+                {/* White Interactive Module */}
                 <div style={{
                   background: '#fff',
-                  border: 'var(--border-medium)',
-                  borderRadius: '16px',
-                  padding: '12px',
-                  marginBottom: '14px',
+                  border: 'var(--border-thick)',
+                  borderRadius: '20px',
+                  padding: '16px',
+                  marginBottom: '18px',
                   boxShadow: 'var(--shadow-hard-sm)'
                 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    borderBottom: '2px dashed #000',
+                    paddingBottom: '8px',
+                    marginBottom: '12px',
+                    fontSize: '0.78rem',
+                    fontWeight: 800
+                  }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <span>📡</span> {lang === 'fa' ? 'رادار خودکار دستگاه‌ها' : 'Auto Peer Radar'}
+                    </span>
+                    <span className="nb-pill" style={{ background: 'var(--nb-green)', padding: '2px 8px', fontSize: '0.7rem' }}>
+                      {lang === 'fa' ? 'فعال' : 'Active'}
+                    </span>
+                  </div>
+
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    background: '#f1f5f9',
+                    border: 'var(--border-medium)',
+                    borderRadius: '14px',
+                    padding: '10px 12px',
+                    marginBottom: '12px'
+                  }}>
                     <div style={{
-                      width: '42px',
-                      height: '42px',
+                      width: '46px',
+                      height: '46px',
+                      background: '#fff',
+                      border: 'var(--border-medium)',
                       borderRadius: '10px',
-                      background: 'var(--nb-bg-secondary)',
-                      border: '1.5px solid #000',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontSize: '1.4rem'
+                      fontSize: '1.5rem'
                     }}>
                       📱
                     </div>
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: '0.8rem', fontWeight: 900 }}>آیفون ۱۵ (iPhone 15 Pro)</div>
-                      <div style={{ fontSize: '0.68rem', color: '#15803d', fontWeight: 700 }}>● {text.readyExchange}</div>
+                      <div style={{ fontWeight: 900, fontSize: '0.88rem' }}>
+                        {lang === 'fa' ? 'آیفون ۱۵ (iPhone 15 Pro)' : 'iPhone 15 Pro'}
+                      </div>
+                      <div style={{ fontSize: '0.72rem', fontFamily: 'var(--font-mono)', color: '#64748b' }} dir="ltr">192.168.1.34:8080</div>
+                      <div style={{ fontSize: '0.72rem', color: '#15803d', fontWeight: 800, marginTop: '2px' }}>
+                        ● {lang === 'fa' ? 'آماده جفت‌سازی' : 'Ready to Pair'}
+                      </div>
                     </div>
                   </div>
+
+                  <button
+                    onClick={handleCopyPairingLink}
+                    className="nb-btn nb-btn-yellow"
+                    style={{ width: '100%', padding: '10px', fontSize: '0.85rem' }}
+                  >
+                    {copyLinkSuccess ? text.copied : (lang === 'fa' ? '📋 کپی آدرس LAN' : '📋 Copy LAN URL')}
+                  </button>
                 </div>
               </div>
 
+              {/* Bottom Technical Tag */}
               <div style={{
                 background: 'var(--nb-dark)',
                 color: '#fff',
-                padding: '6px 12px',
+                padding: '8px 14px',
                 borderRadius: 'var(--radius-pill)',
-                fontSize: '0.68rem',
+                fontSize: '0.75rem',
                 fontFamily: 'var(--font-mono)',
                 display: 'flex',
-                justifyContent: 'space-between'
+                justifyContent: 'space-between',
+                direction: 'ltr'
               }}>
-                <span>mDNS Discovery</span>
-                <span style={{ color: 'var(--nb-yellow)', fontWeight: 800 }}>LAN 192.168.1.*</span>
+                <span>mDNS Peer Discovery</span>
+                <span style={{ color: 'var(--nb-yellow)', fontWeight: 800 }}>192.168.1.*</span>
               </div>
             </div>
 
-            {/* STEP 2: Fresh Lime Green */}
-            <div className="nb-card nb-card-green" style={{ padding: '22px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            {/* STEP 2: Fresh Lime Green (#c4f279) */}
+            <div className="nb-card nb-card-green" style={{ padding: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-                  <span className="nb-pill" style={{ background: '#fff', fontSize: '0.75rem', fontWeight: 900 }}>
-                    STEP 02
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                  <span className="nb-pill" style={{ background: '#fff', fontSize: '0.8rem', fontWeight: 900 }}>
+                    {lang === 'fa' ? 'مرحله ۲ • STEP 02' : 'STEP 02'}
                   </span>
-                  <span style={{ fontSize: '1.5rem' }}>📶</span>
+                  <span style={{ fontSize: '1.6rem' }}>📶</span>
                 </div>
-                <h4 style={{ fontSize: '1.3rem', fontWeight: 900, marginBottom: '8px' }}>
-                  {text.guideStep2Title}
-                </h4>
-                <p style={{ fontSize: '0.82rem', color: '#222', lineHeight: 1.5, marginBottom: '16px' }}>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                  <h2 style={{ fontSize: '1.5rem', fontWeight: 900 }}>
+                    {text.guideStep2Title}
+                  </h2>
+                </div>
+
+                <span style={{
+                  display: 'inline-block',
+                  background: '#fff',
+                  border: '1.5px solid #000',
+                  borderRadius: '6px',
+                  fontSize: '0.72rem',
+                  fontWeight: 800,
+                  padding: '2px 8px',
+                  marginBottom: '10px'
+                }}>
+                  {lang === 'fa' ? 'بدون عبور از سرور اینترنتی' : 'Zero Cloud Hops'}
+                </span>
+
+                <p style={{ fontSize: '0.85rem', color: 'rgba(0,0,0,0.85)', lineHeight: 1.6, marginBottom: '20px' }}>
                   {text.guideStep2Desc}
                 </p>
 
-                {/* Simulated WebRTC Node to Node */}
+                {/* White Interactive Diagram */}
                 <div style={{
                   background: '#fff',
-                  border: 'var(--border-medium)',
-                  borderRadius: '16px',
-                  padding: '12px',
-                  marginBottom: '14px',
+                  border: 'var(--border-thick)',
+                  borderRadius: '20px',
+                  padding: '16px',
+                  marginBottom: '18px',
                   boxShadow: 'var(--shadow-hard-sm)'
                 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span style={{ fontSize: '0.75rem', fontWeight: 800 }}>MacBook</span>
-                    <div style={{ flex: 1, margin: '0 8px', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <div style={{ width: '100%', height: '3px', background: '#000', borderRadius: '2px' }}></div>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    borderBottom: '2px dashed #000',
+                    paddingBottom: '8px',
+                    marginBottom: '16px',
+                    fontSize: '0.78rem',
+                    fontWeight: 800
+                  }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <span>🔒</span> {lang === 'fa' ? 'امنیت E2EE مستقیم' : 'Direct E2EE Security'}
+                    </span>
+                    <span className="nb-pill" style={{ background: 'var(--nb-yellow)', padding: '2px 8px', fontSize: '0.7rem' }}>
+                      DTLS / SCTP
+                    </span>
+                  </div>
+
+                  {/* Peer Node A to Node B Diagram */}
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 4px 14px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <div style={{
+                        width: '48px',
+                        height: '48px',
+                        borderRadius: '16px',
+                        background: '#e2e8f0',
+                        border: 'var(--border-medium)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '1.5rem',
+                        boxShadow: 'var(--shadow-hard-sm)'
+                      }}>
+                        💻
+                      </div>
+                      <span style={{ fontSize: '0.75rem', fontWeight: 800, marginTop: '4px' }}>
+                        {lang === 'fa' ? 'مک‌بوک پرو' : 'MacBook Pro'}
+                      </span>
+                    </div>
+
+                    <div style={{ flex: 1, margin: '0 12px', position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <div style={{ width: '100%', height: '4px', background: '#000', borderRadius: '2px' }}></div>
                       <div className="animate-pulse-beam" style={{
                         position: 'absolute',
-                        width: '12px',
-                        height: '12px',
+                        top: '-5px',
+                        width: '14px',
+                        height: '14px',
                         borderRadius: '50%',
                         background: 'var(--nb-yellow)',
-                        border: '1.5px solid #000'
+                        border: '2px solid #000'
                       }}></div>
+                      <span style={{ fontSize: '0.65rem', fontWeight: 900, letterSpacing: '1px', marginTop: '6px' }}>DIRECT</span>
                     </div>
-                    <span style={{ fontSize: '0.75rem', fontWeight: 800 }}>iPhone</span>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <div style={{
+                        width: '48px',
+                        height: '48px',
+                        borderRadius: '16px',
+                        background: 'var(--nb-pink)',
+                        border: 'var(--border-medium)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '1.5rem',
+                        boxShadow: 'var(--shadow-hard-sm)'
+                      }}>
+                        📱
+                      </div>
+                      <span style={{ fontSize: '0.75rem', fontWeight: 800, marginTop: '4px' }}>
+                        {lang === 'fa' ? 'آیفون ۱۵' : 'iPhone 15'}
+                      </span>
+                    </div>
                   </div>
-                  <div style={{ textAlign: 'center', marginTop: '6px', fontSize: '0.65rem', fontWeight: 800, color: '#666' }}>
-                    TLS 1.3 Verified • Zero Cloud Hops
+
+                  <div style={{
+                    background: '#f1f5f9',
+                    border: '1.5px solid #000',
+                    borderRadius: '12px',
+                    padding: '8px 12px',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    fontSize: '0.75rem',
+                    fontWeight: 800
+                  }}>
+                    <span>🛡 {lang === 'fa' ? 'تأیید گواهی نشست' : 'Session Verified'}</span>
+                    <span style={{ color: '#15803d' }}>TLS 1.3 Verified</span>
                   </div>
                 </div>
               </div>
 
+              {/* Bottom Technical Tag */}
               <div style={{
                 background: 'var(--nb-dark)',
                 color: '#fff',
-                padding: '6px 12px',
+                padding: '8px 14px',
                 borderRadius: 'var(--radius-pill)',
-                fontSize: '0.68rem',
+                fontSize: '0.75rem',
                 fontFamily: 'var(--font-mono)',
                 display: 'flex',
-                justifyContent: 'space-between'
+                justifyContent: 'space-between',
+                direction: 'ltr'
               }}>
                 <span>WebRTC DataChannel</span>
-                <span style={{ color: 'var(--nb-green)', fontWeight: 800 }}>E2EE Direct</span>
+                <span style={{ color: 'var(--nb-green)', fontWeight: 800 }}>Zero Cloud Hops</span>
               </div>
             </div>
 
-            {/* STEP 3: Bubblegum Pastel Pink */}
-            <div className="nb-card nb-card-pink" style={{ padding: '22px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            {/* STEP 3: Bubblegum Pastel Pink (#ffaec8) */}
+            <div className="nb-card nb-card-pink" style={{ padding: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-                  <span className="nb-pill" style={{ background: '#fff', fontSize: '0.75rem', fontWeight: 900 }}>
-                    STEP 03
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                  <span className="nb-pill" style={{ background: '#fff', fontSize: '0.8rem', fontWeight: 900 }}>
+                    {lang === 'fa' ? 'مرحله ۳ • STEP 03' : 'STEP 03'}
                   </span>
-                  <span style={{ fontSize: '1.5rem' }}>🚀</span>
+                  <span style={{ fontSize: '1.6rem' }}>🚀</span>
                 </div>
-                <h4 style={{ fontSize: '1.3rem', fontWeight: 900, marginBottom: '8px' }}>
-                  {text.guideStep3Title}
-                </h4>
-                <p style={{ fontSize: '0.82rem', color: '#222', lineHeight: 1.5, marginBottom: '16px' }}>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                  <h2 style={{ fontSize: '1.5rem', fontWeight: 900 }}>
+                    {text.guideStep3Title}
+                  </h2>
+                </div>
+
+                <span style={{
+                  display: 'inline-block',
+                  background: '#fff',
+                  border: '1.5px solid #000',
+                  borderRadius: '6px',
+                  fontSize: '0.72rem',
+                  fontWeight: 800,
+                  padding: '2px 8px',
+                  marginBottom: '10px'
+                }}>
+                  {lang === 'fa' ? 'بدون فشرده‌سازی و محدودیت حجم' : 'Raw Uncompressed Quality'}
+                </span>
+
+                <p style={{ fontSize: '0.85rem', color: 'rgba(0,0,0,0.85)', lineHeight: 1.6, marginBottom: '20px' }}>
                   {text.guideStep3Desc}
                 </p>
 
-                {/* Simulated Speedometer Box */}
+                {/* White Interactive Speedometer */}
                 <div style={{
                   background: '#fff',
-                  border: 'var(--border-medium)',
-                  borderRadius: '16px',
-                  padding: '12px',
-                  marginBottom: '14px',
+                  border: 'var(--border-thick)',
+                  borderRadius: '20px',
+                  padding: '16px',
+                  marginBottom: '18px',
                   boxShadow: 'var(--shadow-hard-sm)'
                 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                    <span style={{ fontSize: '0.75rem', fontWeight: 800 }}>{lang === 'fa' ? 'سرعت انتقال LAN' : 'LAN Transfer Speed'}</span>
-                    <span style={{ fontSize: '1.1rem', fontWeight: 900, fontFamily: 'var(--font-mono)', color: 'var(--nb-purple)' }}>64.5 MB/s</span>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    borderBottom: '2px dashed #000',
+                    paddingBottom: '8px',
+                    marginBottom: '12px',
+                    fontSize: '0.78rem',
+                    fontWeight: 800
+                  }}>
+                    <span>⚡ {lang === 'fa' ? 'سرعت کنونی انتقال' : 'Current Speed'}</span>
+                    <span className="nb-pill" style={{ background: 'var(--nb-yellow)', padding: '2px 8px', fontSize: '0.7rem' }}>
+                      {lang === 'fa' ? 'پینگ: ۱ میلی‌ثانیه' : 'Ping: 1ms'}
+                    </span>
                   </div>
-                  <div style={{ height: '12px', background: '#e2e8f0', borderRadius: '6px', overflow: 'hidden', border: '1px solid #000' }}>
-                    <div className="striped-progress" style={{ width: '85%', height: '100%' }}></div>
+
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '10px' }}>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', direction: 'ltr' }}>
+                      <span style={{ fontSize: '2.4rem', fontWeight: 900, fontFamily: 'var(--font-mono)' }}>
+                        {fluctuatingSpeed}
+                      </span>
+                      <span style={{ fontSize: '0.9rem', fontWeight: 900 }}>MB/s</span>
+                    </div>
+                    <span className="nb-pill" style={{ background: 'var(--nb-green)', fontSize: '0.75rem', padding: '2px 8px' }}>
+                      LAN 5GHz
+                    </span>
+                  </div>
+
+                  {/* Striped Bar */}
+                  <div style={{
+                    height: '16px',
+                    background: '#e2e8f0',
+                    border: 'var(--border-medium)',
+                    borderRadius: '8px',
+                    overflow: 'hidden',
+                    marginBottom: '10px'
+                  }}>
+                    <div className="striped-bar" style={{ width: '78%', height: '100%', borderRadius: '6px' }}></div>
+                  </div>
+
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', fontWeight: 800, color: '#64748b' }}>
+                    <span>{lang === 'fa' ? 'فایل: RAW_4K_Video.mov' : 'File: RAW_4K_Video.mov'}</span>
+                    <span>{lang === 'fa' ? '۳.۲GB از ۴.۱GB' : '3.2GB of 4.1GB'}</span>
                   </div>
                 </div>
               </div>
 
+              {/* Bottom Technical Tag */}
               <div style={{
                 background: 'var(--nb-dark)',
                 color: '#fff',
-                padding: '6px 12px',
+                padding: '8px 14px',
                 borderRadius: 'var(--radius-pill)',
-                fontSize: '0.68rem',
+                fontSize: '0.75rem',
                 fontFamily: 'var(--font-mono)',
                 display: 'flex',
-                justifyContent: 'space-between'
+                justifyContent: 'space-between',
+                direction: 'ltr'
               }}>
-                <span>SCTP Binary Stream</span>
-                <span style={{ color: 'var(--nb-pink)', fontWeight: 800 }}>Raw Uncompressed</span>
+                <span>Max File Payload</span>
+                <span style={{ color: '#ffaec8', fontWeight: 800 }}>Unlimited 100GB+</span>
               </div>
             </div>
-          </div>
-        </div>
-      )}
 
-      {/* ========================================================
-          VIEWPORT 1: MOBILE APP VIEW (Google Stitch Mobile Screen)
-      ======================================================== */}
-      {viewMode === 'mobile' && (
-        <div className="mobile-phone-frame">
-          
-          <div className="mobile-status-bar">
-            <span>9:41</span>
-            <span>LocalBeam P2P</span>
-            <span>100% 🔋</span>
           </div>
 
-          <div style={{ padding: '18px 16px', background: '#f4f0ff', minHeight: '620px' }}>
-            
-            {/* 1. Radar Screen */}
-            <div className="nb-card nb-card-white" style={{
-              padding: '18px',
-              textAlign: 'center',
-              marginBottom: '16px',
-              position: 'relative',
-              overflow: 'hidden'
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                <span className="nb-pill" style={{
-                  fontSize: '0.72rem',
-                  background: p2pStatus === 'connected' ? 'var(--nb-green)' : 'var(--nb-yellow)'
-                }}>
-                  {p2pStatus === 'connected' ? text.radarConnected : text.radarAuto}
-                </span>
-                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#555' }}>
-                  {text.roomCode}: {myPeerId || '...'}
-                </span>
-              </div>
-
-              {/* Animated Radar Graphic */}
+          {/* Network Telemetry Capsule Banner */}
+          <div style={{
+            background: '#fff',
+            border: 'var(--border-thick)',
+            borderRadius: '20px',
+            padding: '18px 24px',
+            boxShadow: 'var(--shadow-hard)',
+            marginBottom: '32px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '16px'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
               <div style={{
-                width: '180px',
-                height: '180px',
-                margin: '10px auto 14px',
-                borderRadius: '50%',
+                width: '48px',
+                height: '48px',
+                borderRadius: '14px',
+                background: 'var(--nb-green)',
                 border: 'var(--border-thick)',
-                background: 'linear-gradient(135deg, #121316, #242730)',
-                position: 'relative',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: 'inset 0 0 20px rgba(157, 132, 246, 0.4)'
+                fontSize: '1.5rem',
+                boxShadow: 'var(--shadow-hard-sm)'
               }}>
-                <div style={{
-                  position: 'absolute',
-                  width: '120px',
-                  height: '120px',
-                  borderRadius: '50%',
-                  border: '1.5px dashed rgba(255, 255, 255, 0.3)'
-                }}></div>
-                <div style={{
-                  position: 'absolute',
-                  width: '60px',
-                  height: '60px',
-                  borderRadius: '50%',
-                  border: '1.5px solid rgba(255, 255, 255, 0.2)'
-                }}></div>
-
-                <div className="radar-sweep-beam" style={{
-                  position: 'absolute',
-                  width: '90px',
-                  height: '90px',
-                  top: 0,
-                  right: 0,
-                  background: 'conic-gradient(from 0deg, rgba(196, 242, 121, 0.5) 0deg, transparent 60deg)',
-                  borderRadius: '100% 0 0 0'
-                }}></div>
-
-                <div style={{
-                  width: '16px',
-                  height: '16px',
-                  borderRadius: '50%',
-                  background: p2pStatus === 'connected' ? '#22c55e' : 'var(--nb-green)',
-                  border: '2px solid #fff',
-                  boxShadow: '0 0 10px var(--nb-green)'
-                }}></div>
-
-                {connectedDevice && (
-                  <div style={{
-                    position: 'absolute',
-                    top: '25px',
-                    right: '30px',
-                    background: 'var(--nb-pink)',
-                    border: '2px solid #000',
-                    borderRadius: '50%',
-                    width: '32px',
-                    height: '32px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '0.9rem',
-                    boxShadow: '0 0 8px #fff'
-                  }}>💻</div>
-                )}
+                🌐
               </div>
-
-              <div style={{ fontSize: '0.85rem', fontWeight: 800 }}>
-                {p2pStatus === 'connected' ? (
-                  <span>{text.statusConnected}: <span style={{ color: 'var(--nb-purple)' }}>{connectedDevice?.name}</span></span>
-                ) : (
-                  <span>{text.radarWaiting}</span>
-                )}
+              <div>
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 900, marginBottom: '2px' }}>
+                  {lang === 'fa' ? 'آماده برقراری ارتباط در شبکه محلی شما' : 'Ready to Beam across Local Network'}
+                </h3>
+                <p style={{ fontSize: '0.8rem', color: '#475569', fontWeight: 600 }}>
+                  {lang === 'fa' 
+                    ? 'برای انتقال فایل نیازی نیست هر دو دستگاه سیم‌کارت یا بسته اینترنت داشته باشند. فقط به یک مودم یا هات‌اسپات وصل باشید!'
+                    : 'No internet connection or SIM cards needed. Just be on the same local Wi-Fi router or personal hotspot!'}
+                </p>
               </div>
             </div>
 
-            {/* 2. Mobile Dropzone & Send Button */}
-            <div className="nb-card nb-card-pink" style={{ padding: '16px', marginBottom: '16px' }}>
-              <label className="nb-dropzone" style={{ padding: '16px 10px', background: '#fff', marginBottom: '12px' }}>
-                <input type="file" onChange={handleFileChange} style={{ display: 'none' }} />
-                <div style={{ fontSize: '1.6rem' }}>📸 📁</div>
-                <div style={{ fontWeight: 800, fontSize: '0.85rem', marginTop: '4px' }}>
-                  {selectedFile ? selectedFile.name : text.dropzoneText}
-                </div>
-                {selectedFile && (
-                  <div style={{ fontSize: '0.75rem', color: '#666' }}>
-                    {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB • {text.readyToSend}
-                  </div>
-                )}
-              </label>
-
-              <button
-                onClick={handleSendFileReal}
-                disabled={isTransferring}
-                className="nb-btn nb-btn-dark"
-                style={{ width: '100%', padding: '12px', fontSize: '0.85rem' }}
-              >
-                {isTransferring ? text.sendingBtn : text.sendBtn}
-              </button>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <span className="nb-pill" style={{ background: '#f1f5f9' }}>
+                ✓ {lang === 'fa' ? 'پورت باز 8080' : 'Port 8080 Open'}
+              </span>
+              <span className="nb-pill" style={{ background: '#f1f5f9' }}>
+                📶 {lang === 'fa' ? 'Wi-Fi متصل' : 'Wi-Fi Connected'}
+              </span>
             </div>
-
-            {/* 3. Mobile Clipboard Sync */}
-            <div className="nb-card nb-card-yellow" style={{ padding: '16px', marginBottom: '16px' }}>
-              <div style={{ fontSize: '0.8rem', fontWeight: 800, marginBottom: '8px', display: 'flex', justifyContent: 'space-between' }}>
-                <span>{text.sharedClipboard}</span>
-                {copiedNotification && <span style={{ color: '#16a34a' }}>{text.sentToast}</span>}
-              </div>
-              <form onSubmit={handleSendClipboardReal} style={{ display: 'flex', gap: '6px' }}>
-                <input
-                  type="text"
-                  placeholder={text.clipboardPlaceholder}
-                  value={clipboardText}
-                  onChange={(e) => setClipboardText(e.target.value)}
-                  style={{
-                    flex: 1,
-                    padding: '8px 10px',
-                    borderRadius: '10px',
-                    border: 'var(--border-medium)',
-                    fontFamily: 'var(--font-sans)',
-                    fontSize: '0.8rem',
-                    fontWeight: 600,
-                    outline: 'none'
-                  }}
-                />
-                <button type="submit" className="nb-btn nb-btn-dark" style={{ padding: '8px 12px', fontSize: '0.8rem' }}>
-                  {text.sendClipboardBtn}
-                </button>
-              </form>
-            </div>
-
-            {/* QR Button */}
-            <button
-              onClick={() => setShowQRModal(true)}
-              className="nb-btn nb-btn-white"
-              style={{ width: '100%', padding: '10px', fontSize: '0.8rem' }}
-            >
-              {text.scanQrBtn}
-            </button>
-
           </div>
 
+          {/* Action Dock / Main CTA Buttons */}
           <div style={{
             display: 'flex',
-            justifyContent: 'space-around',
+            justifyContent: 'center',
             alignItems: 'center',
-            background: 'var(--nb-dark)',
-            padding: '12px 10px',
-            borderTop: 'var(--border-thick)'
+            gap: '14px',
+            flexWrap: 'wrap',
+            marginBottom: '36px'
           }}>
-            <button style={{ background: 'none', border: 'none', color: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer' }}>
-              <span style={{ fontSize: '1.2rem' }}>📡</span>
-              <span style={{ fontSize: '0.65rem', fontWeight: 700, marginTop: '2px', color: 'var(--nb-yellow)' }}>Radar</span>
+            <button
+              onClick={() => setViewMode('desktop')}
+              className="nb-btn nb-btn-dark"
+              style={{ padding: '14px 28px', fontSize: '1.05rem', minWidth: '280px' }}
+            >
+              <span>⚡</span> {lang === 'fa' ? 'شروع انتقال فایل • Start Beaming' : 'Start Beaming Files • P2P Hub'}
             </button>
-            <button onClick={() => setShowQRModal(true)} style={{ background: 'none', border: 'none', color: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer' }}>
-              <span style={{ fontSize: '1.2rem' }}>📷</span>
-              <span style={{ fontSize: '0.65rem', fontWeight: 700, marginTop: '2px' }}>QR</span>
+
+            <button
+              onClick={() => setShowTechModal(true)}
+              className="nb-btn nb-btn-white"
+              style={{ padding: '14px 24px', fontSize: '0.95rem' }}
+            >
+              <span>📖</span> {lang === 'fa' ? 'راهنمای فنی آفلاین' : 'Offline Tech Docs'}
             </button>
-            <button onClick={() => setViewMode('desktop')} style={{ background: 'none', border: 'none', color: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer' }}>
-              <span style={{ fontSize: '1.2rem' }}>💻</span>
-              <span style={{ fontSize: '0.65rem', fontWeight: 700, marginTop: '2px' }}>Desktop</span>
+
+            <button
+              onClick={() => setViewMode('desktop')}
+              className="nb-btn nb-btn-yellow"
+              style={{ padding: '14px 22px', fontSize: '0.95rem' }}
+            >
+              {lang === 'fa' ? 'ورود به رادار اصلی ➔' : 'Open Radar & Dropzone ➔'}
             </button>
           </div>
+
+          {/* Footer Dock */}
+          <footer style={{
+            borderTop: 'var(--border-thick)',
+            padding: '24px 10px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: '12px',
+            flexWrap: 'wrap'
+          }}>
+            <span style={{
+              background: 'var(--nb-yellow)',
+              border: 'var(--border-medium)',
+              borderRadius: 'var(--radius-pill)',
+              padding: '6px 14px',
+              fontSize: '0.8rem',
+              fontWeight: 900,
+              boxShadow: 'var(--shadow-hard-sm)'
+            }}>
+              Mr. Builder • 30 Day App Challenge
+            </span>
+
+            <a
+              href="https://github.com/mrbuilder-dev/30day-app-challenge"
+              target="_blank"
+              rel="noreferrer"
+              className="nb-btn nb-btn-white"
+              style={{ padding: '6px 14px', fontSize: '0.8rem' }}
+            >
+              🐙 Source on GitHub
+            </a>
+
+            <a
+              href="https://x.com/MrBuildersai"
+              target="_blank"
+              rel="noreferrer"
+              className="nb-btn nb-btn-white"
+              style={{ padding: '6px 14px', fontSize: '0.8rem' }}
+            >
+              𝕏 Developer Twitter
+            </a>
+
+            <a
+              href="https://t.me/MrbuildersAI"
+              target="_blank"
+              rel="noreferrer"
+              className="nb-btn nb-btn-white"
+              style={{ padding: '6px 14px', fontSize: '0.8rem' }}
+            >
+              ✈️ Telegram Channel
+            </a>
+          </footer>
 
         </div>
       )}
 
       {/* ========================================================
-          VIEWPORT 2: DESKTOP WEB DASHBOARD (Google Stitch Layout)
+          SCREEN 2: P2P TRANSFER HUB (DESKTOP CARDS - IMAGE 2)
       ======================================================== */}
       {viewMode === 'desktop' && (
         <div>
@@ -979,19 +1124,16 @@ export default function App() {
               </div>
             </div>
 
-            {/* Quick Action Buttons Group: ONLY 1 Guide Button (next to Copy Link) */}
+            {/* Quick Action Buttons Group */}
             <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
-              
-              {/* Single 3-Step Guide Button */}
               <button
-                onClick={() => setShowGuide(!showGuide)}
-                className={`nb-btn ${showGuide ? 'nb-btn-pink' : 'nb-btn-yellow'}`}
+                onClick={() => setViewMode('guide')}
+                className="nb-btn nb-btn-yellow"
                 style={{ fontSize: '0.85rem', padding: '8px 14px' }}
               >
                 {text.guideBtn}
               </button>
 
-              {/* Copy Pairing Link Button */}
               <button
                 onClick={handleCopyPairingLink}
                 className="nb-btn nb-btn-white"
@@ -1000,7 +1142,6 @@ export default function App() {
                 {copyLinkSuccess ? text.copied : text.copyLink}
               </button>
 
-              {/* Scan QR Code Button */}
               <button
                 onClick={() => setShowQRModal(true)}
                 className="nb-btn nb-btn-white"
@@ -1008,6 +1149,39 @@ export default function App() {
               >
                 {text.scanQR}
               </button>
+
+              <button
+                onClick={() => handleLanguageChange(lang === 'fa' ? 'en' : 'fa')}
+                className="nb-btn nb-btn-yellow"
+                style={{ fontSize: '0.85rem', padding: '8px 14px' }}
+              >
+                {lang === 'fa' ? 'EN / FA' : 'FA / EN'}
+              </button>
+
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '6px 14px',
+                borderRadius: '20px',
+                border: 'var(--border-medium)',
+                background: p2pStatus === 'connected' ? '#dcfce7' : p2pStatus === 'connecting' ? '#fef3c7' : '#fff',
+                fontSize: '0.78rem',
+                fontWeight: 800,
+                color: p2pStatus === 'connected' ? '#15803d' : '#121316'
+              }}>
+                <span style={{
+                  width: '8px',
+                  height: '8px',
+                  borderRadius: '50%',
+                  background: p2pStatus === 'connected' ? '#22c55e' : p2pStatus === 'connecting' ? '#eab308' : '#9ca3af'
+                }}></span>
+                {p2pStatus === 'connected' 
+                  ? `${text.statusConnected}: ${connectedDevice ? connectedDevice.name : text.remotePeerPlaceholder}`
+                  : p2pStatus === 'connecting' 
+                    ? text.statusConnecting 
+                    : `${text.statusReady} (${myPeerId || '...'})`}
+              </div>
             </div>
           </header>
 
@@ -1373,7 +1547,7 @@ export default function App() {
 
           </div>
 
-          {/* Bottom Floating Dock (Cleaned Up: No Internal Creator Dashboard) */}
+          {/* Bottom Floating Dock */}
           <div style={{ marginTop: '40px', display: 'flex', justifyContent: 'center' }}>
             <div style={{
               display: 'inline-flex',
@@ -1426,7 +1600,207 @@ export default function App() {
       )}
 
       {/* ========================================================
-          GOOGLE STITCH ACTIVE DATA BEAM MODAL
+          SCREEN 3: MOBILE APP PREVIEW FRAME (STITCH MOBILE SCREEN)
+      ======================================================== */}
+      {viewMode === 'mobile' && (
+        <div className="mobile-phone-frame">
+          
+          <div className="mobile-status-bar">
+            <span>9:41</span>
+            <span>LocalBeam P2P</span>
+            <span>100% 🔋</span>
+          </div>
+
+          <div style={{ padding: '18px 16px', background: '#f4f0ff', minHeight: '620px' }}>
+            
+            {/* 1. Radar Screen */}
+            <div className="nb-card nb-card-white" style={{
+              padding: '18px',
+              textAlign: 'center',
+              marginBottom: '16px',
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                <span className="nb-pill" style={{
+                  fontSize: '0.72rem',
+                  background: p2pStatus === 'connected' ? 'var(--nb-green)' : 'var(--nb-yellow)'
+                }}>
+                  {p2pStatus === 'connected' ? text.radarConnected : text.radarAuto}
+                </span>
+                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#555' }}>
+                  {text.roomCode}: {myPeerId || '...'}
+                </span>
+              </div>
+
+              {/* Animated Radar Graphic */}
+              <div style={{
+                width: '180px',
+                height: '180px',
+                margin: '10px auto 14px',
+                borderRadius: '50%',
+                border: 'var(--border-thick)',
+                background: 'linear-gradient(135deg, #121316, #242730)',
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: 'inset 0 0 20px rgba(157, 132, 246, 0.4)'
+              }}>
+                <div style={{
+                  position: 'absolute',
+                  width: '120px',
+                  height: '120px',
+                  borderRadius: '50%',
+                  border: '1.5px dashed rgba(255, 255, 255, 0.3)'
+                }}></div>
+                <div style={{
+                  position: 'absolute',
+                  width: '60px',
+                  height: '60px',
+                  borderRadius: '50%',
+                  border: '1.5px solid rgba(255, 255, 255, 0.2)'
+                }}></div>
+
+                <div className="radar-sweep-beam" style={{
+                  position: 'absolute',
+                  width: '90px',
+                  height: '90px',
+                  top: 0,
+                  right: 0,
+                  background: 'conic-gradient(from 0deg, rgba(196, 242, 121, 0.5) 0deg, transparent 60deg)',
+                  borderRadius: '100% 0 0 0'
+                }}></div>
+
+                <div style={{
+                  width: '16px',
+                  height: '16px',
+                  borderRadius: '50%',
+                  background: p2pStatus === 'connected' ? '#22c55e' : 'var(--nb-green)',
+                  border: '2px solid #fff',
+                  boxShadow: '0 0 10px var(--nb-green)'
+                }}></div>
+
+                {connectedDevice && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '25px',
+                    right: '30px',
+                    background: 'var(--nb-pink)',
+                    border: '2px solid #000',
+                    borderRadius: '50%',
+                    width: '32px',
+                    height: '32px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '0.9rem',
+                    boxShadow: '0 0 8px #fff'
+                  }}>💻</div>
+                )}
+              </div>
+
+              <div style={{ fontSize: '0.85rem', fontWeight: 800 }}>
+                {p2pStatus === 'connected' ? (
+                  <span>{text.statusConnected}: <span style={{ color: 'var(--nb-purple)' }}>{connectedDevice?.name}</span></span>
+                ) : (
+                  <span>{text.radarWaiting}</span>
+                )}
+              </div>
+            </div>
+
+            {/* 2. Mobile Dropzone & Send Button */}
+            <div className="nb-card nb-card-pink" style={{ padding: '16px', marginBottom: '16px' }}>
+              <label className="nb-dropzone" style={{ padding: '16px 10px', background: '#fff', marginBottom: '12px' }}>
+                <input type="file" onChange={handleFileChange} style={{ display: 'none' }} />
+                <div style={{ fontSize: '1.6rem' }}>📸 📁</div>
+                <div style={{ fontWeight: 800, fontSize: '0.85rem', marginTop: '4px' }}>
+                  {selectedFile ? selectedFile.name : text.dropzoneText}
+                </div>
+                {selectedFile && (
+                  <div style={{ fontSize: '0.75rem', color: '#666' }}>
+                    {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB • {text.readyToSend}
+                  </div>
+                )}
+              </label>
+
+              <button
+                onClick={handleSendFileReal}
+                disabled={isTransferring}
+                className="nb-btn nb-btn-dark"
+                style={{ width: '100%', padding: '12px', fontSize: '0.85rem' }}
+              >
+                {isTransferring ? text.sendingBtn : text.sendBtn}
+              </button>
+            </div>
+
+            {/* 3. Mobile Clipboard Sync */}
+            <div className="nb-card nb-card-yellow" style={{ padding: '16px', marginBottom: '16px' }}>
+              <div style={{ fontSize: '0.8rem', fontWeight: 800, marginBottom: '8px', display: 'flex', justifyContent: 'space-between' }}>
+                <span>{text.sharedClipboard}</span>
+                {copiedNotification && <span style={{ color: '#16a34a' }}>{text.sentToast}</span>}
+              </div>
+              <form onSubmit={handleSendClipboardReal} style={{ display: 'flex', gap: '6px' }}>
+                <input
+                  type="text"
+                  placeholder={text.clipboardPlaceholder}
+                  value={clipboardText}
+                  onChange={(e) => setClipboardText(e.target.value)}
+                  style={{
+                    flex: 1,
+                    padding: '8px 10px',
+                    borderRadius: '10px',
+                    border: 'var(--border-medium)',
+                    fontFamily: 'var(--font-sans)',
+                    fontSize: '0.8rem',
+                    fontWeight: 600,
+                    outline: 'none'
+                  }}
+                />
+                <button type="submit" className="nb-btn nb-btn-dark" style={{ padding: '8px 12px', fontSize: '0.8rem' }}>
+                  {text.sendClipboardBtn}
+                </button>
+              </form>
+            </div>
+
+            {/* QR Button */}
+            <button
+              onClick={() => setShowQRModal(true)}
+              className="nb-btn nb-btn-white"
+              style={{ width: '100%', padding: '10px', fontSize: '0.8rem' }}
+            >
+              {text.scanQrBtn}
+            </button>
+
+          </div>
+
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-around',
+            alignItems: 'center',
+            background: 'var(--nb-dark)',
+            padding: '12px 10px',
+            borderTop: 'var(--border-thick)'
+          }}>
+            <button style={{ background: 'none', border: 'none', color: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer' }}>
+              <span style={{ fontSize: '1.2rem' }}>📡</span>
+              <span style={{ fontSize: '0.65rem', fontWeight: 700, marginTop: '2px', color: 'var(--nb-yellow)' }}>Radar</span>
+            </button>
+            <button onClick={() => setShowQRModal(true)} style={{ background: 'none', border: 'none', color: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer' }}>
+              <span style={{ fontSize: '1.2rem' }}>📷</span>
+              <span style={{ fontSize: '0.65rem', fontWeight: 700, marginTop: '2px' }}>QR</span>
+            </button>
+            <button onClick={() => setViewMode('desktop')} style={{ background: 'none', border: 'none', color: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer' }}>
+              <span style={{ fontSize: '1.2rem' }}>💻</span>
+              <span style={{ fontSize: '0.65rem', fontWeight: 700, marginTop: '2px' }}>Desktop</span>
+            </button>
+          </div>
+
+        </div>
+      )}
+
+      {/* ========================================================
+          ACTIVE DATA BEAM MODAL (FROM GOOGLE STITCH)
       ======================================================== */}
       {showTransferModal && (
         <div style={{
@@ -1645,6 +2019,101 @@ export default function App() {
               </button>
 
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================
+          OFFLINE TECHNICAL DOCUMENTATION MODAL (FROM STITCH)
+      ======================================================== */}
+      {showTechModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0, 0, 0, 0.7)',
+          backdropFilter: 'blur(4px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '20px',
+          zIndex: 99999
+        }}>
+          <div className="nb-card" style={{
+            maxWidth: '560px',
+            width: '100%',
+            background: '#ffffff',
+            borderRadius: '24px',
+            padding: '24px',
+            boxShadow: 'var(--shadow-hard-lg)'
+          }}>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              borderBottom: 'var(--border-thick)',
+              paddingBottom: '12px',
+              marginBottom: '16px'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '1.4rem' }}>💻</span>
+                <h3 style={{ fontSize: '1.2rem', fontWeight: 900 }}>
+                  {lang === 'fa' ? 'پروتکل فنی LocalBeam' : 'LocalBeam Technical Protocol'}
+                </h3>
+              </div>
+              <button
+                onClick={() => setShowTechModal(false)}
+                className="nb-btn nb-btn-pink"
+                style={{ width: '32px', height: '32px', padding: 0, borderRadius: '8px' }}
+              >
+                ✕
+              </button>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px' }}>
+              <div style={{ background: '#f8fafc', borderRadius: '14px', border: 'var(--border-medium)', padding: '12px' }}>
+                <h4 style={{ fontWeight: 900, fontSize: '0.9rem', marginBottom: '4px' }}>
+                  {lang === 'fa' ? '۱. نحوه کشف دستگاه‌ها (mDNS & LAN Broadcast)' : '1. Device Discovery (mDNS & LAN Broadcast)'}
+                </h4>
+                <p style={{ fontSize: '0.8rem', color: '#475569', lineHeight: 1.5 }}>
+                  {lang === 'fa'
+                    ? 'برنامه از پورت‌های محلی برای ارسال بسته لرزشی (Beacon) استفاده می‌کند. هیچ داده‌ای به خارج از شبکه وای‌فای ارسال نخواهد شد.'
+                    : 'The app discovers local nodes inside the router. Zero packets travel to the public internet.'}
+                </p>
+              </div>
+
+              <div style={{ background: '#f8fafc', borderRadius: '14px', border: 'var(--border-medium)', padding: '12px' }}>
+                <h4 style={{ fontWeight: 900, fontSize: '0.9rem', marginBottom: '4px' }}>
+                  {lang === 'fa' ? '۲. لایه انتقال داده (SCTP over DTLS)' : '2. Transport Layer (SCTP over DTLS)'}
+                </h4>
+                <p style={{ fontSize: '0.8rem', color: '#475569', lineHeight: 1.5 }}>
+                  {lang === 'fa'
+                    ? 'فایل‌ها به قطعات ۱۶ تا ۶۴ کیلوبایتی بافر شده تبدیل و از طریق سوکت امن با حداکثر توان کارت شبکه Wi-Fi جابجا می‌شوند.'
+                    : 'Files are streamed in 16KB/64KB binary chunks with hardware flow control at full Wi-Fi capability.'}
+                </p>
+              </div>
+
+              <div style={{ background: '#f8fafc', borderRadius: '14px', border: 'var(--border-medium)', padding: '12px' }}>
+                <h4 style={{ fontWeight: 900, fontSize: '0.9rem', marginBottom: '4px' }}>
+                  {lang === 'fa' ? '۳. سازگاری متقابل سیستم‌عامل‌ها' : '3. Cross-Platform Interoperability'}
+                </h4>
+                <p style={{ fontSize: '0.8rem', color: '#475569', lineHeight: 1.5 }}>
+                  {lang === 'fa'
+                    ? 'کاملاً مبتنی بر مرورگرهای وب بدون نیاز به نصب هرگونه درایور یا اکستنشن در ویندوز، مک، لینوکس، اندروید و iOS.'
+                    : '100% in-browser WebRTC DataChannels across Chromium, Safari, Firefox, iOS, and Android without plugins.'}
+                </p>
+              </div>
+            </div>
+
+            <button
+              onClick={() => { setShowTechModal(false); setViewMode('desktop'); }}
+              className="nb-btn nb-btn-green"
+              style={{ width: '100%', padding: '12px', fontSize: '0.9rem' }}
+            >
+              {lang === 'fa' ? 'متوجه شدم • بریم برای تست!' : 'Understood • Start Testing!'}
+            </button>
           </div>
         </div>
       )}

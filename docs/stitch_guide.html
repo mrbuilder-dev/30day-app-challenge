@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="fa"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LocalBeam • راهنمای ۳ مرحله‌ای انتقال فایل آفلاین</title>
+<!-- Material Symbols Font -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Plus Jakarta Sans, JetBrains Mono, Vazirmatn -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&amp;family=Plus+Jakarta+Sans:wght@700;800;900&amp;family=Vazirmatn:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS with Forms and Container Queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-tertiary": "#ffffff",
+            "on-error": "#ffffff",
+            "surface-bright": "#f9f9f9",
+            "secondary-fixed": "#ffdf96",
+            "error-container": "#ffdad6",
+            "on-surface-variant": "#484552",
+            "surface-container-high": "#e8e8e8",
+            "inverse-primary": "#ccbdff",
+            "primary-fixed-dim": "#ccbdff",
+            "inverse-surface": "#303030",
+            "tertiary-container": "#79a233",
+            "on-background": "#1b1b1b",
+            "on-primary-fixed-variant": "#4c31a0",
+            "on-tertiary-fixed-variant": "#344e00",
+            "on-error-container": "#93000a",
+            "outline": "#797584",
+            "secondary-fixed-dim": "#eec148",
+            "surface-container-low": "#f3f3f3",
+            "surface-container-highest": "#e2e2e2",
+            "surface": "#f9f9f9",
+            "secondary-container": "#fdcf55",
+            "primary-fixed": "#e7deff",
+            "inverse-on-surface": "#f1f1f1",
+            "primary-container": "#9d84f6",
+            "on-primary": "#ffffff",
+            "on-secondary-fixed-variant": "#5a4400",
+            "on-secondary-fixed": "#251a00",
+            "surface-variant": "#e2e2e2",
+            "background": "#f9f9f9",
+            "on-secondary-container": "#735800",
+            "tertiary-fixed": "#c4f279",
+            "on-secondary": "#ffffff",
+            "surface-container-lowest": "#ffffff",
+            "secondary": "#765a00",
+            "surface-dim": "#dadada",
+            "tertiary-fixed-dim": "#a8d560",
+            "on-primary-fixed": "#1f005f",
+            "surface-tint": "#644bb9",
+            "on-tertiary-fixed": "#121f00",
+            "error": "#ba1a1a",
+            "primary": "#644bb9",
+            "outline-variant": "#cac4d4",
+            "on-tertiary-container": "#213300",
+            "surface-container": "#eeeeee",
+            "on-surface": "#1b1b1b",
+            "on-primary-container": "#330e87",
+            "tertiary": "#466800"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "margin": "1.5rem",
+            "space-sm": "0.5rem",
+            "margin-mobile": "1rem",
+            "space-xl": "2.5rem",
+            "space-xs": "0.25rem",
+            "gutter": "1.5rem",
+            "space-lg": "1.5rem",
+            "space-md": "1rem",
+            "gutter-mobile": "1rem"
+          },
+          "fontFamily": {
+            "body-lg": ["JetBrains Mono", "Vazirmatn"],
+            "display-hero-mobile": ["Plus Jakarta Sans", "Vazirmatn"],
+            "body-sm": ["JetBrains Mono", "Vazirmatn"],
+            "headline-md": ["Plus Jakarta Sans", "Vazirmatn"],
+            "label-code": ["JetBrains Mono", "Vazirmatn"],
+            "headline-lg-mobile": ["Plus Jakarta Sans", "Vazirmatn"],
+            "display-hero": ["Plus Jakarta Sans", "Vazirmatn"],
+            "headline-lg": ["Plus Jakarta Sans", "Vazirmatn"],
+            "body-md": ["JetBrains Mono", "Vazirmatn"],
+            "badge-meta": ["JetBrains Mono", "Vazirmatn"]
+          },
+          "fontSize": {
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "500" }],
+            "display-hero-mobile": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "800" }],
+            "body-sm": ["12px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "700" }],
+            "label-code": ["13px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }],
+            "headline-lg-mobile": ["22px", { "lineHeight": "30px", "fontWeight": "700" }],
+            "display-hero": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "headline-lg": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "badge-meta": ["11px", { "lineHeight": "14px", "fontWeight": "700" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 600, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    
+    /* Hard Neo-brutalist custom dropshadow tokens */
+    .neo-shadow-sm { box-shadow: 2px 2px 0px #000000; }
+    .neo-shadow-md { box-shadow: 4px 4px 0px #000000; }
+    .neo-shadow-lg { box-shadow: 6px 6px 0px #000000; }
+    .neo-shadow-xl { box-shadow: 8px 8px 0px #000000; }
+
+    /* Neo button active state */
+    .neo-btn {
+      transition: all 0.1s ease-in-out;
+    }
+    .neo-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 0px 0px 0px #000000 !important;
+    }
+
+    /* Tactile pattern background */
+    .bg-dot-pattern {
+      background-image: radial-gradient(#000000 1.2px, transparent 1.2px);
+      background-size: 20px 20px;
+    }
+
+    /* Animated pulse indicator for peer connection */
+    @keyframes pulse-beam {
+      0%, 100% { opacity: 0.3; transform: scaleX(0.85); }
+      50% { opacity: 1; transform: scaleX(1); }
+    }
+    .animate-pulse-beam {
+      animation: pulse-beam 1.4s ease-in-out infinite;
+    }
+
+    /* Striped progress bar */
+    .striped-bar {
+      background-image: repeating-linear-gradient(
+        -45deg,
+        #000000,
+        #000000 10px,
+        #ffd056 10px,
+        #ffd056 20px
+      );
+    }
+  </style>
+</head>
+<body class="bg-primary-container text-on-background min-h-screen flex flex-col font-body-md antialiased selection:bg-secondary-container selection:text-on-background relative">
+<!-- Dot Grid Pattern Overlay with low opacity for tactile retro neo-brutalism vibe -->
+<div class="fixed inset-0 bg-dot-pattern opacity-15 pointer-events-none z-0"></div>
+<!-- Shared Component: TopAppBar -->
+<header class="relative z-10 w-full bg-primary-container border-b-[2.5px] border-on-background [box-shadow:0px_4px_0px_#000000]">
+<div class="flex justify-between items-center w-full px-4 sm:px-6 py-3.5 max-w-7xl mx-auto">
+<!-- Leading Brand Cluster -->
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-secondary-container border-[2.5px] border-on-background flex items-center justify-center neo-shadow-sm">
+<span class="material-symbols-outlined text-on-background text-2xl" data-icon="flare">flare</span>
+</div>
+<div class="flex flex-col">
+<span class="text-headline-lg font-headline-lg font-black tracking-tight text-on-background uppercase leading-none">
+            LOCALBEAM
+          </span>
+<span class="text-badge-meta font-badge-meta text-on-background font-bold tracking-wider mt-0.5">
+            AirDrop تحت وب • آفلاین ۱۰۰٪
+          </span>
+</div>
+</div>
+<!-- Center & Trailing Telemetry Pills -->
+<div class="flex items-center gap-2 sm:gap-3">
+<!-- Wi-Fi Direct LAN Badge (Shared JSON trailing_action_text) -->
+<div class="hidden sm:flex items-center gap-2 bg-tertiary-fixed text-on-tertiary-fixed border-[2.5px] border-on-background font-label-code text-label-code font-bold rounded-full px-3.5 py-1 neo-shadow-sm">
+<span class="w-2.5 h-2.5 rounded-full bg-on-background animate-ping"></span>
+<span>Wi-Fi Direct LAN</span>
+</div>
+<!-- 0 Byte Internet Badge -->
+<div class="flex items-center gap-1.5 bg-surface-container-lowest text-on-background border-[2.5px] border-on-background font-label-code text-label-code font-bold rounded-full px-3 py-1 neo-shadow-sm">
+<span class="material-symbols-outlined text-sm text-error" data-icon="cloud_off">cloud_off</span>
+<span class="text-badge-meta font-badge-meta sm:text-label-code">۰ بایت اینترنت</span>
+</div>
+<!-- Language Switch Tactile Pill -->
+<button class="neo-btn bg-secondary-container text-on-background border-[2.5px] border-on-background font-label-code text-label-code font-bold rounded-full px-3 py-1 neo-shadow-sm hover:-translate-y-0.5 transition-all" id="langToggle">
+          EN / FA
+        </button>
+</div>
+</div>
+</header>
+<!-- Main Hero & 3-Step Walkthrough Canvas -->
+<main class="relative z-10 flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 md:py-10 flex flex-col justify-between">
+<!-- Header Section / Hero Banner -->
+<div class="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
+<!-- Top Micro Badge Cluster -->
+<div class="inline-flex items-center gap-2 bg-surface-container-lowest border-[2.5px] border-on-background rounded-full px-4 py-1.5 neo-shadow-sm mb-4">
+<span class="material-symbols-outlined text-secondary-container font-black" data-icon="auto_awesome">auto_awesome</span>
+<span class="font-label-code text-label-code font-bold text-on-background">
+          ۳ مرحله فوق‌سریع و کاملاً آفلاین • 3 Easy Steps
+        </span>
+</div>
+<!-- Main Headline -->
+<h1 class="font-display-hero text-display-hero-mobile md:text-display-hero text-on-background font-extrabold tracking-tight mb-3">
+        چگونه LocalBeam کار می‌کند؟
+      </h1>
+<!-- Subtitle Description -->
+<p class="font-body-lg text-body-lg text-on-background/90 max-w-2xl mx-auto font-medium">
+        انتقال مستقیم فایل، ویدیو و پوشه بین لپ‌تاپ، آیفون و اندروید بدون نیاز به اینترنت، کابل یا ثبت‌نام
+      </p>
+</div>
+<!-- 3-Column Bento Neo-Brutalist Deck Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-stretch mb-10">
+<!-- STEP 1 CARD (Sunny Cheddar Yellow) -->
+<div class="bg-secondary-container rounded-3xl border-[2.5px] border-on-background p-6 flex flex-col justify-between neo-shadow-lg relative overflow-hidden transition-transform duration-150 hover:-translate-y-1">
+<!-- Header Badge inside Card -->
+<div class="flex items-center justify-between gap-2 mb-5">
+<span class="bg-surface-container-lowest text-on-background border-[2.5px] border-on-background font-label-code text-label-code font-extrabold px-3 py-1 rounded-full neo-shadow-sm">
+            مرحله ۱ • STEP 01
+          </span>
+<span class="material-symbols-outlined text-2xl text-on-background" data-icon="qr_code_scanner">qr_code_scanner</span>
+</div>
+<!-- Card Title & Description -->
+<div class="mb-5">
+<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold text-on-background mb-2">
+            اسکن یا اشتراک لینک
+          </h2>
+<p class="font-body-md text-body-md text-on-background/85 leading-relaxed">
+            دستگاه‌های متصل به وای‌فای مشترک را رادار هوشمند به‌صورت خودکار شناسایی می‌کند، یا با اسکن یک کد QR سریع به یکدیگر متصل شوید.
+          </p>
+</div>
+<!-- Interactive Simulated Preview Module (White Box with 2.5px border) -->
+<div class="bg-surface-container-lowest border-[2.5px] border-on-background rounded-2xl p-4 mb-5 neo-shadow-sm flex flex-col gap-3">
+<div class="flex items-center justify-between text-badge-meta font-badge-meta text-on-background border-b-[2px] border-dashed border-on-background pb-2">
+<span class="flex items-center gap-1 font-bold">
+<span class="material-symbols-outlined text-sm" data-icon="radar">radar</span>
+              رادار خودکار دستگاه‌ها
+            </span>
+<span class="bg-tertiary-fixed text-on-tertiary-fixed px-2 py-0.5 rounded-full border-[1.5px] border-on-background">فعال</span>
+</div>
+<!-- Simulated QR & Peer preview -->
+<div class="flex items-center gap-3 bg-surface-container p-2.5 rounded-xl border-[2px] border-on-background">
+<div class="w-14 h-14 bg-surface-container-lowest border-[2px] border-on-background rounded-lg flex items-center justify-center p-1">
+<span class="material-symbols-outlined text-4xl text-on-background" data-icon="qr_code_2">qr_code_2</span>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<span class="font-label-code text-label-code font-bold truncate">آیفون ۱۵ (iPhone 15 Pro)</span>
+<span class="font-badge-meta text-badge-meta text-outline truncate" dir="ltr">192.168.1.34:8080</span>
+<span class="text-badge-meta font-badge-meta text-on-background flex items-center gap-1 mt-0.5 font-bold">
+<span class="w-2 h-2 rounded-full bg-tertiary-container"></span>
+                آماده جفت‌سازی
+              </span>
+</div>
+</div>
+<!-- Mini Action: Copy LAN URL -->
+<button class="neo-btn w-full bg-secondary-fixed text-on-background font-label-code text-label-code font-bold py-2 px-3 rounded-xl border-[2px] border-on-background flex items-center justify-center gap-1.5 hover:bg-secondary-container" id="btnCopyLan">
+<span class="material-symbols-outlined text-base" data-icon="content_copy">content_copy</span>
+<span>کپی آدرس LAN</span>
+</button>
+</div>
+<!-- Monospace Technical Pill Tag -->
+<div class="flex items-center justify-between bg-on-background text-surface-container-lowest px-3 py-1.5 rounded-full font-label-code text-badge-meta" dir="ltr">
+<span>mDNS Peer Discovery</span>
+<span class="text-secondary-fixed font-bold">192.168.1.*</span>
+</div>
+</div>
+<!-- STEP 2 CARD (Fresh Lime Green) -->
+<div class="bg-tertiary-fixed rounded-3xl border-[2.5px] border-on-background p-6 flex flex-col justify-between neo-shadow-lg relative overflow-hidden transition-transform duration-150 hover:-translate-y-1">
+<!-- Header Badge inside Card -->
+<div class="flex items-center justify-between gap-2 mb-5">
+<span class="bg-surface-container-lowest text-on-background border-[2.5px] border-on-background font-label-code text-label-code font-extrabold px-3 py-1 rounded-full neo-shadow-sm">
+            مرحله ۲ • STEP 02
+          </span>
+<span class="material-symbols-outlined text-2xl text-on-background" data-icon="wifi_tethering">wifi_tethering</span>
+</div>
+<!-- Card Title & Description -->
+<div class="mb-5">
+<div class="flex items-center gap-2 mb-1">
+<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold text-on-background">
+              دست‌تکانی مستقیم LAN
+            </h2>
+</div>
+<span class="inline-block bg-surface-container-lowest text-on-background border-[1.5px] border-on-background text-badge-meta font-badge-meta px-2 py-0.5 rounded-md font-bold mb-2">
+            بدون عبور از سرور اینترنتی
+          </span>
+<p class="font-body-md text-body-md text-on-background/85 leading-relaxed">
+            اتصال امن و همتا-به-همتا (WebRTC Direct DataChannel) بدون آپلود به کلود و با رمزنگاری سرتاسری انجام می‌شود.
+          </p>
+</div>
+<!-- Interactive Simulated Preview Module: Visual P2P Bridge -->
+<div class="bg-surface-container-lowest border-[2.5px] border-on-background rounded-2xl p-4 mb-5 neo-shadow-sm flex flex-col gap-3">
+<div class="flex items-center justify-between text-badge-meta font-badge-meta text-on-background border-b-[2px] border-dashed border-on-background pb-2">
+<span class="font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="lock">lock</span>
+              امنیت E2EE مستقیم
+            </span>
+<span class="bg-secondary-container px-2 py-0.5 rounded-full border-[1.5px] border-on-background font-bold">DTLS / SCTP</span>
+</div>
+<!-- Peer Node A to Node B Diagram -->
+<div class="flex items-center justify-between py-2 px-1">
+<!-- Host Mac -->
+<div class="flex flex-col items-center">
+<div class="w-12 h-12 rounded-2xl bg-surface-container-highest border-[2px] border-on-background flex items-center justify-center neo-shadow-sm">
+<span class="material-symbols-outlined text-2xl text-on-background" data-icon="laptop_mac">laptop_mac</span>
+</div>
+<span class="font-label-code text-badge-meta font-bold mt-1">مک‌بوک پرو</span>
+</div>
+<!-- Animated Direct Channel Beam -->
+<div class="flex-1 mx-2 flex flex-col items-center">
+<div class="w-full flex items-center justify-center relative">
+<div class="w-full h-1.5 bg-on-background rounded-full"></div>
+<div class="absolute w-4 h-4 rounded-full bg-secondary-container border-[2px] border-on-background animate-pulse-beam"></div>
+</div>
+<span class="font-badge-meta text-badge-meta text-on-background font-black tracking-widest mt-1">DIRECT</span>
+</div>
+<!-- Target Phone -->
+<div class="flex flex-col items-center">
+<div class="w-12 h-12 rounded-2xl bg-primary-container border-[2px] border-on-background flex items-center justify-center neo-shadow-sm">
+<span class="material-symbols-outlined text-2xl text-on-background" data-icon="smartphone">smartphone</span>
+</div>
+<span class="font-label-code text-badge-meta font-bold mt-1">آیفون ۱۵</span>
+</div>
+</div>
+<!-- Security Badge Capsule -->
+<div class="bg-surface-container border-[1.5px] border-on-background rounded-xl p-2 flex items-center justify-between text-badge-meta font-badge-meta">
+<span class="flex items-center gap-1 font-bold">
+<span class="material-symbols-outlined text-sm text-tertiary" data-icon="verified_user">verified_user</span>
+              تأیید گواهی نشست
+            </span>
+<span class="font-label-code text-on-background font-bold">TLS 1.3 Verified</span>
+</div>
+</div>
+<!-- Monospace Technical Pill Tag -->
+<div class="flex items-center justify-between bg-on-background text-surface-container-lowest px-3 py-1.5 rounded-full font-label-code text-badge-meta" dir="ltr">
+<span>WebRTC DataChannel</span>
+<span class="text-tertiary-fixed font-bold">Zero Cloud Hops</span>
+</div>
+</div>
+<!-- STEP 3 CARD (Bubblegum Pastel Pink) -->
+<div class="bg-[#ffaec8] rounded-3xl border-[2.5px] border-on-background p-6 flex flex-col justify-between neo-shadow-lg relative overflow-hidden transition-transform duration-150 hover:-translate-y-1">
+<!-- Header Badge inside Card -->
+<div class="flex items-center justify-between gap-2 mb-5">
+<span class="bg-surface-container-lowest text-on-background border-[2.5px] border-on-background font-label-code text-label-code font-extrabold px-3 py-1 rounded-full neo-shadow-sm">
+            مرحله ۳ • STEP 03
+          </span>
+<span class="material-symbols-outlined text-2xl text-on-background" data-icon="rocket_launch">rocket_launch</span>
+</div>
+<!-- Card Title & Description -->
+<div class="mb-5">
+<div class="flex items-center gap-2 mb-1">
+<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold text-on-background">
+              انتقال موشکی ۶۰MB/s
+            </h2>
+</div>
+<span class="inline-block bg-surface-container-lowest text-on-background border-[1.5px] border-on-background text-badge-meta font-badge-meta px-2 py-0.5 rounded-md font-bold mb-2">
+            بدون فشرده‌سازی و محدودیت حجم
+          </span>
+<p class="font-body-md text-body-md text-on-background/85 leading-relaxed">
+            عکس‌ها، ویدیوهای حجیم 4K یا پوشه‌های سنگین را بکشید و رها کنید؛ فایل‌ها با حداکثر ظرفیت پهنای‌باند جابجا می‌شوند.
+          </p>
+</div>
+<!-- Interactive Simulated Preview Module: Live Speedometer -->
+<div class="bg-surface-container-lowest border-[2.5px] border-on-background rounded-2xl p-4 mb-5 neo-shadow-sm flex flex-col gap-3">
+<div class="flex items-center justify-between text-badge-meta font-badge-meta text-on-background border-b-[2px] border-dashed border-on-background pb-2">
+<span class="font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="speed">speed</span>
+              سرعت کنونی انتقال
+            </span>
+<span class="bg-secondary-container px-2 py-0.5 rounded-full border-[1.5px] border-on-background font-black">
+              پینگ: ۱ میلی‌ثانیه
+            </span>
+</div>
+<!-- Speed Big Readout -->
+<div class="flex items-baseline justify-between">
+<div class="flex items-baseline gap-1" dir="ltr">
+<span class="text-4xl font-extrabold tracking-tight font-display-hero" id="speedCounter">58.4</span>
+<span class="font-label-code text-label-code font-bold">MB/s</span>
+</div>
+<span class="text-badge-meta font-badge-meta text-on-background bg-tertiary-fixed border-[1.5px] border-on-background px-2 py-0.5 rounded-md font-bold">
+              LAN 5GHz
+            </span>
+</div>
+<!-- Neo-Brutalist Striped Progress Bar Capsule -->
+<div class="w-full bg-surface-container rounded-full h-5 border-[2px] border-on-background overflow-hidden p-0.5">
+<div class="h-full striped-bar rounded-full border-r-[2px] border-on-background transition-all duration-300" id="transferProgress" style="width: 78%;"></div>
+</div>
+<div class="flex items-center justify-between text-badge-meta font-badge-meta font-bold text-outline">
+<span>فایل: RAW_4K_Video.mov</span>
+<span>۳.۲GB از ۴.۱GB</span>
+</div>
+</div>
+<!-- Monospace Technical Pill Tag -->
+<div class="flex items-center justify-between bg-on-background text-surface-container-lowest px-3 py-1.5 rounded-full font-label-code text-badge-meta" dir="ltr">
+<span>Max File Payload</span>
+<span class="text-[#ffaec8] font-bold">Unlimited 100GB+</span>
+</div>
+</div>
+</div>
+<!-- Live Interactive Network Telemetry Capsule Banner -->
+<div class="bg-surface-container-lowest border-[2.5px] border-on-background rounded-2xl p-4 sm:p-5 neo-shadow-md mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
+<div class="flex items-center gap-3 w-full md:w-auto">
+<div class="w-12 h-12 rounded-xl bg-tertiary-fixed border-[2.5px] border-on-background flex items-center justify-center shrink-0 neo-shadow-sm">
+<span class="material-symbols-outlined text-2xl text-on-background" data-icon="hub">hub</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md font-bold text-on-background leading-tight">
+            آماده برقراری ارتباط در شبکه محلی شما
+          </h3>
+<p class="font-body-sm text-body-sm text-on-background/80">
+            برای انتقال فایل نیازی نیست هر دو دستگاه سیم‌کارت یا بسته اینترنت داشته باشند. فقط به یک مودم یا هات‌اسپات وصل باشید!
+          </p>
+</div>
+</div>
+<!-- Quick Action Badges -->
+<div class="flex items-center gap-2 w-full md:w-auto justify-end">
+<div class="bg-surface-container border-[2px] border-on-background rounded-full px-3 py-1.5 flex items-center gap-1.5 font-label-code text-badge-meta font-bold">
+<span class="material-symbols-outlined text-sm text-tertiary" data-icon="check_circle">check_circle</span>
+<span>پورت باز 8080</span>
+</div>
+<div class="bg-surface-container border-[2px] border-on-background rounded-full px-3 py-1.5 flex items-center gap-1.5 font-label-code text-badge-meta font-bold">
+<span class="material-symbols-outlined text-sm text-on-background" data-icon="signal_wifi_4_bar">signal_wifi_4_bar</span>
+<span>Wi-Fi متصل</span>
+</div>
+</div>
+</div>
+<!-- Bottom Action Dock / Main CTA Buttons -->
+<div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-4">
+<!-- Primary Chunky Action Button -->
+<a class="neo-btn w-full sm:w-auto min-w-[280px] bg-on-background text-surface-container-lowest border-[2.5px] border-on-background font-headline-md text-headline-md font-extrabold rounded-full px-8 py-3.5 flex items-center justify-center gap-2 neo-shadow-lg hover:bg-black/90" href="#start" id="startBeamBtn">
+<span class="material-symbols-outlined text-secondary-container" data-icon="bolt">bolt</span>
+<span>شروع انتقال فایل • Start Beaming</span>
+</a>
+<!-- Secondary Ghost Button -->
+<button class="neo-btn w-full sm:w-auto bg-surface-container-lowest text-on-background border-[2.5px] border-on-background font-headline-md text-headline-md font-bold rounded-full px-6 py-3.5 flex items-center justify-center gap-2 neo-shadow-md hover:bg-surface-container-high" id="offlineDocBtn">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+<span>راهنمای فنی آفلاین</span>
+</button>
+<!-- Dismiss / Skip to App -->
+<button class="neo-btn w-full sm:w-auto bg-secondary-container text-on-background border-[2.5px] border-on-background font-label-code text-label-code font-bold rounded-full px-5 py-3.5 flex items-center justify-center gap-1.5 neo-shadow-md" id="skipBtn">
+<span>ورود به رادار اصلی</span>
+<span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</main>
+<!-- Interactive Modal: Offline Technical Documentation (Hidden by default) -->
+<div class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden" id="techDocModal">
+<div class="bg-surface-container-lowest border-[3px] border-on-background rounded-3xl max-w-lg w-full p-6 neo-shadow-xl relative">
+<div class="flex items-center justify-between border-b-[2.5px] border-on-background pb-3 mb-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary-container text-2xl" data-icon="terminal">terminal</span>
+<h3 class="font-headline-md text-headline-md font-bold">پروتکل فنی LocalBeam</h3>
+</div>
+<button class="neo-btn w-8 h-8 rounded-full border-[2px] border-on-background bg-error-container text-on-error-container flex items-center justify-center font-bold" id="closeModalBtn">
+          ✕
+        </button>
+</div>
+<div class="space-y-3 text-body-md font-body-md mb-6 max-h-[614px] overflow-y-auto pr-1">
+<div class="p-3 bg-surface-container-low rounded-xl border-[2px] border-on-background">
+<h4 class="font-bold text-headline-md text-sm mb-1">۱. نحوه کشف دستگاه‌ها (mDNS &amp; LAN Broadcast)</h4>
+<p class="text-body-sm text-on-surface-variant">برنامه از پورت‌های چندپخشی استاندارد محلی برای ارسال بسته لرزشی (Beacon) استفاده می‌کند. هیچ بسته‌ای به خارج از روتر ارسال نخواهد شد.</p>
+</div>
+<div class="p-3 bg-surface-container-low rounded-xl border-[2px] border-on-background">
+<h4 class="font-bold text-headline-md text-sm mb-1">۲. لایه انتقال داده (SCTP over DTLS)</h4>
+<p class="text-body-sm text-on-surface-variant">فایل‌ها به قطعات ۶۴ کیلوبایتی بافر شده تبدیل و از طریق سوکت امن با حداکثر توان کارت شبکه Wi-Fi جابجا می‌شوند.</p>
+</div>
+<div class="p-3 bg-surface-container-low rounded-xl border-[2px] border-on-background">
+<h4 class="font-bold text-headline-md text-sm mb-1">۳. سازگاری متقابل سیستم‌عامل‌ها</h4>
+<p class="text-body-sm text-on-surface-variant">کاملاً مبتنی بر مرورگرهای Chromium و WebKit بدون نیاز به نصب هرگونه درایور یا اکستنشن در ویندوز، مک، لینوکس، اندروید و iOS.</p>
+</div>
+</div>
+<button class="neo-btn w-full bg-tertiary-fixed text-on-tertiary-fixed border-[2.5px] border-on-background font-headline-md text-headline-md font-extrabold rounded-full py-2.5 neo-shadow-sm" id="gotItBtn">
+        متوجه شدم • بریم برای تست!
+      </button>
+</div>
+</div>
+<!-- Shared Component: Footer -->
+<footer class="relative z-10 w-full bg-transparent border-t-[2.5px] border-on-background flat no shadows">
+<div class="flex flex-wrap justify-center items-center gap-3 w-full py-6 px-4 max-w-7xl mx-auto">
+<!-- Copyright / Challenge Branding -->
+<span class="text-label-code font-label-code font-bold text-on-background bg-secondary-container px-3 py-1 rounded-full border-[2px] border-on-background neo-shadow-sm">
+        Mr. Builder • 30 Day App Challenge
+      </span>
+<!-- Inactive Navigation Pill Link 1 -->
+<a class="bg-surface-container-lowest text-on-background border-[2.5px] border-on-background rounded-full px-4 py-1.5 text-badge-meta font-badge-meta font-bold [box-shadow:2px_2px_0px_#000000] hover:bg-secondary-container transition-all neo-btn flex items-center gap-1.5" href="https://github.com" rel="noopener noreferrer" target="_blank">
+<span class="material-symbols-outlined text-sm" data-icon="code">code</span>
+<span>Source on GitHub</span>
+</a>
+<!-- Inactive Navigation Pill Link 2 -->
+<a class="bg-surface-container-lowest text-on-background border-[2.5px] border-on-background rounded-full px-4 py-1.5 text-badge-meta font-badge-meta font-bold [box-shadow:2px_2px_0px_#000000] hover:bg-secondary-container transition-all neo-btn flex items-center gap-1.5" href="https://twitter.com" rel="noopener noreferrer" target="_blank">
+<span class="material-symbols-outlined text-sm" data-icon="chat">chat</span>
+<span>Developer Twitter</span>
+</a>
+<!-- Inactive Navigation Pill Link 3 -->
+<a class="bg-surface-container-lowest text-on-background border-[2.5px] border-on-background rounded-full px-4 py-1.5 text-badge-meta font-badge-meta font-bold [box-shadow:2px_2px_0px_#000000] hover:bg-secondary-container transition-all neo-btn flex items-center gap-1.5" href="https://t.me" rel="noopener noreferrer" target="_blank">
+<span class="material-symbols-outlined text-sm" data-icon="send">send</span>
+<span>Telegram Channel</span>
+</a>
+</div>
+</footer>
+<!-- Micro-interactions Script -->
+<script>
+    // Copy LAN URL Toast Micro-interaction
+    const btnCopyLan = document.getElementById('btnCopyLan');
+    if (btnCopyLan) {
+      btnCopyLan.addEventListener('click', () => {
+        navigator.clipboard.writeText('http://192.168.1.34:8080').then(() => {
+          const originalText = btnCopyLan.innerHTML;
+          btnCopyLan.innerHTML = `
+            <span class="material-symbols-outlined text-base text-tertiary" data-icon="done_all">done_all</span>
+            <span>کپی شد! (192.168.1.34)</span>
+          `;
+          setTimeout(() => {
+            btnCopyLan.innerHTML = originalText;
+          }, 2000);
+        });
+      });
+    }
+
+    // Modal Handlers
+    const techDocModal = document.getElementById('techDocModal');
+    const offlineDocBtn = document.getElementById('offlineDocBtn');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const gotItBtn = document.getElementById('gotItBtn');
+
+    function openModal() {
+      techDocModal.classList.remove('hidden');
+    }
+    function closeModal() {
+      techDocModal.classList.add('hidden');
+    }
+
+    if (offlineDocBtn) offlineDocBtn.addEventListener('click', openModal);
+    if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+    if (gotItBtn) gotItBtn.addEventListener('click', closeModal);
+
+    // Language / Direction Toggle (Bilingual Readiness demonstration)
+    const langToggle = document.getElementById('langToggle');
+    let isFarsi = true;
+    if (langToggle) {
+      langToggle.addEventListener('click', () => {
+        isFarsi = !isFarsi;
+        document.documentElement.setAttribute('dir', isFarsi ? 'rtl' : 'ltr');
+        document.documentElement.setAttribute('lang', isFarsi ? 'fa' : 'en');
+        langToggle.innerText = isFarsi ? 'EN / FA' : 'FA / EN';
+      });
+    }
+
+    // Simulated fluctuating speed counter for Step 3
+    const speedCounter = document.getElementById('speedCounter');
+    const transferProgress = document.getElementById('transferProgress');
+    if (speedCounter && transferProgress) {
+      setInterval(() => {
+        const randomSpeed = (54 + Math.random() * 12).toFixed(1);
+        speedCounter.innerText = randomSpeed;
+        const randomPercent = Math.min(95, Math.floor(70 + Math.random() * 20));
+        transferProgress.style.width = randomPercent + '%';
+      }, 1800);
+    }
+
+    // Primary CTA Button feedback
+    const startBeamBtn = document.getElementById('startBeamBtn');
+    const skipBtn = document.getElementById('skipBtn');
+    function feedbackStart(e) {
+      e.preventDefault();
+      alert('LocalBeam رادار جستجو را راه‌اندازی کرد! در حال گوش دادن به اتصالات شبکه محلی...');
+    }
+    if (startBeamBtn) startBeamBtn.addEventListener('click', feedbackStart);
+    if (skipBtn) skipBtn.addEventListener('click', feedbackStart);
+  </script>
+</body></html>
