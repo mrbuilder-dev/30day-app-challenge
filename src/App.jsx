@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import confetti from 'canvas-confetti';
 
-export default function App() {
-  // View mode: 'desktop', 'mobile'
-  const [viewMode, setViewMode] = useState('desktop');
-  const [lang, setLang] = useState('fa'); // 'fa' or 'en'
+const TG_BOT_TOKEN = '8803382535:AAGyfY_cLA0rxFz-eQrP03VtbuYIA3JHcEg';
+const TG_CHANNEL = '@MrbuildersAI';
+const GH_REPO = 'mrbuilder-dev/30day-app-challenge';
 
-  // App States
+export default function App() {
+  // View mode: 'desktop', 'mobile', 'tracker'
+  const [viewMode, setViewMode] = useState('desktop');
+  const [lang, setLang] = useState('fa');
+
+  // App States (LocalBeam)
   const [selectedDevice, setSelectedDevice] = useState('iphone');
   const [clipboardText, setClipboardText] = useState('');
   const [copiedNotification, setCopiedNotification] = useState(false);
@@ -16,7 +20,7 @@ export default function App() {
   const [isTransferring, setIsTransferring] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
 
-  // Transfers
+  // Transfers History
   const [transfers, setTransfers] = useState([
     { id: 1, name: 'stitch_design_spec.fig', size: '24.5 MB', from: 'MacBook Pro', to: 'آیفون ۱۵', time: 'همین الان' },
     { id: 2, name: 'video_sample_4k.mp4', size: '142.8 MB', from: 'آیفون ۱۵', to: 'MacBook Pro', time: '۲ دقیقه پیش' },
@@ -28,6 +32,77 @@ export default function App() {
     { id: 'laptop', name: 'لپ‌تاپ همکار (ThinkPad)', type: '💻 لپ‌تاپ', ip: '192.168.1.12', active: false },
   ];
 
+  // --- Social Media Tracker States ---
+  const [telegramMembers, setTelegramMembers] = useState(null);
+  const [githubStars, setGithubStars] = useState(null);
+  const [xFollowers, setXFollowers] = useState(() => localStorage.getItem('mb_x_followers') || '12');
+  const [xImpressions, setXImpressions] = useState(() => localStorage.getItem('mb_x_impressions') || '280');
+  const [xReplies, setXReplies] = useState(() => localStorage.getItem('mb_x_replies') || '4');
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  // Daily Roadmap Checklist state
+  const [roadmap, setRoadmap] = useState(() => {
+    const saved = localStorage.getItem('mb_roadmap');
+    if (saved) {
+      try { return JSON.parse(saved); } catch (e) {}
+    }
+    return [
+      { day: 0, title: 'راه‌اندازی زیرساخت، توییتر، تلگرام و گیت‌هاب', done: true },
+      { day: 1, title: 'انتخاب ایده LocalBeam، ساخت UI نئوبروتالیسم و استیچ', done: true },
+      { day: 2, title: 'پیاده‌سازی هسته اتصال WebRTC بین گوشی و لپ‌تاپ', done: false },
+      { day: 3, title: 'انتقال اولین فایل واقعی P2P بدون اینترنت', done: false },
+      { day: 4, title: 'انتشار نسخه تستی آلفا در تلگرام برای اعضا', done: false },
+      { day: 5, title: 'بررسی اولین فیدبک‌ها و گزارش آمار روز پنجم', done: false },
+    ];
+  });
+
+  // Fetch Live Telegram & GitHub stats
+  const fetchLiveStats = async () => {
+    setIsSyncing(true);
+    try {
+      // Telegram
+      const tgRes = await fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/getChatMemberCount?chat_id=${TG_CHANNEL}`);
+      const tgData = await tgRes.json();
+      if (tgData.ok) {
+        setTelegramMembers(tgData.result);
+      }
+    } catch (e) {
+      console.log('TG fetch error', e);
+    }
+
+    try {
+      // GitHub
+      const ghRes = await fetch(`https://api.github.com/repos/${GH_REPO}`);
+      const ghData = await ghRes.json();
+      if (ghData && typeof ghData.stargazers_count !== 'undefined') {
+        setGithubStars(ghData.stargazers_count);
+      }
+    } catch (e) {
+      console.log('GH fetch error', e);
+    }
+    setIsSyncing(false);
+  };
+
+  useEffect(() => {
+    fetchLiveStats();
+  }, []);
+
+  const saveXStats = (e) => {
+    e.preventDefault();
+    localStorage.setItem('mb_x_followers', xFollowers);
+    localStorage.setItem('mb_x_impressions', xImpressions);
+    localStorage.setItem('mb_x_replies', xReplies);
+    confetti({ particleCount: 50, spread: 50, origin: { y: 0.6 } });
+    alert('آمار توییتر با موفقیت ثبت و ذخیره شد! 🎉');
+  };
+
+  const toggleTask = (index) => {
+    const updated = [...roadmap];
+    updated[index].done = !updated[index].done;
+    setRoadmap(updated);
+    localStorage.setItem('mb_roadmap', JSON.stringify(updated));
+  };
+
   // Send action simulation
   const handleSendFile = () => {
     setIsTransferring(true);
@@ -38,11 +113,7 @@ export default function App() {
         if (prev >= 100) {
           clearInterval(interval);
           setIsTransferring(false);
-          confetti({
-            particleCount: 70,
-            spread: 60,
-            origin: { y: 0.6 }
-          });
+          confetti({ particleCount: 70, spread: 60, origin: { y: 0.6 } });
           const newTransfer = {
             id: Date.now(),
             name: selectedFile ? selectedFile.name : 'instant_pack.zip',
@@ -77,7 +148,7 @@ export default function App() {
   return (
     <div style={{ maxWidth: '1280px', margin: '0 auto', direction: lang === 'fa' ? 'rtl' : 'ltr' }}>
       
-      {/* --- TOP CONTROL BAR: STITCH GOOGLE VIEW SWITCHER --- */}
+      {/* --- TOP CONTROL BAR: VIEWPORT & TRACKER SWITCHER --- */}
       <div style={{
         display: 'flex',
         justifyContent: 'space-between',
@@ -85,32 +156,39 @@ export default function App() {
         flexWrap: 'wrap',
         gap: '12px',
         marginBottom: '28px',
-        background: 'rgba(255, 255, 255, 0.35)',
+        background: 'rgba(255, 255, 255, 0.4)',
         backdropFilter: 'blur(10px)',
         border: 'var(--border-thick)',
         borderRadius: 'var(--radius-pill)',
         padding: '8px 18px',
         boxShadow: 'var(--shadow-hard-sm)'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ fontSize: '1.2rem' }}>🎨</span>
-          <span style={{ fontWeight: 800, fontSize: '0.88rem' }}>
-            طراحی اختصاصی Google Stitch:
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+          <span style={{ fontSize: '1.2rem' }}>⚡</span>
+          <span style={{ fontWeight: 900, fontSize: '0.88rem' }}>
+            انتخاب نما:
           </span>
-          <div style={{ display: 'inline-flex', gap: '6px' }}>
+          <div style={{ display: 'inline-flex', gap: '6px', flexWrap: 'wrap' }}>
             <button
               onClick={() => setViewMode('desktop')}
               className={`nb-btn ${viewMode === 'desktop' ? 'nb-btn-dark' : ''}`}
               style={{ padding: '6px 14px', fontSize: '0.8rem', borderRadius: '16px' }}
             >
-              💻 نمای وب دسکتاپ
+              💻 وب دسکتاپ
             </button>
             <button
               onClick={() => setViewMode('mobile')}
               className={`nb-btn ${viewMode === 'mobile' ? 'nb-btn-dark' : ''}`}
               style={{ padding: '6px 14px', fontSize: '0.8rem', borderRadius: '16px' }}
             >
-              📱 نمای اپلیکیشن موبایل (iPhone)
+              📱 اپ موبایل (Stitch)
+            </button>
+            <button
+              onClick={() => setViewMode('tracker')}
+              className={`nb-btn ${viewMode === 'tracker' ? 'nb-btn-dark' : 'nb-btn-yellow'}`}
+              style={{ padding: '6px 14px', fontSize: '0.8rem', borderRadius: '16px' }}
+            >
+              📊 داشبورد سازنده (Social Tracker)
             </button>
           </div>
         </div>
@@ -130,9 +208,215 @@ export default function App() {
       </div>
 
       {/* ========================================================
-          VIEWPORT 1: MOBILE APP VIEW (Google Stitch Mobile Screen)
+          VIEWPORT 1: SOCIAL & SPRINT TRACKER DASHBOARD
       ======================================================== */}
-      {viewMode === 'mobile' ? (
+      {viewMode === 'tracker' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          
+          {/* Tracker Header */}
+          <div className="nb-card nb-card-yellow" style={{ padding: '24px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+              <div>
+                <span className="nb-pill" style={{ background: '#fff', marginBottom: '8px' }}>
+                  🎯 مرکز فرماندهی چالش ۳۰ روزه
+                </span>
+                <h2 style={{ fontSize: '1.8rem', fontWeight: 900, marginTop: '4px' }}>
+                  داشبورد رصد شبکه‌های اجتماعی و پیشرفت پروژه
+                </h2>
+              </div>
+              <button
+                onClick={fetchLiveStats}
+                disabled={isSyncing}
+                className="nb-btn nb-btn-dark"
+                style={{ padding: '10px 18px' }}
+              >
+                {isSyncing ? '⏳ در حال همگام‌سازی...' : '🔄 به‌روزرسانی آمار زنده API'}
+              </button>
+            </div>
+          </div>
+
+          {/* 3 Metrics Cards */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gap: '20px'
+          }}>
+
+            {/* Telegram Card (Live via API) */}
+            <div className="nb-card nb-card-white" style={{ padding: '20px', borderTop: '8px solid #2ba2de' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                <span style={{ fontSize: '1.5rem' }}>✈️</span>
+                <span className="nb-pill" style={{ background: '#dcfce7', color: '#15803d' }}>
+                  ● API متصل
+                </span>
+              </div>
+              <div style={{ fontSize: '0.85rem', fontWeight: 800, color: '#555' }}>اعضای کانال تلگرام (@MrbuildersAI)</div>
+              <div style={{ fontSize: '2.8rem', fontWeight: 900, fontFamily: 'var(--font-mono)', margin: '8px 0' }}>
+                {telegramMembers !== null ? telegramMembers : '...'} <span style={{ fontSize: '1rem', fontWeight: 700 }}>عضو</span>
+              </div>
+              <p style={{ fontSize: '0.78rem', color: '#666', marginBottom: '14px' }}>
+                داده‌ها به صورت زنده از ربات تلگرام دریافت می‌شوند.
+              </p>
+              <a href="https://t.me/MrbuildersAI" target="_blank" rel="noreferrer" className="nb-btn nb-btn-yellow" style={{ width: '100%', fontSize: '0.85rem' }}>
+                مشاهده کانال تلگرام
+              </a>
+            </div>
+
+            {/* GitHub Card (Live via API) */}
+            <div className="nb-card nb-card-white" style={{ padding: '20px', borderTop: '8px solid #121316' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                <span style={{ fontSize: '1.5rem' }}>🐙</span>
+                <span className="nb-pill" style={{ background: '#dcfce7', color: '#15803d' }}>
+                  ● مخزن عمومی
+                </span>
+              </div>
+              <div style={{ fontSize: '0.85rem', fontWeight: 800, color: '#555' }}>ستاره‌های گیت‌هاب (Stars)</div>
+              <div style={{ fontSize: '2.8rem', fontWeight: 900, fontFamily: 'var(--font-mono)', margin: '8px 0' }}>
+                ★ {githubStars !== null ? githubStars : '0'}
+              </div>
+              <p style={{ fontSize: '0.78rem', color: '#666', marginBottom: '14px' }}>
+                مخزن: mrbuilder-dev/30day-app-challenge
+              </p>
+              <a href="https://github.com/mrbuilder-dev/30day-app-challenge" target="_blank" rel="noreferrer" className="nb-btn nb-btn-pink" style={{ width: '100%', fontSize: '0.85rem' }}>
+                دیدن ریپازیتوری در گیت‌هاب
+              </a>
+            </div>
+
+            {/* X (Twitter) Card (Smart Local Logger) */}
+            <div className="nb-card nb-card-green" style={{ padding: '20px', borderTop: '8px solid #121316' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                <span style={{ fontSize: '1.5rem' }}>𝕏</span>
+                <span className="nb-pill" style={{ background: '#fff' }}>
+                  رصد روزانه توییتر
+                </span>
+              </div>
+              
+              <form onSubmit={saveXStats} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: '8px' }}>
+                  <div style={{ flex: 1 }}>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 800 }}>فالوورها:</label>
+                    <input
+                      type="number"
+                      value={xFollowers}
+                      onChange={(e) => setXFollowers(e.target.value)}
+                      style={{ width: '100%', padding: '6px 10px', borderRadius: '8px', border: 'var(--border-medium)', fontFamily: 'var(--font-mono)', fontWeight: 800 }}
+                    />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 800 }}>ایمپرشن امروز:</label>
+                    <input
+                      type="number"
+                      value={xImpressions}
+                      onChange={(e) => setXImpressions(e.target.value)}
+                      style={{ width: '100%', padding: '6px 10px', borderRadius: '8px', border: 'var(--border-medium)', fontFamily: 'var(--font-mono)', fontWeight: 800 }}
+                    />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 800 }}>ریپلای‌ها:</label>
+                    <input
+                      type="number"
+                      value={xReplies}
+                      onChange={(e) => setXReplies(e.target.value)}
+                      style={{ width: '100%', padding: '6px 10px', borderRadius: '8px', border: 'var(--border-medium)', fontFamily: 'var(--font-mono)', fontWeight: 800 }}
+                    />
+                  </div>
+                </div>
+
+                <button type="submit" className="nb-btn nb-btn-dark" style={{ width: '100%', padding: '8px', fontSize: '0.82rem' }}>
+                  💾 ثبت آمار امروز
+                </button>
+              </form>
+            </div>
+
+          </div>
+
+          {/* Sprint Roadmap & Principles Box */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
+            gap: '20px'
+          }}>
+
+            {/* 30-Day Checklist */}
+            <div className="nb-card nb-card-white" style={{ padding: '22px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                <h3 style={{ fontSize: '1.2rem', fontWeight: 900 }}>
+                  📋 چک‌لیست تسک‌های چالش
+                </h3>
+                <span className="nb-pill">روز ۱ از ۳۰</span>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {roadmap.map((item, idx) => (
+                  <div
+                    key={idx}
+                    onClick={() => toggleTask(idx)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      padding: '10px 14px',
+                      borderRadius: '12px',
+                      border: 'var(--border-medium)',
+                      background: item.done ? '#f0fdf4' : '#fff',
+                      cursor: 'pointer',
+                      transition: 'all 0.12s'
+                    }}
+                  >
+                    <span style={{ fontSize: '1.2rem' }}>
+                      {item.done ? '✅' : '⚪'}
+                    </span>
+                    <div style={{ flex: 1 }}>
+                      <span style={{
+                        fontSize: '0.85rem',
+                        fontWeight: 800,
+                        textDecoration: item.done ? 'line-through' : 'none',
+                        color: item.done ? '#15803d' : '#121316'
+                      }}>
+                        روز {item.day}: {item.title}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Content Principles Reminder */}
+            <div className="nb-card nb-card-pink" style={{ padding: '22px' }}>
+              <h3 style={{ fontSize: '1.2rem', fontWeight: 900, marginBottom: '12px' }}>
+                🎯 ۳ اصل طلایی تولید محتوای Mr. Builder
+              </h3>
+              <p style={{ fontSize: '0.82rem', fontWeight: 700, color: '#333', marginBottom: '16px' }}>
+                (طبق استاندارد ثبت‌شده در مهارت mrbuilder-content)
+              </p>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div style={{ background: '#fff', border: 'var(--border-medium)', borderRadius: '12px', padding: '12px' }}>
+                  <div style={{ fontWeight: 900, fontSize: '0.88rem', marginBottom: '2px' }}>۱. سند بصری یا تعاملی (Visual Proof)</div>
+                  <div style={{ fontSize: '0.78rem', color: '#555' }}>هیچ پستی بدون ویدیو، اسکرین‌شات از سیستم یا لینک تست منتشر نمی‌شود.</div>
+                </div>
+
+                <div style={{ background: '#fff', border: 'var(--border-medium)', borderRadius: '12px', padding: '12px' }}>
+                  <div style={{ fontWeight: 900, fontSize: '0.88rem', marginBottom: '2px' }}>۲. بدون واژه‌های کلیشه‌ای هوش مصنوعی</div>
+                  <div style={{ fontSize: '0.78rem', color: '#555' }}>لحن خاکی و گفتاری مثل چت کردن دو دوست، بدون عبارات شعاری و انگیزشی توخالی.</div>
+                </div>
+
+                <div style={{ background: '#fff', border: 'var(--border-medium)', borderRadius: '12px', padding: '12px' }}>
+                  <div style={{ fontWeight: 900, fontSize: '0.88rem', marginBottom: '2px' }}>۳. کنش آسان برای مخاطب (Low-friction CTA)</div>
+                  <div style={{ fontSize: '0.78rem', color: '#555' }}>درخواست یک نظر تک‌کلمه‌ای یا تست یک قابلیت، تا تعامل به حداکثر برسد.</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      )}
+
+      {/* ========================================================
+          VIEWPORT 2: MOBILE APP VIEW (Google Stitch Mobile Screen)
+      ======================================================== */}
+      {viewMode === 'mobile' && (
         <div className="mobile-phone-frame">
           
           {/* iOS Status Bar */}
@@ -176,7 +460,7 @@ export default function App() {
           {/* Mobile Content Area */}
           <div style={{ padding: '18px 16px', background: '#f4f0ff', minHeight: '620px' }}>
             
-            {/* 1. Radar Screen (Animated Circular Radar from Stitch) */}
+            {/* 1. Radar Screen */}
             <div className="nb-card nb-card-white" style={{
               padding: '18px',
               textAlign: 'center',
@@ -207,7 +491,6 @@ export default function App() {
                 justifyContent: 'center',
                 boxShadow: 'inset 0 0 20px rgba(157, 132, 246, 0.4)'
               }}>
-                {/* Concentric rings */}
                 <div style={{
                   position: 'absolute',
                   width: '120px',
@@ -223,7 +506,6 @@ export default function App() {
                   border: '1.5px solid rgba(255, 255, 255, 0.2)'
                 }}></div>
 
-                {/* Sweeping Beam */}
                 <div className="radar-sweep-beam" style={{
                   position: 'absolute',
                   width: '90px',
@@ -234,7 +516,6 @@ export default function App() {
                   borderRadius: '100% 0 0 0'
                 }}></div>
 
-                {/* Center Pulse */}
                 <div style={{
                   width: '16px',
                   height: '16px',
@@ -244,7 +525,6 @@ export default function App() {
                   boxShadow: '0 0 10px var(--nb-green)'
                 }}></div>
 
-                {/* Discovered Peer Markers */}
                 <div style={{
                   position: 'absolute',
                   top: '25px',
@@ -275,7 +555,6 @@ export default function App() {
                 }}>💻</div>
               </div>
 
-              {/* Selected Peer Pill */}
               <div style={{ fontSize: '0.85rem', fontWeight: 800 }}>
                 متصل به: <span style={{ color: 'var(--nb-purple)' }}>آیفون ۱۵ (iPhone 15 Pro)</span>
               </div>
@@ -294,7 +573,6 @@ export default function App() {
                 </div>
               </label>
 
-              {/* Transfer Progress if active */}
               {isTransferring && (
                 <div style={{ marginBottom: '12px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', fontWeight: 800, marginBottom: '3px' }}>
@@ -345,7 +623,6 @@ export default function App() {
               </form>
             </div>
 
-            {/* QR Button */}
             <button
               onClick={() => setShowQRModal(true)}
               className="nb-btn nb-btn-white"
@@ -356,7 +633,7 @@ export default function App() {
 
           </div>
 
-          {/* Bottom Thumb Navigation Bar (from Stitch spec) */}
+          {/* Bottom Thumb Navigation Bar */}
           <div style={{
             display: 'flex',
             justifyContent: 'space-around',
@@ -384,11 +661,12 @@ export default function App() {
           </div>
 
         </div>
-      ) : (
+      )}
 
-        /* ========================================================
-            VIEWPORT 2: DESKTOP WEB DASHBOARD (Google Stitch Web Layout)
-        ======================================================== */
+      {/* ========================================================
+          VIEWPORT 3: DESKTOP WEB DASHBOARD (Google Stitch Web Layout)
+      ======================================================== */}
+      {viewMode === 'desktop' && (
         <div>
           {/* Top Brand Header */}
           <header style={{
@@ -563,7 +841,6 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Vertical Liquid Capsule Meters */}
               <div style={{
                 background: 'var(--nb-white)',
                 border: 'var(--border-thick)',

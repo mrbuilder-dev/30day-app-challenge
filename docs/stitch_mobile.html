@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LocalBeam • Instant P2P LAN Transfer</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts for Neo-Brutalist Typographic Hierarchy -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&amp;family=Plus+Jakarta+Sans:wght@700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-variant": "#e2e2e2",
+            "on-background": "#1b1b1b",
+            "on-primary-container": "#330e87",
+            "tertiary-fixed-dim": "#a8d560",
+            "primary": "#644bb9",
+            "secondary-fixed-dim": "#eec148",
+            "on-error": "#ffffff",
+            "background": "#f9f9f9",
+            "tertiary": "#466800",
+            "on-tertiary": "#ffffff",
+            "secondary": "#765a00",
+            "inverse-surface": "#303030",
+            "error": "#ba1a1a",
+            "inverse-primary": "#ccbdff",
+            "surface-container-lowest": "#ffffff",
+            "on-error-container": "#93000a",
+            "inverse-on-surface": "#f1f1f1",
+            "primary-fixed-dim": "#ccbdff",
+            "on-secondary": "#ffffff",
+            "on-tertiary-fixed": "#121f00",
+            "on-tertiary-container": "#213300",
+            "surface-container-low": "#f3f3f3",
+            "primary-container": "#9d84f6",
+            "tertiary-fixed": "#c4f279",
+            "tertiary-container": "#79a233",
+            "on-primary-fixed": "#1f005f",
+            "on-secondary-container": "#735800",
+            "primary-fixed": "#e7deff",
+            "on-surface": "#1b1b1b",
+            "surface-container-highest": "#e2e2e2",
+            "surface-container-high": "#e8e8e8",
+            "outline-variant": "#cac4d4",
+            "surface-tint": "#644bb9",
+            "surface-dim": "#dadada",
+            "on-secondary-fixed-variant": "#5a4400",
+            "on-surface-variant": "#484552",
+            "secondary-container": "#fdcf55",
+            "error-container": "#ffdad6",
+            "on-primary-fixed-variant": "#4c31a0",
+            "on-primary": "#ffffff",
+            "secondary-fixed": "#ffdf96",
+            "surface-bright": "#f9f9f9",
+            "surface": "#f9f9f9",
+            "outline": "#797584",
+            "on-tertiary-fixed-variant": "#344e00",
+            "on-secondary-fixed": "#251a00",
+            "surface-container": "#eeeeee"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-sm": "0.5rem",
+            "space-xl": "2.5rem",
+            "gutter-mobile": "1rem",
+            "margin-mobile": "1rem",
+            "space-xs": "0.25rem",
+            "gutter": "1.5rem",
+            "space-lg": "1.5rem",
+            "margin": "1.5rem",
+            "space-md": "1rem"
+          },
+          "fontFamily": {
+            "display-hero": [
+              "Plus Jakarta Sans"
+            ],
+            "headline-lg": [
+              "Plus Jakarta Sans"
+            ],
+            "badge-meta": [
+              "JetBrains Mono"
+            ],
+            "body-md": [
+              "JetBrains Mono"
+            ],
+            "headline-md": [
+              "Plus Jakarta Sans"
+            ],
+            "label-code": [
+              "JetBrains Mono"
+            ],
+            "body-lg": [
+              "JetBrains Mono"
+            ],
+            "display-hero-mobile": [
+              "Plus Jakarta Sans"
+            ],
+            "headline-lg-mobile": [
+              "Plus Jakarta Sans"
+            ],
+            "body-sm": [
+              "JetBrains Mono"
+            ]
+          },
+          "fontSize": {
+            "display-hero": [
+              "48px",
+              {
+                "lineHeight": "56px",
+                "letterSpacing": "-0.02em",
+                "fontWeight": "800"
+              }
+            ],
+            "headline-lg": [
+              "28px",
+              {
+                "lineHeight": "36px",
+                "fontWeight": "700"
+              }
+            ],
+            "badge-meta": [
+              "11px",
+              {
+                "lineHeight": "14px",
+                "fontWeight": "700"
+              }
+            ],
+            "body-md": [
+              "14px",
+              {
+                "lineHeight": "20px",
+                "fontWeight": "400"
+              }
+            ],
+            "headline-md": [
+              "20px",
+              {
+                "lineHeight": "28px",
+                "fontWeight": "700"
+              }
+            ],
+            "label-code": [
+              "13px",
+              {
+                "lineHeight": "16px",
+                "letterSpacing": "0.02em",
+                "fontWeight": "600"
+              }
+            ],
+            "body-lg": [
+              "16px",
+              {
+                "lineHeight": "24px",
+                "fontWeight": "500"
+              }
+            ],
+            "display-hero-mobile": [
+              "32px",
+              {
+                "lineHeight": "40px",
+                "letterSpacing": "-0.01em",
+                "fontWeight": "800"
+              }
+            ],
+            "headline-lg-mobile": [
+              "22px",
+              {
+                "lineHeight": "30px",
+                "fontWeight": "700"
+              }
+            ],
+            "body-sm": [
+              "12px",
+              {
+                "lineHeight": "18px",
+                "fontWeight": "400"
+              }
+            ]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 600, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    
+    /* Tactile Neo-Brutalist Hard Edge Custom Shadows */
+    .neo-border {
+      border: 2.5px solid #000000;
+    }
+    .neo-shadow-sm {
+      box-shadow: 2px 2px 0px #000000;
+    }
+    .neo-shadow {
+      box-shadow: 4px 4px 0px #000000;
+    }
+    .neo-shadow-lg {
+      box-shadow: 6px 6px 0px #000000;
+    }
+    
+    /* Micro-interactions & Radar Animation */
+    @keyframes radarSweep {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+    @keyframes pingSlow {
+      0% {
+        transform: scale(0.85);
+        opacity: 0.9;
+      }
+      70%, 100% {
+        transform: scale(2.2);
+        opacity: 0;
+      }
+    }
+    .animate-radar-sweep {
+      animation: radarSweep 4s linear infinite;
+    }
+    .animate-ping-slow {
+      animation: pingSlow 3s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-primary-container min-h-screen text-on-background flex flex-col items-center justify-start p-0 selection:bg-secondary-container selection:text-on-background antialiased font-body-md">
+<!-- Mobile Viewport Container pegged to 390px (iPhone spec) -->
+<div class="w-full max-w-[390px] min-h-screen bg-primary-container flex flex-col justify-between overflow-x-hidden relative border-x-[2.5px] border-on-background [box-shadow:0px_0px_20px_rgba(0,0,0,0.15)]">
+<!-- Top Status Bar & TopAppBar Container (Shared Component Specs) -->
+<header class="w-full bg-primary-container neo-border border-t-0 border-x-0 border-b-[2.5px] [box-shadow:0px_4px_0px_#000000] px-4 pt-3 pb-3 flex flex-col gap-2 z-20">
+<!-- iOS Status Header Meta (Time & Battery) -->
+<div class="flex justify-between items-center px-1 font-label-code text-label-code font-bold tracking-tight">
+<span>9:41</span>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[15px]" data-icon="signal_cellular_alt">signal_cellular_alt</span>
+<span class="material-symbols-outlined text-[15px]" data-icon="wifi">wifi</span>
+<span class="material-symbols-outlined text-[17px]" data-icon="battery_full">battery_full</span>
+</div>
+</div>
+<!-- TopAppBar Main Shell -->
+<div class="flex justify-between items-center w-full">
+<!-- Brand Logo with Starburst & Headline -->
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-secondary-container text-[26px] animate-spin-slow drop-shadow-[1px_1px_0px_#000000]" data-icon="flare" style="font-variation-settings: 'FILL' 1;">flare</span>
+<h1 class="text-headline-lg-mobile font-headline-lg-mobile font-black tracking-tight text-on-background uppercase">
+            LOCALBEAM
+          </h1>
+</div>
+<!-- Trailing Action Pill: Wi-Fi Direct LAN Status & Language Switch -->
+<div class="flex items-center gap-1.5">
+<button class="bg-surface-container-lowest text-on-background neo-border font-label-code text-badge-meta font-bold rounded-full px-2.5 py-1 neo-shadow-sm active:translate-x-[1px] active:translate-y-[1px] active:[box-shadow:0px_0px_0px_#000000] transition-all" id="langToggle">
+            EN | فا
+          </button>
+<div class="flex items-center gap-1 bg-tertiary-fixed text-on-tertiary-fixed neo-border font-label-code text-badge-meta font-bold rounded-full px-2.5 py-1 neo-shadow-sm">
+<span class="w-2 h-2 rounded-full bg-tertiary-container animate-pulse"></span>
+<span>Wi-Fi Direct LAN</span>
+</div>
+</div>
+</div>
+<!-- Sub-headline offline banner -->
+<div class="flex items-center justify-between bg-surface-container-lowest neo-border rounded-full px-3 py-1 neo-shadow-sm mt-0.5">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-secondary text-[14px]" data-icon="bolt" style="font-variation-settings: 'FILL' 1;">bolt</span>
+<span class="font-label-code text-badge-meta font-bold text-on-background">Offline Peer-to-Peer</span>
+</div>
+<span class="font-label-code text-badge-meta font-bold text-on-surface-variant">0 Byte Internet Used</span>
+</div>
+</header>
+<!-- Main Dynamic Content Canvas -->
+<main class="flex-1 px-4 py-4 space-y-4">
+<!-- SECTION 1: RADAR / TARGET PEERS MODULE (Yellow Neo-Brutalist Deck) -->
+<section class="bg-secondary-container neo-border rounded-xl p-3.5 neo-shadow-lg relative overflow-hidden">
+<!-- Card Header with Badges -->
+<div class="flex justify-between items-center mb-3">
+<div class="flex items-center gap-1.5">
+<div class="w-7 h-7 rounded-full bg-surface-container-lowest neo-border neo-shadow-sm flex items-center justify-center">
+<span class="material-symbols-outlined text-on-background text-[18px]" data-icon="radar">radar</span>
+</div>
+<div>
+<h2 class="text-headline-md font-headline-md leading-none text-on-background">Nearby Radar</h2>
+<span class="font-label-code text-[10px] text-on-surface-variant font-bold">دستگاه‌های اطراف</span>
+</div>
+</div>
+<!-- Peer Count Pill -->
+<span class="bg-tertiary-fixed text-on-tertiary-fixed neo-border rounded-full px-2.5 py-0.5 font-label-code text-badge-meta font-bold neo-shadow-sm flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> 3 online
+          </span>
+</div>
+<!-- Radar Pulse Graphic Subnet Scanner -->
+<div class="w-full bg-surface-container-lowest neo-border rounded-lg p-2.5 mb-3 flex items-center justify-between relative overflow-hidden">
+<div class="relative w-16 h-16 flex items-center justify-center flex-shrink-0 bg-primary-fixed neo-border rounded-full">
+<!-- Pulsing rings -->
+<div class="absolute inset-0 rounded-full border border-primary animate-ping-slow pointer-events-none"></div>
+<div class="absolute inset-1 rounded-full border border-dashed border-primary"></div>
+<!-- Radar Scanner Hand -->
+<div class="absolute inset-0 flex items-center justify-center animate-radar-sweep pointer-events-none">
+<div class="w-1/2 h-[2px] bg-primary origin-left translate-x-1/2"></div>
+</div>
+<!-- Center beacon -->
+<div class="w-3.5 h-3.5 bg-primary neo-border rounded-full z-10"></div>
+</div>
+<div class="ml-3 flex-1">
+<div class="flex items-center justify-between">
+<span class="font-label-code text-label-code font-bold text-on-background">Subnet Scan: 192.168.1.*</span>
+<span class="font-badge-meta text-badge-meta bg-surface-container-highest px-1.5 py-0.5 rounded neo-border">Port 8080</span>
+</div>
+<p class="font-body-sm text-[11px] text-on-surface-variant mt-0.5 leading-snug">
+              WebRTC Direct channel active. Zero config mdns broadcast discovery.
+            </p>
+</div>
+</div>
+<!-- Peer Selector Pills Cluster -->
+<div class="space-y-2">
+<!-- Active Target Device: Selected Pill -->
+<div class="w-full bg-inverse-surface text-inverse-on-surface neo-border rounded-lg p-2.5 flex items-center justify-between neo-shadow-sm cursor-pointer transform hover:-translate-y-0.5 transition-all">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded bg-tertiary-fixed text-on-tertiary-fixed neo-border flex items-center justify-center font-bold text-xs">
+<span class="material-symbols-outlined text-[15px]" data-icon="phone_iphone">phone_iphone</span>
+</div>
+<div>
+<div class="flex items-center gap-1.5">
+<span class="font-label-code text-label-code font-bold text-surface-container-lowest">iPhone 15 Pro</span>
+<span class="bg-tertiary-fixed text-on-tertiary-fixed text-[9px] font-label-code font-bold px-1.5 py-0.2 rounded neo-border">TARGET</span>
+</div>
+<div class="font-badge-meta text-[10px] text-surface-variant flex items-center gap-2">
+<span>IP: 192.168.1.34</span>
+<span>•</span>
+<span>5GHz Wi-Fi (866 Mbps)</span>
+</div>
+</div>
+</div>
+<div class="w-5 h-5 bg-tertiary-fixed rounded-full neo-border flex items-center justify-center">
+<span class="material-symbols-outlined text-on-tertiary-fixed text-[14px] font-bold" data-icon="check" data-weight="fill">check</span>
+</div>
+</div>
+<!-- Secondary Nearby Peer: Galaxy S24 -->
+<div class="w-full bg-surface-container-lowest neo-border rounded-lg p-2 flex items-center justify-between neo-shadow-sm cursor-pointer hover:bg-surface-container-low transition-all">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded bg-surface-container-highest neo-border flex items-center justify-center text-xs">
+<span class="material-symbols-outlined text-[15px]" data-icon="smartphone">smartphone</span>
+</div>
+<div>
+<span class="font-label-code text-body-sm font-bold text-on-background">Galaxy S24 (Android 14)</span>
+<div class="font-badge-meta text-[10px] text-on-surface-variant">IP: 192.168.1.45 • Signal -42dBm</div>
+</div>
+</div>
+<button class="bg-surface-container-highest text-on-background text-[11px] font-label-code font-bold px-2 py-0.5 rounded neo-border hover:bg-secondary-container transition-all">
+              Connect
+            </button>
+</div>
+<!-- Third Nearby Peer: ThinkPad -->
+<div class="w-full bg-surface-container-lowest neo-border rounded-lg p-2 flex items-center justify-between neo-shadow-sm cursor-pointer hover:bg-surface-container-low transition-all">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded bg-surface-container-highest neo-border flex items-center justify-center text-xs">
+<span class="material-symbols-outlined text-[15px]" data-icon="laptop_mac">laptop_mac</span>
+</div>
+<div>
+<span class="font-label-code text-body-sm font-bold text-on-background">ThinkPad X1 (Linux)</span>
+<div class="font-badge-meta text-[10px] text-on-surface-variant">IP: 192.168.1.12 • LAN Ethernet</div>
+</div>
+</div>
+<button class="bg-surface-container-highest text-on-background text-[11px] font-label-code font-bold px-2 py-0.5 rounded neo-border hover:bg-secondary-container transition-all">
+              Connect
+            </button>
+</div>
+</div>
+</section>
+<!-- SECTION 2: TACTILE PAYLOAD DROPZONE & QUEUE (Bubblegum Pink Neo-Brutalist Deck) -->
+<section class="bg-[#FFAEC8] neo-border rounded-xl p-3.5 neo-shadow-lg relative">
+<!-- Section Header with Instant Tag -->
+<div class="flex justify-between items-center mb-3">
+<div class="flex items-center gap-1.5">
+<div class="w-7 h-7 rounded-full bg-surface-container-lowest neo-border neo-shadow-sm flex items-center justify-center">
+<span class="material-symbols-outlined text-on-background text-[18px]" data-icon="inventory_2">inventory_2</span>
+</div>
+<div>
+<h2 class="text-headline-md font-headline-md leading-none text-on-background">Payload Bay</h2>
+<span class="font-label-code text-[10px] text-on-surface-variant font-bold">ارسال فایل یا متن</span>
+</div>
+</div>
+<span class="bg-surface-container-lowest text-on-background neo-border rounded-full px-2.5 py-0.5 font-label-code text-badge-meta font-bold neo-shadow-sm">
+            Max 10 GB
+          </span>
+</div>
+<!-- Chunky File Drop Target Box -->
+<div class="w-full bg-surface-container-lowest neo-border border-dashed border-[2.5px] rounded-xl p-4 text-center flex flex-col items-center justify-center cursor-pointer neo-shadow-sm hover:bg-surface-container-low transition-all" id="dropZone">
+<div class="w-12 h-12 rounded-full bg-primary-fixed neo-border flex items-center justify-center mb-2 neo-shadow-sm">
+<span class="material-symbols-outlined text-primary text-[28px]" data-icon="upload_file">upload_file</span>
+</div>
+<h3 class="font-headline-md text-[16px] font-bold text-on-background leading-tight">
+            Tap or Drop Files
+          </h3>
+<p class="font-label-code text-[11px] text-on-surface-variant mt-0.5">
+            Photos, Raw Video, PDF, ZIP, Folders
+          </p>
+<div class="mt-2.5 flex items-center gap-2">
+<span class="font-badge-meta text-[10px] bg-secondary-fixed text-on-secondary-fixed neo-border px-2 py-0.5 rounded-full font-bold">
+              + Camera Roll
+            </span>
+<span class="font-badge-meta text-[10px] bg-tertiary-fixed text-on-tertiary-fixed neo-border px-2 py-0.5 rounded-full font-bold">
+              + Files App
+            </span>
+</div>
+</div>
+<!-- Selected File Preview Card in Queue -->
+<div class="mt-3 bg-surface-container-lowest neo-border rounded-lg p-2.5 neo-shadow-sm">
+<div class="flex items-center justify-between mb-1.5">
+<div class="flex items-center gap-2 overflow-hidden">
+<span class="material-symbols-outlined text-on-background text-[20px]" data-icon="draft">draft</span>
+<div class="truncate">
+<p class="font-label-code text-label-code font-bold truncate text-on-background">
+                  Design_System_v2.fig
+                </p>
+<p class="font-badge-meta text-[10px] text-on-surface-variant">
+                  48.2 MB • Ready for chunk streaming
+                </p>
+</div>
+</div>
+<button class="w-6 h-6 rounded-full bg-surface-container-highest neo-border flex items-center justify-center font-bold text-xs hover:bg-error-container">
+              ✕
+            </button>
+</div>
+<!-- Progress / Chunk Bar -->
+<div class="w-full bg-surface-container-highest neo-border h-3 rounded-full overflow-hidden p-[1px]">
+<div class="h-full bg-tertiary-fixed rounded-full border-r-[1.5px] border-on-background w-3/4 animate-pulse"></div>
+</div>
+<div class="flex justify-between items-center mt-1 font-badge-meta text-[10px] text-on-surface-variant font-bold">
+<span>Staged: 36.1 / 48.2 MB</span>
+<span>Speed: 52.4 MB/s</span>
+</div>
+</div>
+<!-- Direct Clipboard / Text Sharing Field -->
+<div class="mt-3 flex items-center gap-2">
+<div class="flex-1 bg-surface-container-lowest neo-border rounded-lg px-2.5 py-1.5 flex items-center gap-1.5 neo-shadow-sm">
+<span class="material-symbols-outlined text-[16px] text-outline" data-icon="link">link</span>
+<input class="w-full bg-transparent border-0 p-0 text-[11px] font-label-code text-on-background focus:ring-0 placeholder:text-outline" placeholder="Or paste instant text / link here..." type="text"/>
+</div>
+<button class="bg-secondary-fixed text-on-secondary-fixed neo-border rounded-lg px-3 py-1.5 font-label-code text-badge-meta font-bold neo-shadow-sm active:translate-x-[1px] active:translate-y-[1px]">
+            Paste
+          </button>
+</div>
+</section>
+<!-- SECTION 3: REAL-TIME TELEMETRY & DATA CHANNEL METERS (Lime Green Deck) -->
+<section class="bg-tertiary-fixed neo-border rounded-xl p-3.5 neo-shadow-lg">
+<div class="flex justify-between items-center mb-2.5">
+<div class="flex items-center gap-1.5">
+<div class="w-7 h-7 rounded-full bg-surface-container-lowest neo-border neo-shadow-sm flex items-center justify-center">
+<span class="material-symbols-outlined text-on-background text-[18px]" data-icon="speed">speed</span>
+</div>
+<div>
+<h2 class="text-headline-md font-headline-md leading-none text-on-background">Live Metrics</h2>
+<span class="font-label-code text-[10px] text-on-tertiary-fixed font-bold">عملکرد شبکه Wi-Fi</span>
+</div>
+</div>
+<span class="bg-surface-container-lowest text-on-background neo-border rounded-full px-2 py-0.5 font-label-code text-badge-meta font-bold">
+            RTT: 1.2ms
+          </span>
+</div>
+<!-- Telemetry Gauges / Data Channels -->
+<div class="grid grid-cols-4 gap-2 bg-surface-container-lowest neo-border rounded-lg p-2.5 neo-shadow-sm">
+<!-- Meter 1: Throughput -->
+<div class="flex flex-col items-center">
+<div class="w-full bg-surface-container-high neo-border h-12 rounded-lg relative overflow-hidden flex flex-col justify-end p-0.5">
+<div class="w-full bg-primary-container h-4/5 rounded border-t-[1.5px] border-on-background"></div>
+</div>
+<span class="font-badge-meta text-[9px] font-bold mt-1">RATE</span>
+<span class="font-label-code text-[10px] font-extrabold text-primary">52M/s</span>
+</div>
+<!-- Meter 2: Signal Strength -->
+<div class="flex flex-col items-center">
+<div class="w-full bg-surface-container-high neo-border h-12 rounded-lg relative overflow-hidden flex flex-col justify-end p-0.5">
+<div class="w-full bg-tertiary-fixed-dim h-full rounded border-t-[1.5px] border-on-background"></div>
+</div>
+<span class="font-badge-meta text-[9px] font-bold mt-1">SIGNAL</span>
+<span class="font-label-code text-[10px] font-extrabold text-tertiary">98%</span>
+</div>
+<!-- Meter 3: Buffer Health -->
+<div class="flex flex-col items-center">
+<div class="w-full bg-surface-container-high neo-border h-12 rounded-lg relative overflow-hidden flex flex-col justify-end p-0.5">
+<div class="w-full bg-[#FFAEC8] h-1/3 rounded border-t-[1.5px] border-on-background"></div>
+</div>
+<span class="font-badge-meta text-[9px] font-bold mt-1">BUFFER</span>
+<span class="font-label-code text-[10px] font-extrabold text-on-background">240K</span>
+</div>
+<!-- Meter 4: Packet Loss -->
+<div class="flex flex-col items-center">
+<div class="w-full bg-surface-container-high neo-border h-12 rounded-lg relative overflow-hidden flex flex-col justify-end p-0.5">
+<div class="w-full bg-surface-container h-[5%] rounded border-t-[1.5px] border-on-background"></div>
+</div>
+<span class="font-badge-meta text-[9px] font-bold mt-1">LOSS</span>
+<span class="font-label-code text-[10px] font-extrabold text-on-background">0.0%</span>
+</div>
+</div>
+<!-- Protocol Strip Badges -->
+<div class="mt-2.5 flex items-center justify-between text-center font-label-code text-[10px] font-bold">
+<div class="bg-surface-container-lowest neo-border rounded px-2 py-0.5 neo-shadow-sm flex-1 mr-1">
+            TLS 1.3 / E2EE
+          </div>
+<div class="bg-surface-container-lowest neo-border rounded px-2 py-0.5 neo-shadow-sm flex-1 mx-1">
+            SCTP Chunks
+          </div>
+<div class="bg-surface-container-lowest neo-border rounded px-2 py-0.5 neo-shadow-sm flex-1 ml-1">
+            IPv6 Link-Local
+          </div>
+</div>
+</section>
+<!-- SECTION 4: PRIMARY ACTION & EMERGENCY OFFLINE CONTROLS -->
+<section class="space-y-2.5 pt-1">
+<!-- Chunky Master CTA Button -->
+<button class="w-full bg-on-background text-surface-container-lowest neo-border rounded-full py-3.5 px-6 font-headline-md text-[18px] font-extrabold neo-shadow flex items-center justify-center gap-2 hover:-translate-y-0.5 hover:neo-shadow-lg active:translate-x-[2px] active:translate-y-[2px] active:neo-shadow-sm transition-all group" id="sendBtn">
+<span class="material-symbols-outlined text-secondary-container text-[24px] group-hover:scale-110 transition-transform" data-icon="bolt" style="font-variation-settings: 'FILL' 1;">bolt</span>
+<span>Send Instant P2P / ارسال فایل</span>
+<span class="material-symbols-outlined text-[20px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<!-- Emergency Offline QR Pairing Action -->
+<button class="w-full bg-surface-container-lowest text-on-background neo-border rounded-full py-2.5 px-4 font-label-code text-label-code font-bold neo-shadow flex items-center justify-center gap-2 hover:bg-secondary-fixed transition-all active:translate-x-[2px] active:translate-y-[2px] active:neo-shadow-sm" id="qrBtn">
+<span class="material-symbols-outlined text-[20px]" data-icon="qr_code_scanner">qr_code_scanner</span>
+<span>Offline QR Code Connect • بدون اینترنت</span>
+</button>
+</section>
+</main>
+<!-- Footer Component (Shared Components Specification) -->
+<footer class="w-full bg-transparent neo-border border-b-0 border-x-0 border-t-[2.5px] py-4 px-4 mt-2">
+<!-- Shell Layout per JSON -->
+<div class="flex flex-col items-center justify-center gap-2.5 max-w-7xl mx-auto text-center">
+<!-- Copyright Text -->
+<p class="font-label-code text-badge-meta font-bold text-on-background tracking-tight">
+          Mr. Builder • 30 Day App Challenge
+        </p>
+<!-- Navigation / Project Links -->
+<div class="flex flex-wrap justify-center items-center gap-2">
+<a class="bg-surface-container-lowest text-on-background border-[2.5px] border-on-background rounded-full px-3 py-1 font-badge-meta text-badge-meta font-bold neo-shadow-sm hover:bg-secondary-container transition-all active:translate-x-[1px] active:translate-y-[1px]" href="#">
+            Source on GitHub
+          </a>
+<a class="bg-surface-container-lowest text-on-background border-[2.5px] border-on-background rounded-full px-3 py-1 font-badge-meta text-badge-meta font-bold neo-shadow-sm hover:bg-secondary-container transition-all active:translate-x-[1px] active:translate-y-[1px]" href="#">
+            Developer Twitter
+          </a>
+<a class="bg-inverse-surface text-inverse-on-surface border-[2.5px] border-on-background rounded-full px-3 py-1 font-badge-meta text-badge-meta font-bold neo-shadow-sm" href="#">
+            Telegram Channel
+          </a>
+</div>
+<!-- Safe Area Home Indicator Bar (iPhone UX Anchor) -->
+<div class="w-32 h-1 bg-on-background rounded-full mt-1.5 opacity-80"></div>
+</div>
+</footer>
+<!-- Interactive Offline QR Modal Overlay (Hidden by Default) -->
+<div class="hidden fixed inset-0 bg-on-background/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" id="qrModal">
+<div class="bg-secondary-container neo-border rounded-2xl p-5 w-full max-w-xs neo-shadow-lg flex flex-col items-center text-center relative">
+<button class="absolute top-3 right-3 w-8 h-8 rounded-full bg-surface-container-lowest neo-border flex items-center justify-center font-black neo-shadow-sm hover:bg-error-container" id="closeQr">
+          ✕
+        </button>
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest neo-border flex items-center justify-center mb-2 neo-shadow-sm">
+<span class="material-symbols-outlined text-[24px]" data-icon="qr_code_2">qr_code_2</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-background">Instant Pairing</h3>
+<p class="font-label-code text-badge-meta text-on-surface-variant mt-1">Scan from camera of nearby iPhone or Android device</p>
+<!-- Synthetic Neo-Brutalist QR Box -->
+<div class="bg-surface-container-lowest neo-border rounded-xl p-3 my-3 neo-shadow w-44 h-44 flex flex-col items-center justify-center relative overflow-hidden">
+<!-- Simplified High-Contrast QR Matrix Pattern -->
+<div class="grid grid-cols-6 gap-1 w-full h-full p-1 bg-surface-container-lowest">
+<div class="bg-black rounded-sm col-span-2 row-span-2 border border-black p-1">
+<div class="w-full h-full bg-white flex items-center justify-center">
+<div class="w-2 h-2 bg-black"></div>
+</div>
+</div>
+<div class="bg-black rounded-sm"></div>
+<div class="bg-black rounded-sm"></div>
+<div class="bg-black rounded-sm col-span-2 row-span-2 border border-black p-1">
+<div class="w-full h-full bg-white flex items-center justify-center">
+<div class="w-2 h-2 bg-black"></div>
+</div>
+</div>
+<div class="bg-black rounded-sm"></div>
+<div class="bg-black rounded-sm"></div>
+<div class="bg-black rounded-sm"></div>
+<div class="bg-black rounded-sm"></div>
+<div class="bg-black rounded-sm"></div>
+<div class="bg-black rounded-sm"></div>
+<div class="bg-black rounded-sm col-span-2 row-span-2 border border-black p-1">
+<div class="w-full h-full bg-white flex items-center justify-center">
+<div class="w-2 h-2 bg-black"></div>
+</div>
+</div>
+<div class="bg-black rounded-sm"></div>
+<div class="bg-black rounded-sm"></div>
+<div class="bg-black rounded-sm"></div>
+<div class="bg-black rounded-sm"></div>
+</div>
+</div>
+<div class="font-badge-meta text-[10px] bg-surface-container-lowest neo-border px-2.5 py-1 rounded-full neo-shadow-sm">
+          SSID: LocalBeam_Direct_5G • Key: 847291
+        </div>
+</div>
+</div>
+</div>
+<!-- Inline Vanilla Interactions Script -->
+<script>
+    // QR Code Dialog Interactive Trigger
+    const qrBtn = document.getElementById('qrBtn');
+    const qrModal = document.getElementById('qrModal');
+    const closeQr = document.getElementById('closeQr');
+
+    qrBtn.addEventListener('click', () => {
+      qrModal.classList.remove('hidden');
+    });
+
+    closeQr.addEventListener('click', () => {
+      qrModal.classList.add('hidden');
+    });
+
+    qrModal.addEventListener('click', (e) => {
+      if (e.target === qrModal) {
+        qrModal.classList.add('hidden');
+      }
+    });
+
+    // Tactile Send Action Feedback
+    const sendBtn = document.getElementById('sendBtn');
+    sendBtn.addEventListener('click', () => {
+      sendBtn.classList.add('bg-tertiary-fixed', 'text-on-tertiary-fixed');
+      sendBtn.innerHTML = `
+        <span class="material-symbols-outlined text-[24px] animate-spin" data-icon="autorenew">autorenew</span>
+        <span>Streaming to iPhone 15 Pro...</span>
+      `;
+      setTimeout(() => {
+        sendBtn.classList.remove('bg-tertiary-fixed', 'text-on-tertiary-fixed');
+        sendBtn.innerHTML = `
+          <span class="material-symbols-outlined text-secondary-container text-[24px]" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+          <span>Delivered in 0.9s!</span>
+        `;
+        setTimeout(() => {
+          sendBtn.innerHTML = `
+            <span class="material-symbols-outlined text-secondary-container text-[24px]" data-icon="bolt" style="font-variation-settings: 'FILL' 1;">bolt</span>
+            <span>Send Instant P2P / ارسال فایل</span>
+            <span class="material-symbols-outlined text-[20px]" data-icon="arrow_forward">arrow_forward</span>
+          `;
+        }, 2200);
+      }, 1400);
+    });
+
+    // Dropzone Click Trigger Simulator
+    const dropZone = document.getElementById('dropZone');
+    dropZone.addEventListener('click', () => {
+      dropZone.classList.add('bg-secondary-fixed');
+      setTimeout(() => dropZone.classList.remove('bg-secondary-fixed'), 250);
+    });
+  </script>
+</body></html>
