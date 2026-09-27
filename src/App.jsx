@@ -512,42 +512,217 @@ export default function App() {
       {/* ========================================================
           3-STEP QUICK GUIDE BANNER (EXPANDABLE FROM ACTION GROUP)
       ======================================================== */}
+      {/* ========================================================
+          3-STEP BENTO GUIDE DECK (FROM GOOGLE STITCH)
+      ======================================================== */}
       {showGuide && (
-        <div className="nb-card nb-card-yellow" style={{ padding: '20px', marginBottom: '24px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-            <h3 style={{ fontSize: '1.2rem', fontWeight: 900, display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span>🚀</span> {text.guideHeader}
-            </h3>
+        <div style={{ marginBottom: '28px' }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '16px',
+            background: 'rgba(255,255,255,0.7)',
+            padding: '12px 20px',
+            borderRadius: 'var(--radius-pill)',
+            border: 'var(--border-thick)',
+            boxShadow: 'var(--shadow-hard-sm)'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ fontSize: '1.4rem' }}>🚀</span>
+              <h3 style={{ fontSize: '1.15rem', fontWeight: 900, margin: 0 }}>
+                {text.guideHeader}
+              </h3>
+              <span className="nb-pill" style={{ background: 'var(--nb-yellow)', fontSize: '0.72rem', padding: '2px 8px' }}>
+                {lang === 'fa' ? '۳ مرحله فوق‌سریع • ۳ Easy Steps' : '3 Easy Steps • 0 Byte Net'}
+              </span>
+            </div>
             <button
               onClick={() => setShowGuide(false)}
               className="nb-btn nb-btn-white"
-              style={{ padding: '4px 10px', fontSize: '0.75rem' }}
+              style={{ padding: '4px 12px', fontSize: '0.8rem' }}
             >
-              ✕
+              ✕ {lang === 'fa' ? 'بستن راهنما' : 'Close Guide'}
             </button>
           </div>
 
+          {/* 3-Column Bento Deck (Yellow, Lime Green, Pink) */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-            gap: '14px'
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: '20px'
           }}>
-            <div style={{ background: '#fff', border: 'var(--border-thick)', borderRadius: '16px', padding: '14px', boxShadow: 'var(--shadow-hard-sm)' }}>
-              <div style={{ fontSize: '1.4rem', fontWeight: 900, color: 'var(--nb-purple)', marginBottom: '4px' }}>01</div>
-              <div style={{ fontWeight: 900, fontSize: '0.92rem', marginBottom: '4px' }}>{text.guideStep1Title}</div>
-              <div style={{ fontSize: '0.8rem', color: '#444' }}>{text.guideStep1Desc}</div>
+            {/* STEP 1: Sunny Cheddar Yellow */}
+            <div className="nb-card nb-card-yellow" style={{ padding: '22px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                  <span className="nb-pill" style={{ background: '#fff', fontSize: '0.75rem', fontWeight: 900 }}>
+                    STEP 01
+                  </span>
+                  <span style={{ fontSize: '1.5rem' }}>📷</span>
+                </div>
+                <h4 style={{ fontSize: '1.3rem', fontWeight: 900, marginBottom: '8px' }}>
+                  {text.guideStep1Title}
+                </h4>
+                <p style={{ fontSize: '0.82rem', color: '#222', lineHeight: 1.5, marginBottom: '16px' }}>
+                  {text.guideStep1Desc}
+                </p>
+
+                {/* Simulated Preview Box */}
+                <div style={{
+                  background: '#fff',
+                  border: 'var(--border-medium)',
+                  borderRadius: '16px',
+                  padding: '12px',
+                  marginBottom: '14px',
+                  boxShadow: 'var(--shadow-hard-sm)'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div style={{
+                      width: '42px',
+                      height: '42px',
+                      borderRadius: '10px',
+                      background: 'var(--nb-bg-secondary)',
+                      border: '1.5px solid #000',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '1.4rem'
+                    }}>
+                      📱
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: '0.8rem', fontWeight: 900 }}>آیفون ۱۵ (iPhone 15 Pro)</div>
+                      <div style={{ fontSize: '0.68rem', color: '#15803d', fontWeight: 700 }}>● {text.readyExchange}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div style={{
+                background: 'var(--nb-dark)',
+                color: '#fff',
+                padding: '6px 12px',
+                borderRadius: 'var(--radius-pill)',
+                fontSize: '0.68rem',
+                fontFamily: 'var(--font-mono)',
+                display: 'flex',
+                justifyContent: 'space-between'
+              }}>
+                <span>mDNS Discovery</span>
+                <span style={{ color: 'var(--nb-yellow)', fontWeight: 800 }}>LAN 192.168.1.*</span>
+              </div>
             </div>
 
-            <div style={{ background: '#fff', border: 'var(--border-thick)', borderRadius: '16px', padding: '14px', boxShadow: 'var(--shadow-hard-sm)' }}>
-              <div style={{ fontSize: '1.4rem', fontWeight: 900, color: 'var(--nb-green)', marginBottom: '4px' }}>02</div>
-              <div style={{ fontWeight: 900, fontSize: '0.92rem', marginBottom: '4px' }}>{text.guideStep2Title}</div>
-              <div style={{ fontSize: '0.8rem', color: '#444' }}>{text.guideStep2Desc}</div>
+            {/* STEP 2: Fresh Lime Green */}
+            <div className="nb-card nb-card-green" style={{ padding: '22px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                  <span className="nb-pill" style={{ background: '#fff', fontSize: '0.75rem', fontWeight: 900 }}>
+                    STEP 02
+                  </span>
+                  <span style={{ fontSize: '1.5rem' }}>📶</span>
+                </div>
+                <h4 style={{ fontSize: '1.3rem', fontWeight: 900, marginBottom: '8px' }}>
+                  {text.guideStep2Title}
+                </h4>
+                <p style={{ fontSize: '0.82rem', color: '#222', lineHeight: 1.5, marginBottom: '16px' }}>
+                  {text.guideStep2Desc}
+                </p>
+
+                {/* Simulated WebRTC Node to Node */}
+                <div style={{
+                  background: '#fff',
+                  border: 'var(--border-medium)',
+                  borderRadius: '16px',
+                  padding: '12px',
+                  marginBottom: '14px',
+                  boxShadow: 'var(--shadow-hard-sm)'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 800 }}>MacBook</span>
+                    <div style={{ flex: 1, margin: '0 8px', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <div style={{ width: '100%', height: '3px', background: '#000', borderRadius: '2px' }}></div>
+                      <div className="animate-pulse-beam" style={{
+                        position: 'absolute',
+                        width: '12px',
+                        height: '12px',
+                        borderRadius: '50%',
+                        background: 'var(--nb-yellow)',
+                        border: '1.5px solid #000'
+                      }}></div>
+                    </div>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 800 }}>iPhone</span>
+                  </div>
+                  <div style={{ textAlign: 'center', marginTop: '6px', fontSize: '0.65rem', fontWeight: 800, color: '#666' }}>
+                    TLS 1.3 Verified • Zero Cloud Hops
+                  </div>
+                </div>
+              </div>
+
+              <div style={{
+                background: 'var(--nb-dark)',
+                color: '#fff',
+                padding: '6px 12px',
+                borderRadius: 'var(--radius-pill)',
+                fontSize: '0.68rem',
+                fontFamily: 'var(--font-mono)',
+                display: 'flex',
+                justifyContent: 'space-between'
+              }}>
+                <span>WebRTC DataChannel</span>
+                <span style={{ color: 'var(--nb-green)', fontWeight: 800 }}>E2EE Direct</span>
+              </div>
             </div>
 
-            <div style={{ background: '#fff', border: 'var(--border-thick)', borderRadius: '16px', padding: '14px', boxShadow: 'var(--shadow-hard-sm)' }}>
-              <div style={{ fontSize: '1.4rem', fontWeight: 900, color: 'var(--nb-pink)', marginBottom: '4px' }}>03</div>
-              <div style={{ fontWeight: 900, fontSize: '0.92rem', marginBottom: '4px' }}>{text.guideStep3Title}</div>
-              <div style={{ fontSize: '0.8rem', color: '#444' }}>{text.guideStep3Desc}</div>
+            {/* STEP 3: Bubblegum Pastel Pink */}
+            <div className="nb-card nb-card-pink" style={{ padding: '22px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                  <span className="nb-pill" style={{ background: '#fff', fontSize: '0.75rem', fontWeight: 900 }}>
+                    STEP 03
+                  </span>
+                  <span style={{ fontSize: '1.5rem' }}>🚀</span>
+                </div>
+                <h4 style={{ fontSize: '1.3rem', fontWeight: 900, marginBottom: '8px' }}>
+                  {text.guideStep3Title}
+                </h4>
+                <p style={{ fontSize: '0.82rem', color: '#222', lineHeight: 1.5, marginBottom: '16px' }}>
+                  {text.guideStep3Desc}
+                </p>
+
+                {/* Simulated Speedometer Box */}
+                <div style={{
+                  background: '#fff',
+                  border: 'var(--border-medium)',
+                  borderRadius: '16px',
+                  padding: '12px',
+                  marginBottom: '14px',
+                  boxShadow: 'var(--shadow-hard-sm)'
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 800 }}>{lang === 'fa' ? 'سرعت انتقال LAN' : 'LAN Transfer Speed'}</span>
+                    <span style={{ fontSize: '1.1rem', fontWeight: 900, fontFamily: 'var(--font-mono)', color: 'var(--nb-purple)' }}>64.5 MB/s</span>
+                  </div>
+                  <div style={{ height: '12px', background: '#e2e8f0', borderRadius: '6px', overflow: 'hidden', border: '1px solid #000' }}>
+                    <div className="striped-progress" style={{ width: '85%', height: '100%' }}></div>
+                  </div>
+                </div>
+              </div>
+
+              <div style={{
+                background: 'var(--nb-dark)',
+                color: '#fff',
+                padding: '6px 12px',
+                borderRadius: 'var(--radius-pill)',
+                fontSize: '0.68rem',
+                fontFamily: 'var(--font-mono)',
+                display: 'flex',
+                justifyContent: 'space-between'
+              }}>
+                <span>SCTP Binary Stream</span>
+                <span style={{ color: 'var(--nb-pink)', fontWeight: 800 }}>Raw Uncompressed</span>
+              </div>
             </div>
           </div>
         </div>
