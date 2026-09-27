@@ -2618,16 +2618,36 @@ export default function App() {
                   </p>
                 </div>
 
-                <div style={{
-                  background: '#ecfdf5',
-                  border: 'var(--border-medium)',
-                  borderRadius: '14px',
-                  padding: '12px',
-                  fontSize: '0.8rem',
-                  fontWeight: 700,
-                  color: '#166534'
-                }}>
-                  ✓ {lang === 'fa' ? 'مزایا: باز شدن در پنجره مستقل، سرعت بالاتر و بدون نیاز به تب‌های مزاحم مرورگر.' : 'Benefits: Standalone window, instant launch, zero tab clutter.'}
+                {/* 4 Feature Bento Badges from Stitch */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', marginTop: '14px' }}>
+                  <div style={{ border: 'var(--border-medium)', background: '#f8fafc', borderRadius: '12px', padding: '10px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '1.2rem' }}>🪟</span>
+                    <div>
+                      <div style={{ fontWeight: 800, fontSize: '0.78rem' }}>{lang === 'fa' ? 'بدون تب مرورگر' : 'Zero Browser Tabs'}</div>
+                      <div style={{ fontSize: '0.68rem', color: '#64748b' }}>{lang === 'fa' ? 'پنجره کاملاً مستقل' : 'Isolated window'}</div>
+                    </div>
+                  </div>
+                  <div style={{ border: 'var(--border-medium)', background: 'var(--nb-green)', borderRadius: '12px', padding: '10px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '1.2rem' }}>⚡</span>
+                    <div>
+                      <div style={{ fontWeight: 800, fontSize: '0.78rem' }}>{lang === 'fa' ? 'اجرای ۱۰۰٪ آفلاین' : 'Offline Launcher'}</div>
+                      <div style={{ fontSize: '0.68rem', color: '#166534' }}>{lang === 'fa' ? 'بدون نیاز به اینترنت' : 'Zero internet needed'}</div>
+                    </div>
+                  </div>
+                  <div style={{ border: 'var(--border-medium)', background: '#f8fafc', borderRadius: '12px', padding: '10px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '1.2rem' }}>🚀</span>
+                    <div>
+                      <div style={{ fontWeight: 800, fontSize: '0.78rem' }}>{lang === 'fa' ? 'شتاب سخت‌افزاری' : 'Wi-Fi Acceleration'}</div>
+                      <div style={{ fontSize: '0.68rem', color: '#64748b' }}>{lang === 'fa' ? 'حداکثر پهنای باند مودم' : 'Full hardware speed'}</div>
+                    </div>
+                  </div>
+                  <div style={{ border: 'var(--border-medium)', background: 'var(--nb-yellow)', borderRadius: '12px', padding: '10px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '1.2rem' }}>📡</span>
+                    <div>
+                      <div style={{ fontWeight: 800, fontSize: '0.78rem' }}>{lang === 'fa' ? 'شبکه مستقیم LAN' : 'Direct LAN Access'}</div>
+                      <div style={{ fontSize: '0.68rem', color: '#854d0e' }}>{lang === 'fa' ? 'کشف خودکار دستگاه‌ها' : 'Auto peer discovery'}</div>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
