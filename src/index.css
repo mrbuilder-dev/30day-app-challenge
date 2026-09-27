@@ -213,3 +213,56 @@ body {
   overflow: hidden;
   position: relative;
 }
+
+/* ========================================================
+   GOOGLE STITCH DATA BEAM & PROGRESS ANIMATIONS
+======================================================== */
+/* Striped progress bar animation */
+.striped-progress {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    #a8d560,
+    #a8d560 14px,
+    #c4f279 14px,
+    #c4f279 28px
+  );
+  background-size: 40px 40px;
+  animation: move-stripes 1.2s linear infinite;
+}
+
+@keyframes move-stripes {
+  0% { background-position: 0 0; }
+  100% { background-position: 40px 0; }
+}
+
+/* Packet flow animation along pipeline */
+@keyframes packet-dash {
+  0% { stroke-dashoffset: 48; }
+  100% { stroke-dashoffset: 0; }
+}
+
+.beam-pipeline {
+  stroke-dasharray: 6 6;
+  animation: packet-dash 0.8s linear infinite;
+}
+
+/* Subtle bounce for payload badge */
+@keyframes bounce-subtle {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-4px) rotate(2deg); }
+}
+
+.bounce-payload {
+  animation: bounce-subtle 1.8s ease-in-out infinite;
+}
+
+/* Pulse liquid */
+@keyframes pulse-liquid {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+.liquid-wave {
+  animation: pulse-liquid 2.5s ease-in-out infinite;
+}
+
