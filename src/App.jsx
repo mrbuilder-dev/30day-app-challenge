@@ -3,12 +3,8 @@ import { QRCodeSVG } from 'qrcode.react';
 import confetti from 'canvas-confetti';
 import { P2PManager, getDeviceInfo } from './services/webrtc';
 
-const TG_BOT_TOKEN = '8803382535:AAGyfY_cLA0rxFz-eQrP03VtbuYIA3JHcEg';
-const TG_CHANNEL = '@MrbuildersAI';
-const GH_REPO = 'mrbuilder-dev/30day-app-challenge';
-
-// Full Bilingual Dictionary (FA & EN)
-const t = {
+// Comprehensive Bilingual Dictionary (FA & EN)
+const translations = {
   fa: {
     brandSubtitle: 'انتقال پرسرعت فایل و کلیپ‌بورد در شبکه محلی بدون نیاز به ۱ بایت اینترنت',
     desktopTab: '💻 وب دسکتاپ',
@@ -37,6 +33,7 @@ const t = {
     encryptionType: 'نوع رمزنگاری',
     sendCardTitle: 'ارسال فایل یا متن',
     sendCardDesc: 'مستقیماً به',
+    remotePeerPlaceholder: 'دستگاه متصل',
     dropzoneText: 'انتخاب یا رها کردن فایل',
     dropzoneHint: 'عکس، ویدیو، PDF، موزیک یا فایل فشرده',
     readyToSend: 'آماده ارسال',
@@ -57,31 +54,22 @@ const t = {
     transferModalDesc: '0% اینترنت • مستقیم روتر LAN',
     senderLabel: 'این دستگاه',
     receiverLabel: 'دستگاه مقابل',
-    rateLabel: 'سرعت لحظه‌ای (Rate)',
-    rateSub: '▲ حداکثر LAN',
-    etaLabel: 'زمان تخمینی (ETA)',
+    rateLabel: 'سرعت لحظه‌ای',
+    etaLabel: 'زمان تخمینی',
     sctpLabel: 'پکت‌های SCTP',
     protocolLabel: 'کانال داده P2P',
     closeTransferModal: 'ادامه در پس‌زمینه ✕',
-    creatorLink: '📊 داشبورد سازنده (چالش ۳۰ روزه)',
-    creatorTitle: 'مرکز فرماندهی چالش ۳۰ روزه Mr. Builder',
-    creatorDesc: 'رصد زنده آمار شبکه‌های اجتماعی، ربات تلگرام و پیشرفت تسک‌های روزانه',
-    syncStats: '🔄 به‌روزرسانی آمار زنده API',
-    syncing: '⏳ در حال همگام‌سازی...',
-    tgCardTitle: 'کانال تلگرام (@MrbuildersAI)',
-    ghCardTitle: 'ستاره‌های گیت‌هاب (Repo Stars)',
-    xCardTitle: 'اکانت توییتر (@MrBuildersai)',
-    members: 'عضو',
-    stars: '★',
-    saveStats: '💾 ذخیره آمار',
-    roadmapTitle: '🗺 چک‌لیست و برنامه ۳۰ روزه',
-    principlesTitle: '🎯 ۳ اصل طلایی تولید محتوای Mr. Builder',
+    radarAuto: '☻ رادار خودکار',
+    radarConnected: '● متصل P2P',
+    radarWaiting: 'در انتظار اتصال دیوایس مقابل...',
+    guideHeader: 'چگونه در ۳ مرحله بدون اینترنت فایل بفرستیم؟',
     guideStep1Title: '۱. کپی لینک یا اسکن QR',
     guideStep1Desc: 'دکمه زرد اسکن یا دکمه کپی لینک را بزنید و در گوشی یا تب دوم باز کنید.',
     guideStep2Title: '۲. جفت‌سازی مستقیم (LAN)',
     guideStep2Desc: 'هر دو دستگاه بدون نیاز به اینترنت و از طریق وای‌فای داخلی به هم متصل می‌شوند.',
     guideStep3Title: '۳. انتقال فایل و کلیپ‌بورد',
-    guideStep3Desc: 'فایل را رها کنید یا متن را بفرستید؛ با سرعت بالای ۶۰ مگابایت بر ثانیه منتقل می‌شود.',
+    guideStep3Desc: 'فایل را رها کنید یا متن را بفرستید؛ با نهایت سرعت وای‌فای منتقل می‌شود.',
+    connectedSubtitle: 'کانال مستقیم WebRTC فعال • بدون مصرف نت'
   },
   en: {
     brandSubtitle: 'High-speed local peer-to-peer file & clipboard beam. 0 bytes internet used.',
@@ -111,6 +99,7 @@ const t = {
     encryptionType: 'Encryption',
     sendCardTitle: 'Beam File or Text',
     sendCardDesc: 'Directly to',
+    remotePeerPlaceholder: 'Target Peer',
     dropzoneText: 'Choose or drop a file here',
     dropzoneHint: 'Images, 4K videos, PDFs, music, or archives',
     readyToSend: 'Ready to beam',
@@ -132,37 +121,27 @@ const t = {
     senderLabel: 'This Device',
     receiverLabel: 'Target Device',
     rateLabel: 'Transfer Rate',
-    rateSub: '▲ Maximum LAN',
     etaLabel: 'Estimated ETA',
     sctpLabel: 'SCTP Packets',
     protocolLabel: 'P2P Data Channel',
     closeTransferModal: 'Run in Background ✕',
-    creatorLink: '📊 Creator Dashboard (30-Day Sprint)',
-    creatorTitle: 'Mr. Builder 30-Day Challenge Command Center',
-    creatorDesc: 'Live social telemetry, Telegram Bot API stats, and daily sprint progress',
-    syncStats: '🔄 Sync Live API Stats',
-    syncing: '⏳ Syncing...',
-    tgCardTitle: 'Telegram Channel (@MrbuildersAI)',
-    ghCardTitle: 'GitHub Repo Stars',
-    xCardTitle: '𝕏 Twitter (@MrBuildersai)',
-    members: 'Members',
-    stars: '★',
-    saveStats: '💾 Save Stats',
-    roadmapTitle: '🗺 30-Day Sprint Checklist',
-    principlesTitle: '🎯 Mr. Builder 3 Golden Content Rules',
+    radarAuto: '☻ Auto Radar',
+    radarConnected: '● P2P Linked',
+    radarWaiting: 'Waiting for peer device to connect...',
+    guideHeader: 'How to beam files in 3 quick steps?',
     guideStep1Title: '1. Copy Link or Scan QR',
     guideStep1Desc: 'Click Copy Link or Scan QR, then open it on your phone or 2nd browser tab.',
     guideStep2Title: '2. Direct LAN Handshake',
     guideStep2Desc: 'Devices pair automatically over local Wi-Fi with zero internet dependency.',
     guideStep3Title: '3. Instant Beam',
     guideStep3Desc: 'Drop any file or copy text; streams at wire speed directly browser-to-browser.',
+    connectedSubtitle: 'Direct WebRTC channel active • 0 byte internet used'
   }
 };
 
 export default function App() {
-  const [lang, setLang] = useState('fa');
+  const [lang, setLang] = useState(() => localStorage.getItem('localbeam_lang') || 'fa');
   const [viewMode, setViewMode] = useState('desktop'); // 'desktop' | 'mobile'
-  const [showCreatorDashboard, setShowCreatorDashboard] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
 
   // Local Device Info
@@ -192,8 +171,14 @@ export default function App() {
   const [incomingClipboard, setIncomingClipboard] = useState('');
   const [copiedNotification, setCopiedNotification] = useState(false);
 
-  // Current translation helper
-  const text = t[lang];
+  // Current translation object
+  const text = translations[lang] || translations.fa;
+
+  // Persist language selection
+  const handleLanguageChange = (newLang) => {
+    setLang(newLang);
+    localStorage.setItem('localbeam_lang', newLang);
+  };
 
   // Transfers History
   const [transfers, setTransfers] = useState([
@@ -202,35 +187,11 @@ export default function App() {
       name: 'stitch_design_spec.fig',
       size: '24.5 MB',
       from: 'MacBook Pro',
-      to: 'آیفون ۱۵',
+      to: 'iPhone 15 Pro',
       time: 'همین الان',
       isDownloadable: false
     }
   ]);
-
-  // Social Tracker States
-  const [telegramMembers, setTelegramMembers] = useState(null);
-  const [githubStars, setGithubStars] = useState(null);
-  const [xFollowers, setXFollowers] = useState(() => localStorage.getItem('mb_x_followers') || '14');
-  const [xImpressions, setXImpressions] = useState(() => localStorage.getItem('mb_x_impressions') || '420');
-  const [xReplies, setXReplies] = useState(() => localStorage.getItem('mb_x_replies') || '8');
-  const [isSyncing, setIsSyncing] = useState(false);
-
-  // Roadmap State
-  const [roadmap, setRoadmap] = useState(() => {
-    const saved = localStorage.getItem('mb_roadmap');
-    if (saved) {
-      try { return JSON.parse(saved); } catch (e) {}
-    }
-    return [
-      { day: 0, title: 'راه‌اندازی زیرساخت، توییتر، تلگرام و گیت‌هاب', done: true },
-      { day: 1, title: 'انتخاب ایده LocalBeam، ساخت UI نئوبروتالیسم و استیچ', done: true },
-      { day: 2, title: 'پیاده‌سازی هسته اتصال WebRTC بین گوشی و لپ‌تاپ', done: true },
-      { day: 3, title: 'انتقال اولین فایل واقعی P2P بدون اینترنت', done: false },
-      { day: 4, title: 'انتشار نسخه تستی آلفا در تلگرام برای اعضا', done: false },
-      { day: 5, title: 'بررسی اولین فیدبک‌ها و گزارش آمار روز پنجم', done: false },
-    ];
-  });
 
   // --- Initialize WebRTC P2P ---
   useEffect(() => {
@@ -412,50 +373,6 @@ export default function App() {
     }
   };
 
-  const fetchLiveStats = async () => {
-    setIsSyncing(true);
-    try {
-      const tgRes = await fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/getChatMemberCount?chat_id=${TG_CHANNEL}`);
-      const tgData = await tgRes.json();
-      if (tgData.ok) {
-        setTelegramMembers(tgData.result);
-      }
-    } catch (e) {
-      console.log('TG fetch error', e);
-    }
-
-    try {
-      const ghRes = await fetch(`https://api.github.com/repos/${GH_REPO}`);
-      const ghData = await ghRes.json();
-      if (ghData && typeof ghData.stargazers_count !== 'undefined') {
-        setGithubStars(ghData.stargazers_count);
-      }
-    } catch (e) {
-      console.log('GH fetch error', e);
-    }
-    setIsSyncing(false);
-  };
-
-  useEffect(() => {
-    fetchLiveStats();
-  }, []);
-
-  const saveXStats = (e) => {
-    e.preventDefault();
-    localStorage.setItem('mb_x_followers', xFollowers);
-    localStorage.setItem('mb_x_impressions', xImpressions);
-    localStorage.setItem('mb_x_replies', xReplies);
-    confetti({ particleCount: 50, spread: 50, origin: { y: 0.6 } });
-    showToast(lang === 'fa' ? 'آمار توییتر با موفقیت ثبت شد! 🎉' : 'Twitter metrics saved! 🎉');
-  };
-
-  const toggleTask = (index) => {
-    const updated = [...roadmap];
-    updated[index].done = !updated[index].done;
-    setRoadmap(updated);
-    localStorage.setItem('mb_roadmap', JSON.stringify(updated));
-  };
-
   return (
     <div style={{ maxWidth: '1280px', margin: '0 auto', direction: lang === 'fa' ? 'rtl' : 'ltr' }}>
       
@@ -498,34 +415,29 @@ export default function App() {
         padding: '8px 18px',
         boxShadow: 'var(--shadow-hard-sm)'
       }}>
+        {/* Left: Viewport Switcher */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
           <span style={{ fontSize: '1.2rem' }}>⚡</span>
           <div style={{ display: 'inline-flex', gap: '6px', flexWrap: 'wrap' }}>
             <button
-              onClick={() => { setViewMode('desktop'); setShowCreatorDashboard(false); }}
-              className={`nb-btn ${viewMode === 'desktop' && !showCreatorDashboard ? 'nb-btn-dark' : ''}`}
+              onClick={() => setViewMode('desktop')}
+              className={`nb-btn ${viewMode === 'desktop' ? 'nb-btn-dark' : ''}`}
               style={{ padding: '6px 14px', fontSize: '0.8rem', borderRadius: '16px' }}
             >
               {text.desktopTab}
             </button>
             <button
-              onClick={() => { setViewMode('mobile'); setShowCreatorDashboard(false); }}
-              className={`nb-btn ${viewMode === 'mobile' && !showCreatorDashboard ? 'nb-btn-dark' : ''}`}
+              onClick={() => setViewMode('mobile')}
+              className={`nb-btn ${viewMode === 'mobile' ? 'nb-btn-dark' : ''}`}
               style={{ padding: '6px 14px', fontSize: '0.8rem', borderRadius: '16px' }}
             >
               {text.mobileTab}
             </button>
-            <button
-              onClick={() => setShowGuide(!showGuide)}
-              className={`nb-btn ${showGuide ? 'nb-btn-pink' : 'nb-btn-white'}`}
-              style={{ padding: '6px 14px', fontSize: '0.8rem', borderRadius: '16px' }}
-            >
-              {text.guideBtn}
-            </button>
           </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        {/* Right: P2P Badge & Visual Language Switcher */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
           {/* P2P Live Status Badge */}
           <div style={{
             display: 'inline-flex',
@@ -546,31 +458,65 @@ export default function App() {
               background: p2pStatus === 'connected' ? '#22c55e' : p2pStatus === 'connecting' ? '#eab308' : '#9ca3af'
             }}></span>
             {p2pStatus === 'connected' 
-              ? `${text.statusConnected}: ${connectedDevice ? connectedDevice.name : (lang === 'fa' ? 'دستگاه مقصد' : 'Peer')}`
+              ? `${text.statusConnected}: ${connectedDevice ? connectedDevice.name : text.remotePeerPlaceholder}`
               : p2pStatus === 'connecting' 
                 ? text.statusConnecting 
                 : `${text.statusReady} (${myPeerId || '...'})`}
           </div>
 
-          {/* Full Language Switcher */}
-          <button
-            onClick={() => setLang(lang === 'fa' ? 'en' : 'fa')}
-            className="nb-pill"
-            style={{ cursor: 'pointer', background: 'var(--nb-yellow)', fontWeight: 900 }}
-          >
-            🌐 {lang === 'fa' ? 'English (EN)' : 'فارسی (FA)'}
-          </button>
+          {/* Explicit Segmented Language Switcher (Zero Ambiguity) */}
+          <div style={{
+            display: 'inline-flex',
+            background: '#fff',
+            border: 'var(--border-medium)',
+            borderRadius: 'var(--radius-pill)',
+            padding: '2px',
+            boxShadow: 'var(--shadow-hard-sm)'
+          }}>
+            <button
+              onClick={() => handleLanguageChange('fa')}
+              style={{
+                padding: '4px 12px',
+                borderRadius: 'var(--radius-pill)',
+                border: 'none',
+                background: lang === 'fa' ? 'var(--nb-dark)' : 'transparent',
+                color: lang === 'fa' ? '#fff' : 'var(--nb-dark)',
+                fontWeight: 900,
+                fontSize: '0.75rem',
+                cursor: 'pointer',
+                transition: 'all 0.1s ease'
+              }}
+            >
+              🇮🇷 فارسی
+            </button>
+            <button
+              onClick={() => handleLanguageChange('en')}
+              style={{
+                padding: '4px 12px',
+                borderRadius: 'var(--radius-pill)',
+                border: 'none',
+                background: lang === 'en' ? 'var(--nb-dark)' : 'transparent',
+                color: lang === 'en' ? '#fff' : 'var(--nb-dark)',
+                fontWeight: 900,
+                fontSize: '0.75rem',
+                cursor: 'pointer',
+                transition: 'all 0.1s ease'
+              }}
+            >
+              🇬🇧 English
+            </button>
+          </div>
         </div>
       </div>
 
       {/* ========================================================
-          3-STEP QUICK GUIDE BANNER (TOGGLED VIA GUIDE BUTTON)
+          3-STEP QUICK GUIDE BANNER (EXPANDABLE FROM ACTION GROUP)
       ======================================================== */}
       {showGuide && (
         <div className="nb-card nb-card-yellow" style={{ padding: '20px', marginBottom: '24px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
             <h3 style={{ fontSize: '1.2rem', fontWeight: 900, display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span>🚀</span> {lang === 'fa' ? 'چگونه در ۳ مرحله بدون اینترنت فایل بفرستیم؟' : 'How to beam files in 3 quick steps?'}
+              <span>🚀</span> {text.guideHeader}
             </h3>
             <button
               onClick={() => setShowGuide(false)}
@@ -608,190 +554,9 @@ export default function App() {
       )}
 
       {/* ========================================================
-          CREATOR & SPRINT DASHBOARD (DISCREET / SEPARATE VIEW)
-      ======================================================== */}
-      {showCreatorDashboard && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', marginBottom: '32px' }}>
-          
-          <div className="nb-card nb-card-yellow" style={{ padding: '24px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
-              <div>
-                <span className="nb-pill" style={{ background: '#fff', marginBottom: '8px' }}>
-                  🎯 {lang === 'fa' ? 'مرکز فرماندهی اختصاصی Mr. Builder' : 'Mr. Builder Command Center'}
-                </span>
-                <h2 style={{ fontSize: '1.6rem', fontWeight: 900, marginTop: '4px' }}>
-                  {text.creatorTitle}
-                </h2>
-                <p style={{ fontSize: '0.85rem', color: '#333', fontWeight: 600 }}>
-                  {text.creatorDesc}
-                </p>
-              </div>
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <button
-                  onClick={fetchLiveStats}
-                  disabled={isSyncing}
-                  className="nb-btn nb-btn-dark"
-                  style={{ padding: '8px 16px', fontSize: '0.85rem' }}
-                >
-                  {isSyncing ? text.syncing : text.syncStats}
-                </button>
-                <button
-                  onClick={() => setShowCreatorDashboard(false)}
-                  className="nb-btn nb-btn-white"
-                  style={{ padding: '8px 14px', fontSize: '0.85rem' }}
-                >
-                  {text.closeModal}
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* 3 Metrics Cards */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: '20px'
-          }}>
-
-            {/* Telegram Card (Live via API) */}
-            <div className="nb-card nb-card-white" style={{ padding: '20px', borderTop: '8px solid #2ba2de' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-                <span style={{ fontSize: '1.5rem' }}>✈️</span>
-                <span className="nb-pill" style={{ background: '#dcfce7', color: '#15803d' }}>
-                  ● Bot API Connected
-                </span>
-              </div>
-              <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#666', marginBottom: '6px' }}>
-                {text.tgCardTitle}
-              </div>
-              <div style={{ fontSize: '2.5rem', fontWeight: 900, fontFamily: 'var(--font-mono)' }}>
-                {telegramMembers !== null ? telegramMembers : '...'} <span style={{ fontSize: '1rem', fontWeight: 700 }}>{text.members}</span>
-              </div>
-            </div>
-
-            {/* GitHub Card (Live via API) */}
-            <div className="nb-card nb-card-white" style={{ padding: '20px', borderTop: '8px solid #121316' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-                <span style={{ fontSize: '1.5rem' }}>🐙</span>
-                <span className="nb-pill" style={{ background: '#dcfce7', color: '#15803d' }}>
-                  ● Public API
-                </span>
-              </div>
-              <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#666', marginBottom: '6px' }}>
-                {text.ghCardTitle}
-              </div>
-              <div style={{ fontSize: '2.5rem', fontWeight: 900, fontFamily: 'var(--font-mono)' }}>
-                {githubStars !== null ? githubStars : '...'} <span style={{ fontSize: '1rem', fontWeight: 700 }}>{text.stars}</span>
-              </div>
-            </div>
-
-            {/* Twitter Card */}
-            <div className="nb-card nb-card-white" style={{ padding: '20px', borderTop: '8px solid #000' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-                <span style={{ fontSize: '1.5rem' }}>𝕏</span>
-                <span className="nb-pill" style={{ background: '#fef3c7', color: '#b45309' }}>
-                  Quick Logger
-                </span>
-              </div>
-              <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#666', marginBottom: '6px' }}>
-                {text.xCardTitle}
-              </div>
-              
-              <form onSubmit={saveXStats} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '0.8rem', fontWeight: 700 }}>Followers:</span>
-                  <input
-                    type="number"
-                    value={xFollowers}
-                    onChange={(e) => setXFollowers(e.target.value)}
-                    style={{ width: '80px', padding: '4px 8px', borderRadius: '8px', border: 'var(--border-medium)', fontFamily: 'var(--font-mono)', fontWeight: 800, textAlign: 'center' }}
-                  />
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '0.8rem', fontWeight: 700 }}>Impressions:</span>
-                  <input
-                    type="number"
-                    value={xImpressions}
-                    onChange={(e) => setXImpressions(e.target.value)}
-                    style={{ width: '80px', padding: '4px 8px', borderRadius: '8px', border: 'var(--border-medium)', fontFamily: 'var(--font-mono)', fontWeight: 800, textAlign: 'center' }}
-                  />
-                </div>
-                <button type="submit" className="nb-btn nb-btn-yellow" style={{ marginTop: '4px', padding: '6px', fontSize: '0.75rem' }}>
-                  {text.saveStats}
-                </button>
-              </form>
-            </div>
-
-          </div>
-
-          {/* Roadmap & Principles */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
-            gap: '24px'
-          }}>
-            <div className="nb-card nb-card-white" style={{ padding: '24px' }}>
-              <h3 style={{ fontSize: '1.3rem', fontWeight: 900, marginBottom: '16px' }}>
-                {text.roadmapTitle}
-              </h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                {roadmap.map((item, idx) => (
-                  <div
-                    key={idx}
-                    onClick={() => toggleTask(idx)}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '12px',
-                      padding: '10px 14px',
-                      borderRadius: '12px',
-                      border: 'var(--border-medium)',
-                      background: item.done ? '#f0fdf4' : '#fff',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    <span style={{ fontSize: '1.2rem' }}>{item.done ? '✅' : '⚪'}</span>
-                    <span style={{
-                      fontSize: '0.85rem',
-                      fontWeight: 800,
-                      textDecoration: item.done ? 'line-through' : 'none',
-                      color: item.done ? '#15803d' : '#121316'
-                    }}>
-                      Day {item.day}: {item.title}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="nb-card nb-card-pink" style={{ padding: '22px' }}>
-              <h3 style={{ fontSize: '1.2rem', fontWeight: 900, marginBottom: '12px' }}>
-                {text.principlesTitle}
-              </h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <div style={{ background: '#fff', border: 'var(--border-medium)', borderRadius: '12px', padding: '12px' }}>
-                  <div style={{ fontWeight: 900, fontSize: '0.88rem', marginBottom: '2px' }}>1. Visual & Interactive Proof</div>
-                  <div style={{ fontSize: '0.78rem', color: '#555' }}>Always attach live demo link, short video clip, or real benchmark.</div>
-                </div>
-                <div style={{ background: '#fff', border: 'var(--border-medium)', borderRadius: '12px', padding: '12px' }}>
-                  <div style={{ fontWeight: 900, fontSize: '0.88rem', marginBottom: '2px' }}>2. Anti-AI Human Persona</div>
-                  <div style={{ fontSize: '0.78rem', color: '#555' }}>Raw, candid developer journey without corporate slogans.</div>
-                </div>
-                <div style={{ background: '#fff', border: 'var(--border-medium)', borderRadius: '12px', padding: '12px' }}>
-                  <div style={{ fontWeight: 900, fontSize: '0.88rem', marginBottom: '2px' }}>3. Low-Friction Engagement</div>
-                  <div style={{ fontSize: '0.78rem', color: '#555' }}>Single-question feedback asking for direct votes.</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      )}
-
-      {/* ========================================================
           VIEWPORT 1: MOBILE APP VIEW (Google Stitch Mobile Screen)
       ======================================================== */}
-      {viewMode === 'mobile' && !showCreatorDashboard && (
+      {viewMode === 'mobile' && (
         <div className="mobile-phone-frame">
           
           <div className="mobile-status-bar">
@@ -991,7 +756,7 @@ export default function App() {
       {/* ========================================================
           VIEWPORT 2: DESKTOP WEB DASHBOARD (Google Stitch Layout)
       ======================================================== */}
-      {viewMode === 'desktop' && !showCreatorDashboard && (
+      {viewMode === 'desktop' && (
         <div>
           {/* Top Brand Header */}
           <header style={{
@@ -1039,10 +804,10 @@ export default function App() {
               </div>
             </div>
 
-            {/* Quick Action Buttons Group */}
+            {/* Quick Action Buttons Group: ONLY 1 Guide Button (next to Copy Link) */}
             <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
               
-              {/* 3-Step Guide Trigger */}
+              {/* Single 3-Step Guide Button */}
               <button
                 onClick={() => setShowGuide(!showGuide)}
                 className={`nb-btn ${showGuide ? 'nb-btn-pink' : 'nb-btn-yellow'}`}
@@ -1088,7 +853,7 @@ export default function App() {
                   fontSize: '0.8rem',
                   background: p2pStatus === 'connected' ? 'var(--nb-green)' : '#fff'
                 }}>
-                  {p2pStatus === 'connected' ? '● Connected' : '☻ Ready'}
+                  {p2pStatus === 'connected' ? (lang === 'fa' ? '● متصل شد' : '● Connected') : (lang === 'fa' ? '☻ آماده' : '☻ Ready')}
                 </div>
                 <span style={{ fontSize: '1.2rem' }}>📶</span>
               </div>
@@ -1155,7 +920,7 @@ export default function App() {
                       ✓ {connectedDevice.name}
                     </div>
                     <div style={{ fontSize: '0.75rem', color: '#cbd5e1' }}>
-                      WebRTC DataChannel • 0 Byte Internet
+                      {text.connectedSubtitle}
                     </div>
                   </div>
                   <span className="nb-pill" style={{ background: 'var(--nb-green)', color: '#000', fontSize: '0.75rem' }}>
@@ -1326,7 +1091,7 @@ export default function App() {
                 {text.sendCardTitle}
               </h2>
               <p style={{ fontSize: '0.85rem', fontWeight: 600, color: 'rgba(0,0,0,0.7)', marginBottom: '16px' }}>
-                {text.sendCardDesc} {connectedDevice ? connectedDevice.name : (lang === 'fa' ? 'دستگاه متصل' : 'Peer')}:
+                {text.sendCardDesc} {connectedDevice ? connectedDevice.name : text.remotePeerPlaceholder}:
               </p>
 
               <label className="nb-dropzone" style={{ display: 'block', marginBottom: '16px' }}>
@@ -1433,7 +1198,7 @@ export default function App() {
 
           </div>
 
-          {/* Bottom Floating Dock */}
+          {/* Bottom Floating Dock (Cleaned Up: No Internal Creator Dashboard) */}
           <div style={{ marginTop: '40px', display: 'flex', justifyContent: 'center' }}>
             <div style={{
               display: 'inline-flex',
@@ -1447,20 +1212,11 @@ export default function App() {
               flexWrap: 'wrap',
               justifyContent: 'center'
             }}>
-              {/* Creator Dashboard discreet toggle */}
-              <button
-                onClick={() => setShowCreatorDashboard(true)}
-                className="nb-btn nb-btn-yellow"
-                style={{ padding: '8px 16px', fontSize: '0.85rem' }}
-              >
-                {text.creatorLink}
-              </button>
-
               <a
                 href="https://t.me/MrbuildersAI"
                 target="_blank"
                 rel="noreferrer"
-                className="nb-btn nb-btn-white"
+                className="nb-btn nb-btn-yellow"
                 style={{ padding: '8px 16px', fontSize: '0.85rem' }}
               >
                 ✈️ Telegram
@@ -1684,23 +1440,23 @@ export default function App() {
                 marginBottom: '18px'
               }}>
                 <div style={{ background: '#f8fafc', border: 'var(--border-medium)', borderRadius: '12px', padding: '8px', textAlign: 'center' }}>
-                  <span style={{ fontSize: '0.65rem', color: '#666', display: 'block', fontWeight: 700 }}>Rate</span>
+                  <span style={{ fontSize: '0.65rem', color: '#666', display: 'block', fontWeight: 700 }}>{text.rateLabel}</span>
                   <span style={{ fontSize: '0.95rem', fontWeight: 900, fontFamily: 'var(--font-mono)' }}>{transferSpeed} MB/s</span>
                 </div>
 
                 <div style={{ background: '#f8fafc', border: 'var(--border-medium)', borderRadius: '12px', padding: '8px', textAlign: 'center' }}>
-                  <span style={{ fontSize: '0.65rem', color: '#666', display: 'block', fontWeight: 700 }}>ETA</span>
+                  <span style={{ fontSize: '0.65rem', color: '#666', display: 'block', fontWeight: 700 }}>{text.etaLabel}</span>
                   <span style={{ fontSize: '0.95rem', fontWeight: 900, fontFamily: 'var(--font-mono)' }}>~4s</span>
                 </div>
 
                 <div style={{ background: '#f8fafc', border: 'var(--border-medium)', borderRadius: '12px', padding: '8px', textAlign: 'center' }}>
-                  <span style={{ fontSize: '0.65rem', color: '#666', display: 'block', fontWeight: 700 }}>Chunks</span>
+                  <span style={{ fontSize: '0.65rem', color: '#666', display: 'block', fontWeight: 700 }}>{text.sctpLabel}</span>
                   <span style={{ fontSize: '0.95rem', fontWeight: 900, fontFamily: 'var(--font-mono)' }}>16KB/ea</span>
                 </div>
 
                 <div style={{ background: '#f8fafc', border: 'var(--border-medium)', borderRadius: '12px', padding: '8px', textAlign: 'center' }}>
-                  <span style={{ fontSize: '0.65rem', color: '#666', display: 'block', fontWeight: 700 }}>Security</span>
-                  <span style={{ fontSize: '0.95rem', fontWeight: 900, fontFamily: 'var(--font-mono)', color: '#16a34a' }}>E2EE</span>
+                  <span style={{ fontSize: '0.65rem', color: '#666', display: 'block', fontWeight: 700 }}>{text.protocolLabel}</span>
+                  <span style={{ fontSize: '0.95rem', fontWeight: 900, fontFamily: 'var(--font-mono)', color: '#16a34a' }}>WebRTC</span>
                 </div>
               </div>
 
