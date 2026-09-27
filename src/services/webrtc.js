@@ -39,8 +39,9 @@ export function generatePeerId() {
   return result;
 }
 
-const CHUNK_SIZE = 64 * 1024; // 64KB per chunk (optimal for WebRTC SCTP DataChannels)
-const MAX_BUFFERED_AMOUNT = 1024 * 1024; // 1MB buffer capacity before backpressure throttling
+const CHUNK_SIZE = 32 * 1024; // 32KB safe SCTP chunk size (fits comfortably under the 64KB WebRTC SCTP limit on iOS & Android)
+const HIGH_BUFFER_THRESHOLD = 512 * 1024; // 512KB buffer ceiling before pausing stream
+const LOW_BUFFER_THRESHOLD = 128 * 1024; // 128KB buffer floor before resuming stream
 
 export class P2PManager {
   constructor(callbacks = {}) {
@@ -50,6 +51,7 @@ export class P2PManager {
     this.myPeerId = null;
     this.remoteDeviceInfo = null;
     this.incomingFiles = {};
+    this.pendingAcks = {};
     this.isDestroyed = false;
   }
 
@@ -224,6 +226,13 @@ export class P2PManager {
         break;
       }
 
+      case 'file-ack':
+        if (this.pendingAcks && this.pendingAcks[data.id]) {
+          this.pendingAcks[data.id]();
+          delete this.pendingAcks[data.id];
+        }
+        break;
+
       case 'file-complete': {
         const fileState = this.incomingFiles[data.id];
         if (!fileState) return;
@@ -240,6 +249,18 @@ export class P2PManager {
             url: downloadUrl,
             time: 'همین الان'
           });
+        }
+
+        // Send two-way acknowledgment back to sender
+        if (this.activeConnection && this.activeConnection.open) {
+          try {
+            this.activeConnection.send({
+              type: 'file-ack',
+              id: data.id
+            });
+          } catch (e) {
+            console.warn('Could not send file-ack:', e);
+          }
         }
 
         delete this.incomingFiles[data.id];
@@ -266,7 +287,7 @@ export class P2PManager {
 
   async sendFile(file) {
     if (!this.activeConnection || !this.activeConnection.open) {
-      throw new Error('دستگاهی برای ارسال فایل متصل نیست');
+      throw new Error('دستگاهی برای ارسال فایل متصل نیست یا اتصال قطع شده است');
     }
 
     const fileId = 'file_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
@@ -295,33 +316,22 @@ export class P2PManager {
     let chunkIndex = 0;
     let lastProgressUpdate = 0;
 
-    // 2. Stream binary chunks with native WebRTC backpressure flow control
+    // 2. Stream binary chunks with robust cross-browser backpressure
     while (offset < file.size) {
+      if (!this.activeConnection || !this.activeConnection.open) {
+        throw new Error('اتصال با دستگاه مقابل در حین انتقال قطع شد');
+      }
+
       const dataChannel = this.activeConnection.dataChannel;
 
-      // Native WebRTC backpressure handling with bufferedamountlow (avoids artificial setTimeout delays)
-      if (dataChannel && dataChannel.bufferedAmount > MAX_BUFFERED_AMOUNT) {
-        await new Promise((resolve) => {
-          let resolved = false;
-          const onLow = () => {
-            if (!resolved) {
-              resolved = true;
-              dataChannel.removeEventListener('bufferedamountlow', onLow);
-              resolve();
-            }
-          };
-          dataChannel.bufferedAmountLowThreshold = Math.floor(MAX_BUFFERED_AMOUNT / 4);
-          dataChannel.addEventListener('bufferedamountlow', onLow);
-
-          // Fast safety fallback in case bufferedamountlow event is missed
-          setTimeout(() => {
-            if (!resolved) {
-              resolved = true;
-              if (dataChannel) dataChannel.removeEventListener('bufferedamountlow', onLow);
-              resolve();
-            }
-          }, 30);
-        });
+      // Reliable backpressure flow control for iOS Safari, Android, and Desktop
+      if (dataChannel && dataChannel.bufferedAmount > HIGH_BUFFER_THRESHOLD) {
+        while (dataChannel && dataChannel.bufferedAmount > LOW_BUFFER_THRESHOLD) {
+          if (!this.activeConnection || !this.activeConnection.open) {
+            throw new Error('اتصال با دستگاه مقابل در حین انتقال قطع شد');
+          }
+          await new Promise((resolve) => setTimeout(resolve, 15));
+        }
       }
 
       const slice = file.slice(offset, offset + CHUNK_SIZE);
@@ -357,10 +367,22 @@ export class P2PManager {
       }
     }
 
-    // 3. Send complete signal
+    if (!this.activeConnection || !this.activeConnection.open) {
+      throw new Error('اتصال با دستگاه مقابل قبل از دریافت فایل قطع شد');
+    }
+
+    // 3. Send complete signal and wait for receiver confirmation (prevents false 100% completion)
     this.activeConnection.send({
       type: 'file-complete',
       id: fileId
+    });
+
+    await new Promise((resolve) => {
+      const timeout = setTimeout(resolve, 4000); // 4-second safety fallback
+      this.pendingAcks[fileId] = () => {
+        clearTimeout(timeout);
+        resolve();
+      };
     });
 
     return {

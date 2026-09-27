@@ -39,8 +39,10 @@ const translations = {
     dropzoneHint: 'عکس، ویدیو، PDF، موزیک یا فایل فشرده',
     readyToSend: 'آماده ارسال',
     transferring: 'در حال انتقال P2P...',
+    receivingFile: 'در حال دریافت فایل P2P...',
     sendBtn: '🚀 ارسال فایل با حداکثر سرعت',
     sendingBtn: '⏳ در حال فرستادن چانک‌های باینری...',
+    receivingBtn: '📥 در حال دریافت فایل از دستگاه مقابل...',
     sharedClipboard: '📋 تخته‌شستی اشتراکی (متن / لینک)',
     clipboardPlaceholder: 'لینک، شماره یا متن برای کپی در مقصد...',
     sendClipboardBtn: 'ارسال',
@@ -107,8 +109,10 @@ const translations = {
     dropzoneHint: 'Images, 4K videos, PDFs, music, or archives',
     readyToSend: 'Ready to beam',
     transferring: 'P2P Beaming...',
+    receivingFile: 'P2P Receiving File...',
     sendBtn: '🚀 Beam File at Max Speed',
     sendingBtn: '⏳ Streaming binary chunks...',
+    receivingBtn: '📥 Receiving file from remote peer...',
     sharedClipboard: '📋 Shared Clipboard (Text / URLs)',
     clipboardPlaceholder: 'Paste link, phone number, or notes...',
     sendClipboardBtn: 'Send',
@@ -166,6 +170,7 @@ export default function App() {
 
   // Transfer States
   const [isTransferring, setIsTransferring] = useState(false);
+  const [transferDirection, setTransferDirection] = useState('sending');
   const [transferProgress, setTransferProgress] = useState(0);
   const [transferSpeed, setTransferSpeed] = useState('0.0');
   const [transferFileName, setTransferFileName] = useState('');
@@ -265,11 +270,14 @@ export default function App() {
       onDisconnected: () => {
         setP2pStatus('waiting');
         setConnectedDevice(null);
+        setIsTransferring(false);
+        setTransferDirection(null);
         setShowTransferModal(false);
         showToast(lang === 'fa' ? '⚠️ ارتباط با دستگاه مقابل قطع شد.' : '⚠️ Connection with peer closed.');
       },
-      onTransferStart: ({ fileName, fileSize }) => {
+      onTransferStart: ({ fileName, fileSize, mode }) => {
         setIsTransferring(true);
+        setTransferDirection(mode || 'receiving');
         setShowTransferModal(true);
         setTransferProgress(0);
         setTransferFileName(fileName);
@@ -293,6 +301,7 @@ export default function App() {
         };
         setTransfers((prev) => [receivedEntry, ...prev]);
         setIsTransferring(false);
+        setTransferDirection(null);
         setTransferProgress(100);
         setTimeout(() => setShowTransferModal(false), 2000);
         showToast(lang === 'fa' ? `📁 فایل "${fileObj.name}" با موفقیت دریافت شد!` : `📁 File "${fileObj.name}" received!`);
@@ -358,6 +367,7 @@ export default function App() {
 
     try {
       setIsTransferring(true);
+      setTransferDirection('sending');
       setShowTransferModal(true);
       setTransferProgress(0);
       setTransferFileName(selectedFile.name);
@@ -378,12 +388,14 @@ export default function App() {
       setTransfers((prev) => [newEntry, ...prev]);
       setSelectedFile(null);
       setIsTransferring(false);
+      setTransferDirection(null);
       setTimeout(() => setShowTransferModal(false), 2000);
       showToast(lang === 'fa' ? '🚀 فایل با موفقیت به دستگاه مقصد رسید!' : '🚀 File sent successfully!');
     } catch (err) {
       console.error('Send error:', err);
       alert((lang === 'fa' ? 'خطا در ارسال فایل: ' : 'Error beaming file: ') + (err.message || 'DataChannel issue'));
       setIsTransferring(false);
+      setTransferDirection(null);
       setShowTransferModal(false);
     }
   };
@@ -1485,7 +1497,7 @@ export default function App() {
               {isTransferring && (
                 <div style={{ marginBottom: '16px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', fontWeight: 800, marginBottom: '4px' }}>
-                    <span>{text.transferring} ({transferSpeed} MB/s)</span>
+                    <span>{transferDirection === 'receiving' ? `📥 ${text.receivingFile}` : `🚀 ${text.transferring}`} ({transferSpeed} MB/s)</span>
                     <span>{transferProgress}%</span>
                   </div>
                   <div style={{
@@ -1511,7 +1523,9 @@ export default function App() {
                 className="nb-btn nb-btn-dark"
                 style={{ width: '100%', padding: '14px', marginBottom: '18px' }}
               >
-                {isTransferring ? text.sendingBtn : text.sendBtn}
+                {isTransferring 
+                  ? (transferDirection === 'receiving' ? text.receivingBtn : text.sendingBtn) 
+                  : text.sendBtn}
               </button>
 
               {/* Shared Clipboard */}
@@ -1755,7 +1769,9 @@ export default function App() {
                 className="nb-btn nb-btn-dark"
                 style={{ width: '100%', padding: '12px', fontSize: '0.85rem' }}
               >
-                {isTransferring ? text.sendingBtn : text.sendBtn}
+                {isTransferring 
+                  ? (transferDirection === 'receiving' ? text.receivingBtn : text.sendingBtn) 
+                  : text.sendBtn}
               </button>
             </div>
 
