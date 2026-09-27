@@ -215,6 +215,16 @@ export default function App() {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const selectedFile = selectedFiles[0] || null;
 
+  // PWA & App Download Modal States
+  const [showInstallModal, setShowInstallModal] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [installPlatform, setInstallPlatform] = useState(() => {
+    const ua = navigator.userAgent;
+    if (/iPhone|iPad|iPod/i.test(ua)) return 'ios';
+    if (/Android/i.test(ua)) return 'android';
+    return 'desktop';
+  });
+
   // Simulated Fluctuating Speed in Guide (from Stitch spec)
   const [fluctuatingSpeed, setFluctuatingSpeed] = useState('58.4');
 
@@ -245,6 +255,30 @@ export default function App() {
     }, 1800);
     return () => clearInterval(interval);
   }, []);
+
+  // Listen for native PWA install prompt in Chrome & Edge
+  useEffect(() => {
+    const handlePrompt = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handlePrompt);
+    return () => window.removeEventListener('beforeinstallprompt', handlePrompt);
+  }, []);
+
+  const handleTriggerInstall = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const choice = await deferredPrompt.userChoice;
+      if (choice?.outcome === 'accepted') {
+        showToast(lang === 'fa' ? '🎉 برنامه با موفقیت نصب شد!' : '🎉 App installed successfully!');
+      }
+      setDeferredPrompt(null);
+      setShowInstallModal(false);
+    } else {
+      setShowInstallModal(true);
+    }
+  };
 
   // Navigation between Stitch Guide and Live P2P Hub with URL hash
   const navigateToView = (mode) => {
@@ -572,6 +606,24 @@ export default function App() {
                 <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#000' }}></span>
                 <span>Wi-Fi Direct LAN</span>
               </div>
+
+              {/* Install / Download App Button */}
+              <button
+                onClick={() => setShowInstallModal(true)}
+                className="nb-btn nb-btn-white"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '4px 14px',
+                  fontSize: '0.8rem',
+                  fontWeight: 800,
+                  boxShadow: 'var(--shadow-hard-sm)'
+                }}
+              >
+                <span>📥</span>
+                <span>{lang === 'fa' ? 'نصب و دانلود اپ' : 'Install / Download App'}</span>
+              </button>
 
               <div style={{
                 display: 'flex',
@@ -1241,6 +1293,15 @@ export default function App() {
                 style={{ fontSize: '0.85rem', padding: '8px 14px' }}
               >
                 {lang === 'fa' ? 'EN / FA' : 'FA / EN'}
+              </button>
+
+              <button
+                onClick={() => setShowInstallModal(true)}
+                className="nb-btn nb-btn-white"
+                style={{ fontSize: '0.85rem', padding: '8px 14px', display: 'flex', alignItems: 'center', gap: '6px' }}
+              >
+                <span>📥</span>
+                <span>{lang === 'fa' ? 'نصب اپ' : 'Install App'}</span>
               </button>
 
               <div style={{
@@ -2369,6 +2430,373 @@ export default function App() {
               style={{ width: '100%' }}
             >
               {text.closeModal}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================
+          MODAL: INSTALL APP / PWA GUIDE (CHROME & IOS SAFARI)
+      ======================================================== */}
+      {showInstallModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0, 0, 0, 0.75)',
+          backdropFilter: 'blur(6px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '20px',
+          zIndex: 99999
+        }}>
+          <div className="nb-card" style={{
+            maxWidth: '580px',
+            width: '100%',
+            background: '#ffffff',
+            borderRadius: '24px',
+            padding: '24px',
+            boxShadow: 'var(--shadow-hard-lg)',
+            maxHeight: '90vh',
+            overflowY: 'auto'
+          }}>
+            {/* Modal Header */}
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              borderBottom: 'var(--border-thick)',
+              paddingBottom: '14px',
+              marginBottom: '18px'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <span style={{ fontSize: '1.5rem' }}>📥</span>
+                <div>
+                  <h3 style={{ fontSize: '1.15rem', fontWeight: 900 }}>
+                    {lang === 'fa' ? 'نصب و دانلود وب‌اپلیکیشن LocalBeam' : 'Install LocalBeam App'}
+                  </h3>
+                  <div style={{ fontSize: '0.72rem', color: '#666', fontWeight: 700 }}>
+                    {lang === 'fa' ? 'اجرای آفلاین بدون کادر مرورگر • مثل اپلیکیشن بومی' : 'Offline native standalone app • Zero browser tabs'}
+                  </div>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowInstallModal(false)}
+                className="nb-btn nb-btn-pink"
+                style={{ width: '32px', height: '32px', padding: 0, borderRadius: '8px', fontSize: '0.9rem' }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Platform Selector Tabs */}
+            <div style={{ display: 'flex', gap: '8px', marginBottom: '18px', flexWrap: 'wrap' }}>
+              <button
+                onClick={() => setInstallPlatform('desktop')}
+                className="nb-pill"
+                style={{
+                  background: installPlatform === 'desktop' ? 'var(--nb-yellow)' : '#f1f5f9',
+                  border: 'var(--border-medium)',
+                  cursor: 'pointer',
+                  fontWeight: 800,
+                  fontSize: '0.8rem',
+                  padding: '6px 14px'
+                }}
+              >
+                💻 {lang === 'fa' ? 'ویندوز و مک (Chrome)' : 'Windows / Mac (Chrome)'}
+              </button>
+              <button
+                onClick={() => setInstallPlatform('ios')}
+                className="nb-pill"
+                style={{
+                  background: installPlatform === 'ios' ? 'var(--nb-yellow)' : '#f1f5f9',
+                  border: 'var(--border-medium)',
+                  cursor: 'pointer',
+                  fontWeight: 800,
+                  fontSize: '0.8rem',
+                  padding: '6px 14px'
+                }}
+              >
+                🍏 {lang === 'fa' ? 'آیفون و آیپد (Safari)' : 'iPhone / iPad (Safari)'}
+              </button>
+              <button
+                onClick={() => setInstallPlatform('android')}
+                className="nb-pill"
+                style={{
+                  background: installPlatform === 'android' ? 'var(--nb-yellow)' : '#f1f5f9',
+                  border: 'var(--border-medium)',
+                  cursor: 'pointer',
+                  fontWeight: 800,
+                  fontSize: '0.8rem',
+                  padding: '6px 14px'
+                }}
+              >
+                🤖 {lang === 'fa' ? 'اندروید (Android)' : 'Android'}
+              </button>
+            </div>
+
+            {/* TAB: DESKTOP (CHROME / EDGE) */}
+            {installPlatform === 'desktop' && (
+              <div>
+                {/* 1-Click Install Button if supported by browser */}
+                {deferredPrompt ? (
+                  <button
+                    onClick={handleTriggerInstall}
+                    className="nb-btn nb-btn-yellow"
+                    style={{
+                      width: '100%',
+                      padding: '14px',
+                      fontSize: '1rem',
+                      fontWeight: 900,
+                      marginBottom: '16px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '8px'
+                    }}
+                  >
+                    <span>⚡</span>
+                    <span>{lang === 'fa' ? 'نصب مستقیم با یک کلیک روی سیستم' : '1-Click Direct Install on PC/Mac'}</span>
+                  </button>
+                ) : null}
+
+                {/* Omnibox / Search Bar Visual Illustration */}
+                <div style={{
+                  background: '#f8fafc',
+                  border: 'var(--border-thick)',
+                  borderRadius: '16px',
+                  padding: '14px',
+                  marginBottom: '16px'
+                }}>
+                  <div style={{ fontSize: '0.82rem', fontWeight: 800, marginBottom: '8px' }}>
+                    🔍 {lang === 'fa' ? 'گزینه دانلود در نوار آدرس مرورگر کروم (Search Bar):' : 'Install Icon in Chrome Address Bar:'}
+                  </div>
+
+                  {/* Chrome Omnibox Mockup */}
+                  <div style={{
+                    background: '#ffffff',
+                    border: '1.5px solid #000',
+                    borderRadius: '24px',
+                    padding: '8px 14px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '0.78rem',
+                    marginBottom: '8px'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#64748b' }}>
+                      <span>🔒</span>
+                      <span>mrbuilder-dev.github.io/30day-app-challenge/</span>
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span style={{
+                        background: 'var(--nb-yellow)',
+                        border: '1.5px solid #000',
+                        padding: '2px 8px',
+                        borderRadius: '12px',
+                        fontWeight: 900,
+                        color: '#000',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px'
+                      }}>
+                        <span>⤓</span> {lang === 'fa' ? 'نصب' : 'Install'}
+                      </span>
+                      <span>⭐</span>
+                    </div>
+                  </div>
+
+                  <p style={{ fontSize: '0.78rem', color: '#475569', lineHeight: '1.5', margin: 0 }}>
+                    {lang === 'fa' 
+                      ? 'در بالای مرورگر کروم، سمت راست نوار آدرس (کنار ستاره)، روی علامت دانلود یا کامپیوتر کلیک کنید تا اپلیکیشن LocalBeam به دسکتاپ و منوی استارت شما اضافه شود.'
+                      : 'In Google Chrome or Edge, click the Install App icon (monitor with down arrow) on the right side of the URL address bar to install to your Desktop/Start menu.'}
+                  </p>
+                </div>
+
+                <div style={{
+                  background: '#ecfdf5',
+                  border: 'var(--border-medium)',
+                  borderRadius: '14px',
+                  padding: '12px',
+                  fontSize: '0.8rem',
+                  fontWeight: 700,
+                  color: '#166534'
+                }}>
+                  ✓ {lang === 'fa' ? 'مزایا: باز شدن در پنجره مستقل، سرعت بالاتر و بدون نیاز به تب‌های مزاحم مرورگر.' : 'Benefits: Standalone window, instant launch, zero tab clutter.'}
+                </div>
+              </div>
+            )}
+
+            {/* TAB: IOS SAFARI (IPHONE / IPAD) */}
+            {installPlatform === 'ios' && (
+              <div>
+                <p style={{ fontSize: '0.82rem', fontWeight: 700, color: '#334155', marginBottom: '14px' }}>
+                  {lang === 'fa' 
+                    ? 'به دلیل قوانین اپل، در مرورگر Safari آیفون می‌توانید با ۳ گام ساده زیر این صفحه را به شکل یک برنامه کامل روی گوشی خود داشته باشید:' 
+                    : 'On iPhone / iPad Safari, follow these 3 simple steps to add LocalBeam to your Home Screen as a native app:'}
+                </p>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '16px' }}>
+                  {/* Step 1 */}
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: '12px',
+                    background: '#f8fafc',
+                    border: 'var(--border-medium)',
+                    borderRadius: '14px',
+                    padding: '12px'
+                  }}>
+                    <span style={{
+                      width: '28px',
+                      height: '28px',
+                      borderRadius: '50%',
+                      background: 'var(--nb-yellow)',
+                      border: '1.5px solid #000',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontWeight: 900,
+                      fontSize: '0.85rem',
+                      flexShrink: 0
+                    }}>
+                      ۱
+                    </span>
+                    <div>
+                      <div style={{ fontWeight: 800, fontSize: '0.85rem', marginBottom: '2px' }}>
+                        {lang === 'fa' ? 'زدن دکمه Share (اشتراک‌گذاری)' : 'Tap the Share Button'}
+                      </div>
+                      <div style={{ fontSize: '0.78rem', color: '#64748b', lineHeight: '1.4' }}>
+                        {lang === 'fa' 
+                          ? 'در نوار پایین صفحه مرورگر Safari، روی آیکون اشتراک‌گذاری (مربع با فلش رو به بالا ⎋) ضربه بزنید.' 
+                          : 'In Safari bottom bar, tap the Share icon (square with upward arrow).'}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Step 2 */}
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: '12px',
+                    background: '#f8fafc',
+                    border: 'var(--border-medium)',
+                    borderRadius: '14px',
+                    padding: '12px'
+                  }}>
+                    <span style={{
+                      width: '28px',
+                      height: '28px',
+                      borderRadius: '50%',
+                      background: 'var(--nb-yellow)',
+                      border: '1.5px solid #000',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontWeight: 900,
+                      fontSize: '0.85rem',
+                      flexShrink: 0
+                    }}>
+                      ۲
+                    </span>
+                    <div>
+                      <div style={{ fontWeight: 800, fontSize: '0.85rem', marginBottom: '2px' }}>
+                        {lang === 'fa' ? 'انتخاب گزینه «Add to Home Screen»' : 'Select "Add to Home Screen"'}
+                      </div>
+                      <div style={{ fontSize: '0.78rem', color: '#64748b', lineHeight: '1.4' }}>
+                        {lang === 'fa' 
+                          ? 'منوی بازشده را کمی به پایین اسکرول کنید و گزینه «Add to Home Screen» (افزودن به صفحه اصلی ➕) را لمس کنید.' 
+                          : 'Scroll down the action sheet and tap "Add to Home Screen" (+).'}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Step 3 */}
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: '12px',
+                    background: '#f8fafc',
+                    border: 'var(--border-medium)',
+                    borderRadius: '14px',
+                    padding: '12px'
+                  }}>
+                    <span style={{
+                      width: '28px',
+                      height: '28px',
+                      borderRadius: '50%',
+                      background: 'var(--nb-yellow)',
+                      border: '1.5px solid #000',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontWeight: 900,
+                      fontSize: '0.85rem',
+                      flexShrink: 0
+                    }}>
+                      ۳
+                    </span>
+                    <div>
+                      <div style={{ fontWeight: 800, fontSize: '0.85rem', marginBottom: '2px' }}>
+                        {lang === 'fa' ? 'لمس دکمه Add در بالای صفحه' : 'Tap "Add" in top corner'}
+                      </div>
+                      <div style={{ fontSize: '0.78rem', color: '#64748b', lineHeight: '1.4' }}>
+                        {lang === 'fa' 
+                          ? 'در گوشه بالا سمت راست دکمه Add را بزنید. آیکون زرد LOCALBEAM به صفحه برنامه‌های آیفون اضافه می‌شود و مثل یک اپلیکیشن مستقل باز خواهد شد.' 
+                          : 'Tap Add in the top right corner. The yellow LOCALBEAM icon is now on your home screen!'}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* TAB: ANDROID */}
+            {installPlatform === 'android' && (
+              <div>
+                {deferredPrompt ? (
+                  <button
+                    onClick={handleTriggerInstall}
+                    className="nb-btn nb-btn-yellow"
+                    style={{
+                      width: '100%',
+                      padding: '14px',
+                      fontSize: '1rem',
+                      fontWeight: 900,
+                      marginBottom: '16px'
+                    }}
+                  >
+                    ⚡ {lang === 'fa' ? 'نصب مستقیم روی گوشی اندروید' : 'Direct Install on Android'}
+                  </button>
+                ) : null}
+
+                <div style={{
+                  background: '#f8fafc',
+                  border: 'var(--border-medium)',
+                  borderRadius: '14px',
+                  padding: '14px',
+                  fontSize: '0.82rem',
+                  lineHeight: '1.5',
+                  color: '#334155'
+                }}>
+                  {lang === 'fa' 
+                    ? 'در مرورگر Chrome گوشی اندروید خود، منوی سه نقطه (⋮) در بالا را لمس کرده و روی گزینه «Install app» یا «Add to Home screen» بزنید.' 
+                    : 'In Chrome on Android, tap the three dots (⋮) menu in the top right, then select "Install app" or "Add to Home screen".'}
+                </div>
+              </div>
+            )}
+
+            <button
+              onClick={() => setShowInstallModal(false)}
+              className="nb-btn nb-btn-dark"
+              style={{ width: '100%', marginTop: '16px', padding: '12px' }}
+            >
+              {lang === 'fa' ? 'متوجه شدم • بستن' : 'Got it • Close'}
             </button>
           </div>
         </div>
