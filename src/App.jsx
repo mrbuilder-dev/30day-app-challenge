@@ -555,9 +555,25 @@ export default function App() {
               )}
             </h1>
 
-            <p style={{ fontSize: '1rem', color: '#242730', fontWeight: 600, lineHeight: 1.6 }}>
+            <p style={{ fontSize: '1rem', color: '#242730', fontWeight: 600, lineHeight: 1.6, marginBottom: '22px' }}>
               {text.guideHeroSub}
             </p>
+
+            {/* Primary Action Button (relocated between subtitle and 3 cards) */}
+            <div>
+              <button
+                onClick={() => setViewMode('desktop')}
+                className="nb-btn nb-btn-dark"
+                style={{
+                  padding: '14px 32px',
+                  fontSize: '1.05rem',
+                  minWidth: '280px',
+                  boxShadow: 'var(--shadow-hard)'
+                }}
+              >
+                <span>⚡</span> {lang === 'fa' ? 'شروع انتقال فایل • Start Beaming' : 'Start Beaming Files • P2P Hub'}
+              </button>
+            </div>
           </div>
 
           {/* 3-Column Bento Deck Cards (Yellow, Lime Green, Pastel Pink) */}
@@ -983,37 +999,19 @@ export default function App() {
             </div>
           </div>
 
-          {/* Action Dock / Main CTA Buttons */}
+          {/* Action Dock / Secondary Technical Documentation */}
           <div style={{
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            gap: '14px',
-            flexWrap: 'wrap',
             marginBottom: '36px'
           }}>
             <button
-              onClick={() => setViewMode('desktop')}
-              className="nb-btn nb-btn-dark"
-              style={{ padding: '14px 28px', fontSize: '1.05rem', minWidth: '280px' }}
-            >
-              <span>⚡</span> {lang === 'fa' ? 'شروع انتقال فایل • Start Beaming' : 'Start Beaming Files • P2P Hub'}
-            </button>
-
-            <button
               onClick={() => setShowTechModal(true)}
               className="nb-btn nb-btn-white"
-              style={{ padding: '14px 24px', fontSize: '0.95rem' }}
+              style={{ padding: '12px 24px', fontSize: '0.95rem' }}
             >
               <span>📖</span> {lang === 'fa' ? 'راهنمای فنی آفلاین' : 'Offline Tech Docs'}
-            </button>
-
-            <button
-              onClick={() => setViewMode('desktop')}
-              className="nb-btn nb-btn-yellow"
-              style={{ padding: '14px 22px', fontSize: '0.95rem' }}
-            >
-              {lang === 'fa' ? 'ورود به رادار اصلی ➔' : 'Open Radar & Dropzone ➔'}
             </button>
           </div>
 
