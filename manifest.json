@@ -1,0 +1,18 @@
+{
+  "name": "LOCALBEAM",
+  "short_name": "LocalBeam",
+  "description": "انتقال آفلاین و مستقیم فایل و کلیپ‌بورد بین دیوایس‌ها با WebRTC",
+  "start_url": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#FFF9E6",
+  "theme_color": "#FFE600",
+  "icons": [
+    {
+      "src": "./favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
