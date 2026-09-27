@@ -559,19 +559,37 @@ export default function App() {
               {text.guideHeroSub}
             </p>
 
-            {/* Primary Action Button (relocated between subtitle and 3 cards) */}
-            <div>
+            {/* Action Buttons (side by side between subtitle and 3 cards) */}
+            <div style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: '14px',
+              flexWrap: 'wrap'
+            }}>
               <button
                 onClick={() => setViewMode('desktop')}
                 className="nb-btn nb-btn-dark"
                 style={{
-                  padding: '14px 32px',
+                  padding: '14px 30px',
                   fontSize: '1.05rem',
-                  minWidth: '280px',
+                  minWidth: '260px',
                   boxShadow: 'var(--shadow-hard)'
                 }}
               >
                 <span>⚡</span> {lang === 'fa' ? 'شروع انتقال فایل • Start Beaming' : 'Start Beaming Files • P2P Hub'}
+              </button>
+
+              <button
+                onClick={() => setShowTechModal(true)}
+                className="nb-btn nb-btn-white"
+                style={{
+                  padding: '14px 24px',
+                  fontSize: '0.98rem',
+                  boxShadow: 'var(--shadow-hard-sm)'
+                }}
+              >
+                <span>📖</span> {lang === 'fa' ? 'راهنمای فنی آفلاین' : 'Offline Tech Docs'}
               </button>
             </div>
           </div>
@@ -999,21 +1017,7 @@ export default function App() {
             </div>
           </div>
 
-          {/* Action Dock / Secondary Technical Documentation */}
-          <div style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginBottom: '36px'
-          }}>
-            <button
-              onClick={() => setShowTechModal(true)}
-              className="nb-btn nb-btn-white"
-              style={{ padding: '12px 24px', fontSize: '0.95rem' }}
-            >
-              <span>📖</span> {lang === 'fa' ? 'راهنمای فنی آفلاین' : 'Offline Tech Docs'}
-            </button>
-          </div>
+
 
           {/* Footer Dock */}
           <footer style={{
