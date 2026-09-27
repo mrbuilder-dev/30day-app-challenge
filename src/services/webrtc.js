@@ -39,8 +39,8 @@ export function generatePeerId() {
   return result;
 }
 
-const CHUNK_SIZE = 16384; // 16KB per chunk (safe across WebRTC DataChannel implementations)
-const MAX_BUFFERED_AMOUNT = 64 * 1024; // 64KB threshold for backpressure flow control
+const CHUNK_SIZE = 64 * 1024; // 64KB per chunk (optimal for WebRTC SCTP DataChannels)
+const MAX_BUFFERED_AMOUNT = 1024 * 1024; // 1MB buffer capacity before backpressure throttling
 
 export class P2PManager {
   constructor(callbacks = {}) {
@@ -63,8 +63,11 @@ export class P2PManager {
         config: {
           iceServers: [
             { urls: 'stun:stun.l.google.com:19302' },
-            { urls: 'stun:global.stun.twilio.com:3478' }
-          ]
+            { urls: 'stun:stun1.l.google.com:19302' },
+            { urls: 'stun:stun2.l.google.com:19302' },
+            { urls: 'stun:stun.cloudflare.com:3478' }
+          ],
+          iceCandidatePoolSize: 10
         }
       });
 
@@ -200,19 +203,23 @@ export class P2PManager {
         fileState.chunks[data.index] = data.data;
         fileState.receivedBytes += data.data.byteLength;
 
-        const progress = Math.min(100, Math.round((fileState.receivedBytes / fileState.meta.size) * 100));
-        const elapsedSec = (Date.now() - fileState.startTime) / 1000;
-        const speedMBs = elapsedSec > 0 ? (fileState.receivedBytes / (1024 * 1024) / elapsedSec).toFixed(1) : '0.0';
+        const now = Date.now();
+        if (now - (fileState.lastProgressUpdate || 0) > 80 || fileState.receivedBytes >= fileState.meta.size) {
+          fileState.lastProgressUpdate = now;
+          const progress = Math.min(100, Math.round((fileState.receivedBytes / fileState.meta.size) * 100));
+          const elapsedSec = (now - fileState.startTime) / 1000;
+          const speedMBs = elapsedSec > 0 ? (fileState.receivedBytes / (1024 * 1024) / elapsedSec).toFixed(1) : '0.0';
 
-        if (this.callbacks.onTransferProgress) {
-          this.callbacks.onTransferProgress({
-            mode: 'receiving',
-            progress,
-            speedMBs,
-            fileName: fileState.meta.name,
-            receivedBytes: fileState.receivedBytes,
-            totalBytes: fileState.meta.size
-          });
+          if (this.callbacks.onTransferProgress) {
+            this.callbacks.onTransferProgress({
+              mode: 'receiving',
+              progress,
+              speedMBs,
+              fileName: fileState.meta.name,
+              receivedBytes: fileState.receivedBytes,
+              totalBytes: fileState.meta.size
+            });
+          }
         }
         break;
       }
@@ -286,22 +293,34 @@ export class P2PManager {
     const startTime = Date.now();
     let offset = 0;
     let chunkIndex = 0;
+    let lastProgressUpdate = 0;
 
-    // 2. Stream binary chunks with flow control
+    // 2. Stream binary chunks with native WebRTC backpressure flow control
     while (offset < file.size) {
       const dataChannel = this.activeConnection.dataChannel;
 
-      // Handle backpressure
+      // Native WebRTC backpressure handling with bufferedamountlow (avoids artificial setTimeout delays)
       if (dataChannel && dataChannel.bufferedAmount > MAX_BUFFERED_AMOUNT) {
         await new Promise((resolve) => {
-          const checkBuffer = () => {
-            if (!dataChannel || dataChannel.bufferedAmount <= MAX_BUFFERED_AMOUNT) {
+          let resolved = false;
+          const onLow = () => {
+            if (!resolved) {
+              resolved = true;
+              dataChannel.removeEventListener('bufferedamountlow', onLow);
               resolve();
-            } else {
-              setTimeout(checkBuffer, 15);
             }
           };
-          checkBuffer();
+          dataChannel.bufferedAmountLowThreshold = Math.floor(MAX_BUFFERED_AMOUNT / 4);
+          dataChannel.addEventListener('bufferedamountlow', onLow);
+
+          // Fast safety fallback in case bufferedamountlow event is missed
+          setTimeout(() => {
+            if (!resolved) {
+              resolved = true;
+              if (dataChannel) dataChannel.removeEventListener('bufferedamountlow', onLow);
+              resolve();
+            }
+          }, 30);
         });
       }
 
@@ -318,19 +337,23 @@ export class P2PManager {
       offset += CHUNK_SIZE;
       chunkIndex++;
 
-      const progress = Math.min(100, Math.round((offset / file.size) * 100));
-      const elapsedSec = (Date.now() - startTime) / 1000;
-      const speedMBs = elapsedSec > 0 ? (offset / (1024 * 1024) / elapsedSec).toFixed(1) : '0.0';
+      const now = Date.now();
+      if (now - lastProgressUpdate > 80 || offset >= file.size) {
+        lastProgressUpdate = now;
+        const progress = Math.min(100, Math.round((offset / file.size) * 100));
+        const elapsedSec = (now - startTime) / 1000;
+        const speedMBs = elapsedSec > 0 ? (offset / (1024 * 1024) / elapsedSec).toFixed(1) : '0.0';
 
-      if (this.callbacks.onTransferProgress) {
-        this.callbacks.onTransferProgress({
-          mode: 'sending',
-          progress,
-          speedMBs,
-          fileName: file.name,
-          transferredBytes: Math.min(offset, file.size),
-          totalBytes: file.size
-        });
+        if (this.callbacks.onTransferProgress) {
+          this.callbacks.onTransferProgress({
+            mode: 'sending',
+            progress,
+            speedMBs,
+            fileName: file.name,
+            transferredBytes: Math.min(offset, file.size),
+            totalBytes: file.size
+          });
+        }
       }
     }
 
