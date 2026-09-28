@@ -13,5 +13,8 @@
     "dev:day01": "npm --prefix build/day01-localbeam run dev",
     "build:day01": "npm --prefix build/day01-localbeam run build",
     "deploy:day01": "npm --prefix build/day01-localbeam run deploy"
+  },
+  "devDependencies": {
+    "puppeteer-core": "^25.12.0"
   }
 }

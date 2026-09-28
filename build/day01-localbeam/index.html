@@ -17,6 +17,32 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800;900&family=Vazirmatn:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary-container": "#9d84f6",
+              "secondary-container": "#fdcf55",
+              "tertiary-fixed": "#c4f279",
+              "tertiary-fixed-variant": "#344e00",
+              "on-tertiary-fixed": "#121f00",
+              "surface-container-lowest": "#ffffff",
+              "surface-container-low": "#f3f3f3",
+              "surface-container": "#eeeeee",
+              "surface-container-high": "#e8e8e8",
+              "surface-container-highest": "#e2e2e2",
+              "on-background": "#1b1b1b",
+              "primary-fixed": "#e7deff",
+              "secondary-fixed": "#ffdf96",
+              "error-container": "#ffdad6"
+            }
+          }
+        }
+      };
+    </script>
   </head>
   <body>
     <div id="root"></div>

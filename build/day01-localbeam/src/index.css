@@ -298,5 +298,36 @@ body {
   );
 }
 
-
-
+/* Stitch Option B Neo-Brutalist Classes */
+.neobrutalist-canvas {
+  background-color: #9d84f6;
+  background-image: radial-gradient(#1b1b1b 1.2px, transparent 1.2px);
+  background-size: 20px 20px;
+}
+.shadow-brutal-sm {
+  box-shadow: -2.5px 2.5px 0px #000000;
+}
+.shadow-brutal {
+  box-shadow: -4px 4px 0px #000000;
+}
+.shadow-brutal-lg {
+  box-shadow: -6px 6px 0px #000000;
+}
+.shadow-brutal-xl {
+  box-shadow: -8px 8px 0px #000000;
+}
+.btn-brutal {
+  transition: all 0.12s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.btn-brutal:hover {
+  transform: translate(2px, -2px);
+  box-shadow: -6px 6px 0px #000000;
+}
+.btn-brutal:active {
+  transform: translate(-2px, 2px);
+  box-shadow: -1px 1px 0px #000000;
+}
+.dropzone-active {
+  background-color: #fffae8 !important;
+  border-color: #000000 !important;
+}
