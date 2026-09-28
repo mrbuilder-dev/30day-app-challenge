@@ -1,52 +1,66 @@
-# 🚀 30-Day App Challenge: Building in Public
+# 🚀 30-Day App Challenge: The Solo Builder Venture Engine
 
-> An indie experiment to design, develop, and launch a complete, **offline-first application** from scratch in 30 days, documented transparently in public.
+> An indie experiment to design, develop, and launch 30 useful web applications in 30 days, documented transparently in public (#BuildInPublic).
 
+[![Live Demo](https://img.shields.io/badge/Live_App-LocalBeam_Day_01-brightgreen.svg)](https://mrbuilder-dev.github.io/30day-app-challenge/)
 [![Build in Public](https://img.shields.io/badge/Build_in_Public-30_Days-blue.svg)](https://x.com/MrBuildersai)
 [![Telegram Community](https://img.shields.io/badge/Telegram-@MrbuildersAI-2BA2DE.svg)](https://t.me/MrbuildersAI)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Persian Docs](https://img.shields.io/badge/🇮🇷_مطالعه_به_زبان_فارسی-README.fa-orange.svg)](README.fa.md)
+[![Persian Docs](https://img.shields.io/badge/🇮🇷_مستندات_فارسی-README.fa-orange.svg)](README.fa.md)
 
 ---
 
-## 📌 About The Project
+## 🏛️ Project Architecture: The 5 Pillars
 
-Most software projects fail because they are built in isolation or rely on heavy cloud services that break during network disruptions. 
+This repository functions as an AI-powered solo venture operating system organized into 5 dedicated engines:
 
-This project aims to solve that by:
-1. **Targeting Real Needs:** Designing features based on direct community input from developers and everyday users in Iran.
-2. **Local-First Architecture:** Complete reliability and speed without reliance on external cloud APIs or international internet connectivity.
-3. **Transparent Development:** Sharing the raw journey—daily dev logs, architecture choices, bugs, and design iterations.
-
----
-
-## 🛠️ Tech Stack (Initial Foundation)
-
-- **Frontend:** React, Modern JavaScript / TypeScript, Vite
-- **Styling:** Vanilla CSS & Modern Design Systems (Glassmorphism, Dark Mode)
-- **Data & Storage:** LocalStorage / IndexedDB (100% Client-Side)
-- **Networking:** Local-First / P2P & LAN friendly
-
----
-
-## 🗺️ Roadmap & Timeline
-
-- [x] **Day 0:** Project kickoff, social channels, and development manifesto setup.
-- [ ] **Days 1–5:** Community idea validation & MVP feature freeze.
-- [ ] **Days 6–15:** Core module development & interactive UI prototyping.
-- [ ] **Days 16–22:** Offline testing, local persistence & performance tuning.
-- [ ] **Days 23–27:** Private Beta testing with Telegram community early adopters.
-- [ ] **Days 28–30:** Public Launch (v1.0 release).
+```
+├── build/          ─── [Pillar 1: Product & Code]
+│   └── day01-localbeam/    -> Offline P2P file transfer across iOS, PC & Android
+├── growth/         ─── [Pillar 2: Virality & Distribution]
+│   ├── day01-localbeam/    -> X threads, Telegram posts, demo video scripts
+│   └── brand-assets/       -> High-res avatars, banners, and aesthetic assets
+├── community/      ─── [Pillar 3: User Co-Creation]
+│   ├── user-feedback.md    -> Direct user bug reports and feature requests
+│   └── ideas-inbox.md      -> Backlog of community-suggested products
+├── learning/       ─── [Pillar 4: Feedback & Post-Mortems]
+│   ├── day01-post-mortem.md -> Honest root cause analysis of distribution & tech
+│   └── metrics-tracker.md   -> 30-day tracking sheet (impressions, clicks, users)
+└── vault/          ─── [Pillar 5: Knowledge Vault & Playbooks]
+    ├── playbook/           -> Solo Builder OS principles & project history
+    └── tech-snippets/      -> Battle-tested WebRTC, Web Audio & PWA modules
+```
 
 ---
 
-## 🔗 Follow The Journey
+## ⚡ Quick Start
 
-- **𝕏 (Twitter):** [@MrBuildersai](https://x.com/MrBuildersai) — Daily thoughts, micro-polls, and progress clips.
-- **Telegram Channel:** [t.me/MrbuildersAI](https://t.me/MrbuildersAI) — Test builds, APK/web previews, and community discussions.
+```bash
+# Run Day 1 app (LocalBeam) locally:
+npm run dev
+
+# Or directly in its directory:
+cd build/day01-localbeam
+npm run dev
+
+# Build for production:
+npm run build
+
+# Deploy to GitHub Pages:
+npm run deploy
+```
 
 ---
 
-## 📄 Documentation
+## 📅 Challenge Index
 
-For the full strategic background and decision history, check out the [Project History & Manifesto](docs/PROJECT_HISTORY.md).
+| Day | Product Name | Description | Tech Stack | Status | Live Demo |
+| :---: | :--- | :--- | :--- | :---: | :---: |
+| **01** | **LocalBeam** | Zero-internet local P2P file transfer | React, WebRTC, PWA, PeerJS | 🟢 Live | [Launch App](https://mrbuilder-dev.github.io/30day-app-challenge/) |
+| **02** | *Coming Soon* | - | - | ⏳ Next | - |
+
+---
+
+## 🔗 Connect & Follow
+
+- **𝕏 (Twitter):** [@MrBuildersai](https://x.com/MrBuildersai)
+- **Telegram:** [t.me/MrbuildersAI](https://t.me/MrbuildersAI)

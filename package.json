@@ -1,25 +1,17 @@
 {
-  "name": "30day-app-challenge",
+  "name": "mrbuilder-30day-challenge",
+  "version": "1.0.0",
   "private": true,
-  "version": "0.1.0",
-  "type": "module",
+  "description": "Mr. Builder • 30 Day App Challenge - The Solo Builder Venture Engine",
+  "workspaces": [
+    "build/*"
+  ],
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
-  },
-  "dependencies": {
-    "canvas-confetti": "^1.9.4",
-    "peerjs": "^1.5.5",
-    "qrcode.react": "^4.2.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.4",
-    "gh-pages": "^6.3.0",
-    "vite": "^6.2.0"
+    "dev": "npm --prefix build/day01-localbeam run dev",
+    "build": "npm --prefix build/day01-localbeam run build",
+    "deploy": "npm --prefix build/day01-localbeam run deploy",
+    "dev:day01": "npm --prefix build/day01-localbeam run dev",
+    "build:day01": "npm --prefix build/day01-localbeam run build",
+    "deploy:day01": "npm --prefix build/day01-localbeam run deploy"
   }
 }
