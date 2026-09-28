@@ -16,16 +16,20 @@ This repository functions as an AI-powered solo venture operating system organiz
 ```
 ├── build/          ─── [Pillar 1: Product & Code]
 │   └── day01-localbeam/    -> Offline P2P file transfer across iOS, PC & Android
-├── growth/         ─── [Pillar 2: Virality & Distribution]
+├── ideas/          ─── [Pillar 2: Idea Generation & Backlog]
+│   ├── evaluation-framework.md -> 5-filter scoring matrix for 24h apps
+│   ├── day02-candidates.md     -> Top vetted ideas for tomorrow
+│   └── 30-day-backlog.md       -> 30 curated idea concepts
+├── growth/         ─── [Pillar 3: Virality & Distribution]
 │   ├── day01-localbeam/    -> X threads, Telegram posts, demo video scripts
 │   └── brand-assets/       -> High-res avatars, banners, and aesthetic assets
-├── community/      ─── [Pillar 3: User Co-Creation]
+├── community/      ─── [Pillar 4: User Co-Creation]
 │   ├── user-feedback.md    -> Direct user bug reports and feature requests
 │   └── ideas-inbox.md      -> Backlog of community-suggested products
-├── learning/       ─── [Pillar 4: Feedback & Post-Mortems]
+├── learning/       ─── [Pillar 5: Feedback & Post-Mortems]
 │   ├── day01-post-mortem.md -> Honest root cause analysis of distribution & tech
 │   └── metrics-tracker.md   -> 30-day tracking sheet (impressions, clicks, users)
-└── vault/          ─── [Pillar 5: Knowledge Vault & Playbooks]
+└── vault/          ─── [Pillar 6: Knowledge Vault & Playbooks]
     ├── playbook/           -> Solo Builder OS principles & project history
     └── tech-snippets/      -> Battle-tested WebRTC, Web Audio & PWA modules
 ```
